@@ -336,8 +336,6 @@ foreach ($fees->fetch_array() as $k => $v) {
     <!-- Main Content -->
      <div class="main-content" id="mainContent">
 
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-2 border-bottom bg-success ">
-        <h1 class="h2" style="margin-left: 15%">Warehouse update</h1><p class="h2 text-danger" style="margin-left: 15%">Your expiring date format should be like this:<?php echo date('Y-m-d', strtotime('now'));?></p>
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3 border-bottom pb-2">
             <h1 class="h2">Warehouse Update</h1>
             <div class="alert alert-warning py-1 px-3 mb-0">
@@ -345,7 +343,6 @@ foreach ($fees->fetch_array() as $k => $v) {
             </div>
         </div>
         
-      </div>
         <form action="" id="productts">
             <div class="row">
                 <!-- Left Column: Selected Items -->
@@ -369,7 +366,7 @@ foreach ($fees->fetch_array() as $k => $v) {
                                             <th>Unit</th>                         
                                             <th>Description</th>      
                                             <th>Expirdate</th>
-                                            <th>Action</th>
+                                            
                                         </tr>
                                     </thead>
                                     <tbody id="tableData1">     
@@ -434,115 +431,6 @@ foreach ($fees->fetch_array() as $k => $v) {
                                             <td class="text-center" name="check" style="display:none;"><?php echo $row['multtota'] ?></td>
                                             <td class="text-center" name="check" style="display:none;"><?php echo $i++ ?></td>
 
-<form action="" id="productts">
-         <div class="row "> 
-      
-        <div class="col-lg-7 border-right  ">
-                  
-
-  
-    <div class="form-group">
-          
-              <input type="hidden" id="location" class="location" name="location" value="<?php echo date('s', strtotime('now'));?>">
-            
-            </div>    
-
-    <!--      
-     <div id="products"> 
-        
-     </div> -->
-     
-                <div>
-    <!--  <?php
-        if (isset($_POST['search'])){
-            $name = $_POST['search'];
-           
-                $show   = "SELECT * FROM warehouse WHERE name LIKE '$name%' AND quantity > 0 OR sid = '$name' AND quantity > 0";
-                        $query  = mysqli_query($conn,$show);
-                             if(mysqli_num_rows($query)>0){
-                                 while($row = mysqli_fetch_array($query)){
-                                                                 }
-                                                            }
-        }?>
-
- -->
-
-
-
-
-
-
-                   <!--  <div class="row "> -->
-                    <!--     <div class="form-group">
-                         <b><label class="control-label col-sm-2" for="product">Product:</label></b>
-                         <div class="col-sm-10">
-                      <input autocomplete="OFF" type="text" class="form-control" id="product" name="product" value="<?php echo $row['name'];?>">
-                         </div>
-                         </div>
-
-
-                         
-                
-
-           <div class="col-lg-4 ">
-                    <div class="form-group">
-                     <b><label class="control-label col-sm-2" for="rate">Min_stock</label></b>
-                      <div class="col-sm-10">          
-                     <input autocomplete="OFF" type="text" class="form-control" id="min_stock"  name="min_stock" >
-                         </div>
-                         </div>';
-
-             <div class="form-group">
-                     <b><label class="control-label col-sm-2" for="rate">location</label></b>
-                      <div class="col-sm-10">          
-                     <input autocomplete="OFF" type="text" class="form-control" id="location"  name="location" >
-                         </div>
-                         </div>
-
-
- -->
-
-
-            
-                    <!-- <div class="form-group">
-                     <b><label class="control-label col-sm-2" for="rate">Remark</label></b>
-                      <div class="col-sm-10">          
-                     <input autocomplete="OFF" type="text" class="form-control" id="remark"  name="remark" >
-                         </div>
-                         </div> -->
-</div>
-
-    <div id="content" class="mr-15">
-      <div id="price_column" class="table-responsive-sm  m-2 table-responsive-sm table-wrapper-scroll-y my-custom-scrollbar-y">
-        <!-- m-2 table-responsive-sm table-wrapper-scroll-y my-custom-scrollbar-a -->
-        <!-- id="mytable" class="table table-condensed table-bordered table-hover -->
-        <table    class="" style="cursor: pointer;" >
-          <thead>
-            <tr class='text-center'>
-                <th>ID</th>
-              <th>CompanyID</th>
-              <th>Product</th>
-              <th>Quantity</th>
-              <th>Cost</th>
-             <!--  <th>Tcost</th>  -->
-              <th>Unit</th>                         
-              <th>Description</th>      
-             <th>Expirdate</th>
-            
-
-            </tr>
-          </thead>
-          <tbody id="tableData1">     
-                
-          
-          </tbody>        
-
-
-        </table>
-       
-      </div>
-      
-      
                                             <td class='text-center p-1'>
                                                 <button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times'></i></button>
                                             </td>          
@@ -557,92 +445,6 @@ foreach ($fees->fetch_array() as $k => $v) {
             </div>
         </form>
     </div>
-
-                         </div>
-                         
-
-<div class="col-lg-5"> 
-        
-      <div class="mb-60 ">
-     <!--  <div class="input-group"><div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span></div>
-          <input class="form-control" type="text" placeholder="Product Search" autofocus aria-label="Search" id="search1" onfocus="this.value=''"  onkeyup="loadprod();"/>
-        </div> -->
-         <!--   <input class="form-control" name="images" type="text" placeholder="images" id="images" class="images" value="the"> -->
-
-        </div>
-        
-      <div id="product_area" class="m-3 table-responsive-sm table-wrapper-scroll-y my-custom-scrollbar-a" >
-
-        <!-- id="mytable" class="table table-condensed table-bordered table-hover -->
-        <table  id="mytable" class="table1 table-striped w-100  font-weight-bold tablet " style="cursor: pointer;" >
-          <thead>
-            <tr claclass='text-center text-black'><b>
-            <th class="text-center" id="checkbox1">
-            <input class="checkbox" type="checkbox"  id="selectall">
-                </th>
-              <th>ID</th>
-              <th>Product</th>
-              <th>Price</th>
-              <th>Qty</th>
-              <th>Unit</th>              
-              <th style="display:none;">Description</th>
-              <th style="display:none;">Expirdate</th>
-              <th style="display:none;">Sub.Total</th> 
-              <th style="display:none;">barc</th>            
-              <th>Action</th> 
-           </b></tr>
-            </thead>
-            <tbody>
-              <?php 
-                 $i = 1;
-                 $student = $conn->query("SELECT wh.*,sp.* FROM warehouse wh inner join supplier sp on wh.supplierid = sp.supplier_id ORDER BY wh.name ASC ");
-                    while($row=$student->fetch_assoc()):
-                        ?>
-                <tr >
-                   
-
-                <td class="text-center" id="checkbox1">
-                <input class="checkbox" type="checkbox" name="check" id="num1" value="">
-                </td>   
-
-                <td class="text-center" name="check"><?php echo $row['sid'] ?></td>
-                 
-                <td class="text-center" name="check"><?php echo $row['name'] ?></td>
-                
-                <td class="text-center" name="check"><?php echo $row['price'] ?></td>
-                <td class="text-center" name="check"><?php echo $row['quantity'] ?></td>
-                <td class="text-center" name="check"><?php echo $row['unit'] ?></td>
-               
-                <td class="text-center" name="check" style="display:none;"><?php echo $row['supplierid'] ?></td>
-                <td class="text-center" name="check" style="display:none;"><?php echo $row['description'] ?></td>
-
-                <td class="text-center" name="check" style="display:none;"><?php echo $row['expire_date'] ?></td>
-                <td class="text-center " name="check" style="display:none;"><?php echo $row['supplierid'] ?></td>
-                <td class="text-center" name="check"style="display:none;"><?php echo $row['multtota'] ?></td>
-                <td class="text-center" name="check" style="display:none;"><?php echo $i++ ?></td>
-
-                <td class='text-center p-1'><button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times-mark'>x</i></button></td>          
-
-
-                </tr>
-                <?php endwhile; ?>
-            </tbody>          
-        </table>
-      </div>     
-    
-
-<div class="modal-footer">
-    <button type="button" class="btn btn-primary" id='submit'><i class="fas fa-thumbs-up">&nbsp&nbsp</i>Save</button>
-<button type="button" id="cancel" class="btn btn-danger" ><i class="fas fa-ban">&nbsp&nbsp</i>Cancel</button>
-</div>
- </div>
-
-            
-
-</div>
-
-
-</form>
     
 
 <style>
@@ -815,7 +617,7 @@ $('body').on('click','.js-add',function(){
 
 
             
-            $('#tableData1').append("<tr class='prd'><td class='sid text-center' contenteditable>"+sid+"</td><td class='product text-center' contenteditable>"+product+"</td><td class='cprice text-center'contenteditable>"+accounting.formatMoney(price,{symbol:"Ghc",format: "%s %v"})+" </td><td class='unit text-center' contenteditable>"+unit+"</td><td class='quantity text-center'contenteditable>"+quantity+"</td><td class='expiredate text-center' contenteditable>"+expiredate+"</td><td style='display:none;' class='multtota text-center'contenteditable>"+accounting.formatMoney(multtota,{symbol:"Ghc",format: "%s %v"})+"</td></td><td class='description text-center' style='display:none;' contenteditable>"+description+"</td><td class='text-center p-1'contenteditable><button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times-circle'></i></button><tr>");
+            $('#tableData1').append("<tr class='prd'><td class='sid text-center'>"+sid+"</td><td class='product text-center'>"+product+"</td><td class='cprice text-center'contenteditable>"+accounting.formatMoney(price,{symbol:"Ghc",format: "%s %v"})+" </td><td class='unit text-center' contenteditable>"+unit+"</td><td class='quantity text-center'contenteditable>"+quantity+"</td><td class='expiredate text-center' contenteditable>"+expiredate+"</td><td style='display:none;' class='multtota text-center'contenteditable>"+accounting.formatMoney(multtota,{symbol:"Ghc",format: "%s %v"})+"</td></td><td class='description text-center' style='display:none;' contenteditable>"+description+"</td><td class='text-center p-1'contenteditable><button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times-circle'></i></button><tr>");
             
 
              $('#search').focus();
@@ -961,7 +763,7 @@ $("body").on('click','#delete-row', function(){
        // alert(tcost1);
 
         swal({
-      title: "Please Veemos are you sure to update Selected Product?",
+      title: "Please are you sure to update Selected Product?",
       icon: "warning",
       buttons: true,
       dangerMode: true,
