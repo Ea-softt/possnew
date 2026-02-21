@@ -462,6 +462,7 @@ foreach ($fees->fetch_array() as $k => $v) {
 
     
     <!-- Custom JS -->
+   <script src="bootstrap4/jquery/accounting.min.js"></script>
    <script>
 
     $(document).ready(function(){

@@ -22,6 +22,7 @@ foreach ($fees->fetch_array() as $k => $v) {
     <!-- Font Awesome -->
     <link href="bootstrap5/font_awesome_all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="bootstrap4/jquery/accounting.min.js"></script>
 
     <!-- Custom CSS -->
     <style>

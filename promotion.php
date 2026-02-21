@@ -280,6 +280,7 @@ include('insert_stockdrop.php');
     }
 </style>
 
+<script src="bootstrap4/jquery/accounting.min.js"></script>
 <script>
 $(document).ready(function(){
         $('.table').dataTable();
