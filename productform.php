@@ -1,5 +1,8 @@
 <?php 
-
+include 'head.php'; 
+ include 'server/config.php'; 
+include 'easoftsql.php'; 
+include('insert_stockdrop.php');
 //include('stockdropdown.php');
 
 ?>
