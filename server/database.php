@@ -225,7 +225,13 @@ $result = mysqli_query($conn, $sql);
 
 }
 
-
+$sql = "CREATE TABLE IF NOT EXISTS `logs` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `purpose` varchar(255) NOT NULL,
+  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (`id`)
+)";
+$result = mysqli_query($conn, $sql);
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `note` (
@@ -279,6 +285,7 @@ $sql = "CREATE TABLE IF NOT EXISTS `sales` (
   `discount` int(11) NOT NULL,
   `total` int(30) NOT NULL,
   `grandtotal` int(33) NOT NULL,
+  `typeofcash`varchar(30) NOT NULL,
   `days` int(11) NOT NULL,
   `month` varchar(11) NOT NULL,
   `years` int(11) NOT NULL,
