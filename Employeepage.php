@@ -362,11 +362,7 @@ foreach ($fees->fetch_array() as $k => $v) {
             <!-- Table Panel -->
             <div class="col-md-12">
                 <div class="card">                  
-                   <!--  <div class="card-header bg-success text-white">
-                    <b>List of Employee </b>                        
-                        <span class="float:right"><a class="btn btn-primary btn-block btn-sm col-sm-2 float-right" href="javascript:void(0)" id="employee_control">
-                    <i class="fa fa-plus"></i> New Entry
-                </a></span> -->
+                   
 
                      <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                     <b>List of Employee</b>

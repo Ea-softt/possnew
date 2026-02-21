@@ -17,7 +17,7 @@ foreach($fees->fetch_array() as $k => $v){
 
 
 
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html>
 <head>
      <title>EA-Soft System</title>

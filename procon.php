@@ -108,7 +108,7 @@ echo $output;
   
   $('#SupplierDeliverlist').click(function(){
     
-    window.location.href='productform.php';
+    window.location.href='productformpage.php';
   })
 
 
