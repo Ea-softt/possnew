@@ -90,7 +90,7 @@ if(isset($_POST['product'])){
 			for($numm=0; $numm<count($sid); $numm++){
 			   $product_id = mysqli_real_escape_string($conn, $sid[$numm]);
 
-				$sql1 = "SELECT productID FROM products WHERE productID = $product_id ";
+				$sql1 = "SELECT product_no FROM products WHERE product_no = '$product_id' ";
 				$result4 = mysqli_query($conn, $sql1);
 				$qty = mysqli_fetch_array($result4);
 					
@@ -98,7 +98,7 @@ if(isset($_POST['product'])){
 			
 				
 			}
-			if(isset($qty['productID'])){
+			if(isset($qty['product_no'])){
 				
 				for($nump = 0; $nump < count($sid); $nump++){
 				$product_id = mysqli_real_escape_string($conn, $sid[$nump]);
@@ -115,14 +115,14 @@ if(isset($_POST['product'])){
 				
 
 
-				$sql1 = "SELECT quantity FROM products WHERE productID ='$product_id'";
+				$sql1 = "SELECT quantity FROM products WHERE product_no ='$product_id'";
 				$result1 = mysqli_query($conn, $sql1);
 				$qty = mysqli_fetch_array($result1);
 
 				$newqty = $qty['quantity'] + $qtyold;
  					
 
-				$sql3 = "UPDATE products SET quantity=$newqty, product_no=$barcode_clean, min_stocks=$minstock_clean, product_name='$product_clean',sell_price=$sprice_clean,cprice=$cprice_clean,unit='$unit_clean',expire_date='$expiredate_clean',remarks='$description_clean'  WHERE productID='$product_id'";
+				$sql3 = "UPDATE products SET quantity=$newqty, product_no=$barcode_clean, min_stocks=$minstock_clean, product_name='$product_clean',sell_price=$sprice_clean,cprice=$cprice_clean,unit='$unit_clean',expire_date='$expiredate_clean',remarks='$description_clean'  WHERE product_no='$product_id'";
 			
 				$result3 = mysqli_query($conn, $sql3);
 				}
