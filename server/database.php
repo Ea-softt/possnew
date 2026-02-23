@@ -88,8 +88,8 @@ $sql = "CREATE TABLE IF NOT EXISTS `cashtypee` (
   `batchno` varchar(255) NOT NULL,
   `currentpayment` int(35) NOT NULL,
   `suppliercurrentbilling` int(35) NOT NULL,
-  `amountpaid` int(35) NOT NULL,
-  `amountpayable` int(35) NOT NULL,
+  `amountpaid` decimal(65,2) NOT NULL,
+  `amountpayable` decimal(65,2) NOT NULL,
   `remark` varchar(255) NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (`id`)
 )";
@@ -117,9 +117,9 @@ $sql = "CREATE TABLE IF NOT EXISTS `customersale` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `salername` varchar(255) NOT NULL,
   `customername` varchar(255) NOT NULL,
-  `totalsale` int(255) NOT NULL,
+  `totalsale` decimal(65,2) NOT NULL,
   `discount` int(255) NOT NULL,
-  `grandtotal` varchar(11) NOT NULL,
+  `grandtotal` decimal(65,2) NOT NULL,
   `days` int(11) NOT NULL,
   `month` varchar(11) NOT NULL,
   `year` int(11) NOT NULL,
@@ -150,7 +150,7 @@ $result = mysqli_query($conn, $sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS `moneyin` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `total_amount` int(255) NOT NULL,
+  `total_amount` decimal(65,2) NOT NULL,
   `name` varchar(255) NOT NULL,
   `day` int(255) NOT NULL,
   `month` varchar(255) NOT NULL,
@@ -163,13 +163,13 @@ $sql = "CREATE TABLE IF NOT EXISTS `moneyin_des` (
   `did` int(11) NOT NULL AUTO_INCREMENT,
   `money_id` int(11) NOT NULL,
   `description` varchar(255) NOT NULL,
-  `amount` int(11) NOT NULL,PRIMARY KEY (`did`)
+  `amount` decimal(65,2) NOT NULL,PRIMARY KEY (`did`)
 )";
 $result = mysqli_query($conn, $sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS `moneyout` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `total_amount` int(255) NOT NULL,
+  `total_amount` decimal(65,2) NOT NULL,
   `name` varchar(255) NOT NULL,
   `day` int(11) NOT NULL,
   `month` varchar(11) NOT NULL,
@@ -182,7 +182,7 @@ $sql = "CREATE TABLE IF NOT EXISTS `moneyout_des` (
   `did` int(11) NOT NULL AUTO_INCREMENT,
   `money_id` int(11) NOT NULL,
   `description` varchar(255) NOT NULL,
-  `amount` int(11) NOT NULL,PRIMARY KEY (`did`)
+  `amount` decimal(65,2) NOT NULL,PRIMARY KEY (`did`)
 )";
 $result = mysqli_query($conn, $sql);
 
@@ -255,7 +255,7 @@ $sql = "CREATE TABLE IF NOT EXISTS `products` (
   `product_no` varchar(11) NOT NULL,
   `product_name` varchar(11) DEFAULT NULL,
   `sell_price` decimal(18,2) DEFAULT NULL,
-  `cprice` int(11) NOT NULL,
+  `cprice` decimal(65,2) NOT NULL,
   `quantity` int(11) DEFAULT NULL,
   `unit` varchar(30) DEFAULT NULL,
   `min_stocks` int(11) DEFAULT NULL,
@@ -409,8 +409,8 @@ $query1 ="CREATE TABLE IF NOT EXISTS`cashtypee` (
   `batchno` varchar(255) NOT NULL,
   `currentpayment` int(35) NOT NULL,
   `suppliercurrentbilling` int(35) NOT NULL,
-  `amountpaid` int(35) NOT NULL,
-  `amountpayable` int(35) NOT NULL,
+  `amountpaid` decimal(65,2) NOT NULL,
+  `amountpayable` decimal(65,2) NOT NULL,
   `remark` varchar(255) NOT NULL,
   `created_date` timestamp NOT NULL DEFAULT current_timestamp(),PRIMARY KEY (`id`)
 )";

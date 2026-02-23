@@ -537,7 +537,7 @@ $(document).on('click', '#cancel', function(){
    .then((reload) => {
       if (reload) {
         location.reload();
-        window.location.href='product.php?'
+        window.location.href='productpage.php?'
       }
     });
     

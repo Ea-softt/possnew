@@ -378,6 +378,7 @@ foreach ($fees->fetch_array() as $k => $v) {
                    <th class="text-center">CTotal</th>
                     <th class="text-center">STotal</th>
                     <th class="text-center">Difference</th>
+                     <th class="text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
