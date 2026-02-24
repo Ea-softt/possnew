@@ -352,8 +352,8 @@ foreach ($fees->fetch_array() as $k => $v) {
             if (isset($EmpID)) {
                 $fees = $conn->query("SELECT * FROM sales WHERE username= '$EmpID' AND created_date = '$date'");
                 while ($row = $fees->fetch_assoc()) {
-                    $classt += $row['grandtotal'];
-                }
+                    $classt += (float)$row['grandtotal'];
+             }
             }
             ?>
             <p class="text-white mb-1" style="font-size: 14px;">

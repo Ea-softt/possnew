@@ -86,8 +86,8 @@ $sql = "CREATE TABLE IF NOT EXISTS `cashtypee` (
   `id` int(35) NOT NULL AUTO_INCREMENT,
   `supppliername` int(255) NOT NULL,
   `batchno` varchar(255) NOT NULL,
-  `currentpayment` int(35) NOT NULL,
-  `suppliercurrentbilling` int(35) NOT NULL,
+  `currentpayment` decimal(65,2) NOT NULL,
+  `suppliercurrentbilling` decimal(65,2) NOT NULL,
   `amountpaid` decimal(65,2) NOT NULL,
   `amountpayable` decimal(65,2) NOT NULL,
   `remark` varchar(255) NOT NULL,
@@ -118,7 +118,7 @@ $sql = "CREATE TABLE IF NOT EXISTS `customersale` (
   `salername` varchar(255) NOT NULL,
   `customername` varchar(255) NOT NULL,
   `totalsale` decimal(65,2) NOT NULL,
-  `discount` int(255) NOT NULL,
+  `discount` decimal(65,2) NOT NULL,
   `grandtotal` decimal(65,2) NOT NULL,
   `days` int(11) NOT NULL,
   `month` varchar(11) NOT NULL,
@@ -269,10 +269,10 @@ $result = mysqli_query($conn, $sql);
 $sql = "CREATE TABLE IF NOT EXISTS `salecustomeriterm` (
   `barcode` int(11) NOT NULL AUTO_INCREMENT,
   `product` varchar(255) NOT NULL,
-  `price` varchar(255) NOT NULL,
+  `price` decimal(65,2) NOT NULL,
   `unit` varchar(255) NOT NULL,
   `qty` int(255) NOT NULL,
-  `subtotal` int(255) NOT NULL,
+  `subtotal` decimal(65,2) NOT NULL,
   `salecustomerid` int(255) NOT NULL,PRIMARY KEY (`barcode`)
 )";
 $result = mysqli_query($conn, $sql);
@@ -282,9 +282,9 @@ $sql = "CREATE TABLE IF NOT EXISTS `sales` (
   `reciept_no` int(11) NOT NULL AUTO_INCREMENT,
   `customer_id` int(11) NOT NULL,
   `username` varchar(30) NOT NULL,
-  `discount` int(11) NOT NULL,
-  `total` int(30) NOT NULL,
-  `grandtotal` int(33) NOT NULL,
+  `discount` decimal(65,2) NOT NULL,
+  `total` decimal(65,2) NOT NULL,
+  `grandtotal` decimal(65,2) NOT NULL,
   `typeofcash`varchar(30) NOT NULL,
   `days` int(11) NOT NULL,
   `month` varchar(11) NOT NULL,
@@ -321,8 +321,8 @@ $result = mysqli_query($conn, $sql);
 $sql = "CREATE TABLE IF NOT EXISTS `suppliercompany` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `companynameid` int(11) NOT NULL,
-  `price2` int(11) NOT NULL,
-  `multtota2` int(11) NOT NULL,
+  `price2` decimal(65,2) NOT NULL,
+  `multtota2` decimal(65,2) NOT NULL,
   `date_deliver` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (`id`)
 )";
 $result = mysqli_query($conn, $sql);
@@ -356,7 +356,7 @@ $sql = "CREATE TABLE IF NOT EXISTS `warehouse` (
   `supplierid` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `quantity` int(11) NOT NULL,
-  `price` int(11) NOT NULL,
+  `price` decimal(65,2) NOT NULL,
   `multtota` int(11) NOT NULL,
   `unit` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
