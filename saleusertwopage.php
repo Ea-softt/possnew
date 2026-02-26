@@ -225,6 +225,11 @@ foreach ($fees->fetch_array() as $k => $v) {
             color: white;
             background-color: var(--sidebar-hover);
         }
+        #report-list th {
+            background-color: #000000;
+            color: white;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
