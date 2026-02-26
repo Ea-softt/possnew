@@ -29,7 +29,7 @@ if(isset($_POST["start_date"], $_POST['end_date']))
 
 	 $result .= '
  			<table   class="table table-bordered" id="report-list">
-                    <thead>
+                    <thead class="bg-dark text-white">
                         <tr>
                             <th class="text-center">#</th>
                             <th class="text-center">User name</th>

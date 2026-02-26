@@ -25,7 +25,7 @@ $image = '';
           <div class="card-body">
 
  		<table id="mytable" class="table table-condensed table-bordered table-hover">
-     <thead>
+     <thead class="bg-dark text-white">
  			<tr>
  			<th >barcode</th>
  			<th >Prod Name</th>

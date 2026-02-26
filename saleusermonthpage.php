@@ -337,7 +337,10 @@ foreach ($fees->fetch_array() as $k => $v) {
 
     <div class="col-lg-12">
         <div class="card">
-            <div class="card_body">
+            <div class="card-header bg-success text-white">
+                <b>Monthly Sales by User</b>
+            </div>
+            <div class="card-body">
             <div class="input-daterange row justify-content-center pt-4">
                 <label for="" class="mt-2">Select Month</label>
                 <div class="col-sm-3">
@@ -356,7 +359,7 @@ foreach ($fees->fetch_array() as $k => $v) {
             <hr>
             <div id="purchasse_order" class="col-md-12">
                 <table  class="table table-bordered" id='report-list'>
-                    <thead>
+                    <thead class="bg-dark text-white">
                         <tr>
                             <th class="text-center">#</th>
                             <th class="">User name</th>

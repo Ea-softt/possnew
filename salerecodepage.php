@@ -413,7 +413,7 @@ foreach ($fees->fetch_array() as $k => $v) {
           </div>          
           
             <table id="mytable" class="table table-condensed table-bordered table-hover">
-              <thead>
+              <thead class="bg-dark text-white">
                 <tr>
                   <th class="text-center">#</th>
                   <th class="text-center">Customer Name</th>

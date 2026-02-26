@@ -420,7 +420,7 @@ foreach ($fees->fetch_array() as $k => $v) {
             <hr>
             <div class="col-md-12">
                 <table  class="table table-bordered" id='report-list'>
-                    <thead>
+                    <thead class="bg-dark text-white">
                         <tr>
                             <th class="text-center">#</th>
                             <th class="">User name</th>
@@ -578,5 +578,7 @@ $('#print').click(function(){
             }
         });
     </script>
+</body>
+</html>
 </body>
 </html>
