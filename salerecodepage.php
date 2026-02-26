@@ -338,7 +338,7 @@ foreach ($fees->fetch_array() as $k => $v) {
    
       <!-- FORM Panel -->
 
-  <form action="salerecode.php" method="post"> 
+  <form action="salerecodepage.php" method="post"> 
   <div class="row "> 
       <div class="col-md-2 border-right ">
         <div class="form-group">
