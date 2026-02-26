@@ -41,6 +41,7 @@ foreach ($fees->fetch_array() as $k => $v) {
     <!-- Font Awesome -->
     <link href="bootstrap5/font_awesome_all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="bootstrap4/jquery-ui/jquery-ui.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <style>
@@ -518,7 +519,7 @@ $(function(){
      });
 
 $('#month').change(function(){
-    location.replace('saleusertwo.php?page=payments_report&month='+$(this).val())
+    location.replace('saleusertwopage.php?page=payments_report&month='+$(this).val())
 })
 $('#print').click(function(){
         var _c = $('#report-list').clone();
