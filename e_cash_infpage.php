@@ -1,7 +1,6 @@
 <?php
 include('headside.php');
 include('insert_sales.php');
- $month = isset($_GET['month']) ? $_GET['month'] : date('Y-m-d');
 
 $fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}'");
 foreach ($fees->fetch_array() as $k => $v) {
@@ -337,46 +336,58 @@ foreach ($fees->fetch_array() as $k => $v) {
 
          <div class="col-lg-12">
         <div class="card">
-            <div class="card_body">
-            <div class="row justify-content-center pt-4">
-                <label for="" class="mt-2">Select Month</label>
+            <div class="card-header bg-success text-white">
+                <b>Daily Cash Type</b>
+            </div>
+            <div class="card-body">
+            <div class="input-daterange row justify-content-center pt-4">
+                <label for="" class="mt-2">Select Date</label>
                 <div class="col-sm-3">
-                    <input type="text" name="month" id="month" placeholder="Select Date" class="form-control">
+                    <input type="date" name="start_date" id="start_date" value="<?php echo date('Y-m-d'); ?>" class="form-control">
+                </div>
+                 <div class="col-sm-3">
+                    <input type="date" name="end_date" id="end_date" value="<?php echo date('Y-m-d'); ?>" class="form-control">
+                </div>
+                 <div class="col-sm-2">
+                    <input type="button" name="range" id="range" value="Range"  class="btn btn-success">
                 </div>
             </div>
             <hr>
-            <div class="col-md-12">
+            <div id="purchasse_order" class="col-md-12">
                 <table  class="table table-bordered" id='report-list'>
-                    <thead>
+                    <thead class="bg-dark text-white">
                         <tr>
                             <th class="text-center">#</th>
                             <th class="">User name</th>
                             <th class="">Discount</th>
                             <th class="">Total</th>
-                             <th class="">Cash Type</th>
+                            <th class="">Cash Type</th>
                             <th class="">Grandtotal</th>   
-                            <th class="">Date</th>                           
+                             <th class="">Date</th>                           
                         </tr>
                     </thead>       
                     <tbody>
-                      <?php
+                        <?php
                       $i = 1;
                       $total = 0;
                       $grandtotal = 0;
-                      $payments = $conn->query("SELECT sp.*,ch.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID inner join cashtype ch on sp.typeofcash = ch.id where date_format(sp.created_date,'%Y-%m-%d') = '$month' GROUP BY ch.id  order by unix_timestamp(sp.created_date) desc ");
+                      $start_date = date('Y-m-d');
+                      $end_date = date('Y-m-d');
+                      
+                      $payments = $conn->query("SELECT sp.*,ch.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID inner join cashtype ch on sp.typeofcash = ch.id where date_format(sp.created_date,'%Y-%m-%d') BETWEEN '$start_date' AND '$end_date' GROUP BY ch.id,date_format(sp.created_date,'%Y-%m-%d') order by unix_timestamp(sp.created_date) desc ");
+                      
                       if($payments->num_rows > 0):
-                      while($row = $payments->fetch_assoc()):
+                      while($row = $payments->fetch_assoc()): 
                         $grandtotal += $row['grad'];
                         $customer_first = $row['FullName'];
                         $username = $row['username'];
                          $month1 = $row['created_date'];
-
+                         $total += $row['total'];
                       ?>
                       <tr>
                         <td class="text-center"><?php echo $i++ ?></td>
                         <td class="text-center">
-                            <!-- month=<?php echo date("Y-m-d",strtotime($month));?> -->
-                            <p><a href="usersalerecode.php?month=<?php echo date("Ymd",strtotime($month));?>&username=<?php echo $username;?>"><?php echo $customer_first;?></a></b></p>
+                            <p><a href="usersalercodemonth.php?start_date=<?php echo date("Ymd",strtotime($start_date));?>&username=<?php echo $username;?>&end_date=<?php echo date("Ymd",strtotime($end_date));?>"><?php echo $customer_first;?></a></b></p>
                         </td>
                         <td class="text-center">
                             <p> <b><?php echo $row['discount'] ?></b></p>
@@ -384,10 +395,10 @@ foreach ($fees->fetch_array() as $k => $v) {
                         <td class="text-center">
                             <p> <b><?php echo $row['total'] ?></b></p>
                         </td>
-                        <td class="text-center">
+                         <td class="text-center">
                             <p> <b><?php echo $row['typeofcash'] ?></b></p>
                         </td>
-                        <td class="text-center">
+                         <td class="text-center">
                             <p> <b><?php echo $row['grad'] ?></b></p>
                         </td>
                         <td class="text-center">
@@ -399,7 +410,7 @@ foreach ($fees->fetch_array() as $k => $v) {
                         else:
                     ?>
                     <tr>
-                            <th class="text-center" colspan="4">No Data for Selected Date.</th>
+                            <th class="text-center" colspan="7">No Data for Selected Date.</th>
                     </tr>
                     <?php 
                         endif;
@@ -407,13 +418,14 @@ foreach ($fees->fetch_array() as $k => $v) {
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="4" class="text-center">Total</th>
-                            <th class="text-right"><?php echo number_format($grandtotal,2) ?></th>
-                            
-
+                            <th colspan="4" class="text-right ">Total</th>
+                            <th class="text-right text-success"><?php echo number_format($total,2) ?></th>
+                             <th class="text-right text-success"><?php echo number_format($grandtotal,2) ?></th>
+                            <th></th>
                         </tr>
                     </tfoot>
                 </table>
+            </div>
                 <hr>
                 <div class="col-md-12 mb-4">
                     <center>
@@ -459,18 +471,27 @@ foreach ($fees->fetch_array() as $k => $v) {
 $('#report-list').ddTableFilter();
   })
 
-$(function(){
-    $("#month").datepicker({
-        dateFormat: 'yy-mm-dd',
-        changeYear: true,
-        changeMonth: true
+$('#range').click(function(){
+    
+    var start_date = $('#start_date').val();
+    var end_date = $('#end_date').val();
+    if(start_date != '' && end_date != ''){
 
+        $.ajax({
+            url: "e_cash_infmonthly.php",
+            method: "POST",
+            data:{start_date:start_date, end_date:end_date},
+            success:function(data){
+                $('#purchasse_order').html(data);
+            }
+        });
+    }
+    else
+    {
+        swal("Please Select the Date");
+    }
     });
-     });
 
-$('#month').change(function(){
-    location.replace('e_cash_infpage.php?page=Dailycashtypeinformantion&month='+$(this).val())
-})
 $('#print').click(function(){
         var _c = $('#report-list').clone();
         var ns = $('noscript').clone();
