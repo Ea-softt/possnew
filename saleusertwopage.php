@@ -2,8 +2,9 @@
 include('headside.php');
 include('insert_sales.php');
 
-$month = isset($_GET['month']) ? $_GET['month'] : date('Y-m-d');
-$cmonth = date('Y-m-d', strtotime($month));
+$start_date = isset($_GET['start_date']) ? $_GET['start_date'] : date('Y-m-d');
+$end_date = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d');
+$cmonth = date('Y-m-d', strtotime($end_date));
 
 $daily_sales = 0;
 $weekly_sales = 0;
@@ -358,12 +359,25 @@ foreach ($fees->fetch_array() as $k => $v) {
          <div class="col-lg-12">
         <div class="card">
             <div class="card_body">
-            <div class="row justify-content-center pt-4">
-                <label for="" class="mt-2">Select Month</label>
+            <form action="" method="GET">
+            <div class="row justify-content-center pt-4 align-items-center">
+                <div class="col-auto">
+                    <label for="start_date" class="col-form-label">From</label>
+                </div>
                 <div class="col-sm-3">
-                    <input type="date" name="month" id="month" value="<?php echo $month ?>" class="form-control">
+                    <input type="date" name="start_date" id="start_date" value="<?php echo $start_date ?>" class="form-control">
+                </div>
+                <div class="col-auto">
+                    <label for="end_date" class="col-form-label">To</label>
+                </div>
+                <div class="col-sm-3">
+                    <input type="date" name="end_date" id="end_date" value="<?php echo $end_date ?>" class="form-control">
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary" type="submit">Filter</button>
                 </div>
             </div>
+            </form>
             <div class="row mt-3 mb-3">
                 <div class="col-md-3">
                     <div class="card text-white bg-primary mb-3">
@@ -416,7 +430,7 @@ foreach ($fees->fetch_array() as $k => $v) {
                       $i = 1;
                       $total = 0;
                       $grandtotal = 0;
-                      $payments = $conn->query("SELECT sp.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID where date_format(sp.created_date,'%Y-%m-%d') = '$cmonth' GROUP BY sp.username  order by unix_timestamp(sp.created_date) desc ");
+                      $payments = $conn->query("SELECT sp.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID where date_format(sp.created_date,'%Y-%m-%d') BETWEEN '$start_date' AND '$end_date' GROUP BY sp.username  order by unix_timestamp(sp.created_date) desc ");
                       if($payments->num_rows > 0):
                       while($row = $payments->fetch_assoc()):
                         $grandtotal += $row['grad'];
@@ -508,11 +522,8 @@ foreach ($fees->fetch_array() as $k => $v) {
     $('.table').dataTable()
   
 $('#report-list').ddTableFilter();
-  })
 
-$('#month').change(function(){
-    location.replace('saleusertwopage.php?page=payments_report&month='+$(this).val())
-})
+  })
 
 $('#print').click(function(){
         var _c = $('#report-list').clone();
