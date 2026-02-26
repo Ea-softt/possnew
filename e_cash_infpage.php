@@ -469,7 +469,7 @@ $(function(){
      });
 
 $('#month').change(function(){
-    location.replace('e_cash_inf.php?page=Dailycashtypeinformantion&month='+$(this).val())
+    location.replace('e_cash_infpage.php?page=Dailycashtypeinformantion&month='+$(this).val())
 })
 $('#print').click(function(){
         var _c = $('#report-list').clone();
