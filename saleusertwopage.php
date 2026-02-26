@@ -2,23 +2,24 @@
 include('headside.php');
 include('insert_sales.php');
 
-$month = isset($_GET['month']) ? $_GET['month'] : date('Y-m-d');
+$month = isset($_GET['month']) ? $_GET['month'] : date('d-m-Y');
+$cmonth = date('Y-m-d', strtotime($month));
 
 $daily_sales = 0;
 $weekly_sales = 0;
 $monthly_sales = 0;
 $yearly_sales = 0;
 
-$d_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE date_format(created_date,'%Y-%m-%d') = '$month'");
+$d_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE date_format(created_date,'%Y-%m-%d') = '$cmonth'");
 $daily_sales = $d_qry->num_rows > 0 ? $d_qry->fetch_array()['total'] : 0;
 
-$w_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE YEARWEEK(created_date, 1) = YEARWEEK('$month', 1)");
+$w_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE YEARWEEK(created_date, 1) = YEARWEEK('$cmonth', 1)");
 $weekly_sales = $w_qry->num_rows > 0 ? $w_qry->fetch_array()['total'] : 0;
 
-$m_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE date_format(created_date,'%Y-%m') = date_format('$month','%Y-%m')");
+$m_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE date_format(created_date,'%Y-%m') = date_format('$cmonth','%Y-%m')");
 $monthly_sales = $m_qry->num_rows > 0 ? $m_qry->fetch_array()['total'] : 0;
 
-$y_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE date_format(created_date,'%Y') = date_format('$month','%Y')");
+$y_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE date_format(created_date,'%Y') = date_format('$cmonth','%Y')");
 $yearly_sales = $y_qry->num_rows > 0 ? $y_qry->fetch_array()['total'] : 0;
 
 $fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}'");
@@ -41,7 +42,7 @@ foreach ($fees->fetch_array() as $k => $v) {
     <!-- Font Awesome -->
     <link href="bootstrap5/font_awesome_all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="bootstrap4/jquery-ui/jquery-ui.css" rel="stylesheet">
+    <!-- <link href="bootstrap4/jquery-ui/jquery-ui.css" rel="stylesheet"> -->
 
     <!-- Custom CSS -->
     <style>
@@ -511,16 +512,15 @@ $('#report-list').ddTableFilter();
 
 $(function(){
     $("#month").datepicker({
-        dateFormat: 'yy-mm-dd',
+        dateFormat: 'dd-mm-yy',
         changeYear: true,
-        changeMonth: true
-
+        changeMonth: true,
+        onSelect: function(dateText) {
+            location.replace('saleusertwopage.php?page=payments_report&month=' + dateText);
+        }
     });
      });
 
-$('#month').change(function(){
-    location.replace('saleusertwopage.php?page=payments_report&month='+$(this).val())
-})
 $('#print').click(function(){
         var _c = $('#report-list').clone();
         var ns = $('noscript').clone();
