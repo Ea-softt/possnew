@@ -4,6 +4,23 @@ include('insert_sales.php');
 
 $month = isset($_GET['month']) ? $_GET['month'] : date('Y-m-d');
 
+$daily_sales = 0;
+$weekly_sales = 0;
+$monthly_sales = 0;
+$yearly_sales = 0;
+
+$d_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE date_format(created_date,'%Y-%m-%d') = '$month'");
+$daily_sales = $d_qry->num_rows > 0 ? $d_qry->fetch_array()['total'] : 0;
+
+$w_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE YEARWEEK(created_date, 1) = YEARWEEK('$month', 1)");
+$weekly_sales = $w_qry->num_rows > 0 ? $w_qry->fetch_array()['total'] : 0;
+
+$m_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE date_format(created_date,'%Y-%m') = date_format('$month','%Y-%m')");
+$monthly_sales = $m_qry->num_rows > 0 ? $m_qry->fetch_array()['total'] : 0;
+
+$y_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE date_format(created_date,'%Y') = date_format('$month','%Y')");
+$yearly_sales = $y_qry->num_rows > 0 ? $y_qry->fetch_array()['total'] : 0;
+
 $fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}'");
 foreach ($fees->fetch_array() as $k => $v) {
     $$k = $v;
@@ -342,7 +359,41 @@ foreach ($fees->fetch_array() as $k => $v) {
             <div class="row justify-content-center pt-4">
                 <label for="" class="mt-2">Select Month</label>
                 <div class="col-sm-3">
-                    <input type="text" name="month" id="month" placeholder="Select Date" class="form-control">
+                    <input type="text" name="month" id="month" value="<?php echo $month ?>" placeholder="Select Date" class="form-control">
+                </div>
+            </div>
+            <div class="row mt-3 mb-3">
+                <div class="col-md-3">
+                    <div class="card text-white bg-primary mb-3">
+                        <div class="card-header">Daily Sales</div>
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo number_format($daily_sales ?? 0, 2) ?></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-success mb-3">
+                        <div class="card-header">Weekly Sales</div>
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo number_format($weekly_sales ?? 0, 2) ?></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-warning mb-3">
+                        <div class="card-header">Monthly Sales</div>
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo number_format($monthly_sales ?? 0, 2) ?></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-danger mb-3">
+                        <div class="card-header">Yearly Sales</div>
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo number_format($yearly_sales ?? 0, 2) ?></h5>
+                        </div>
+                    </div>
                 </div>
             </div>
             <hr>
