@@ -3,7 +3,7 @@
 </div>
 <div class="modal-footer row display py-1">
 		<div class="col-lg-12">
-			<button class="btn float-right btn-secondary" type="button" data-dismiss="modal">Close</button>
+			<button class="btn float-right btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
 			<button class="btn float-right btn-success mr-2" type="button" id="print">Print</button>
 			<br>
 		</div>
