@@ -495,6 +495,24 @@ $('#report-list').ddTableFilter();
             swal("Please Select the Date");
         }
     });
+
+    $('#print').click(function(){
+        var start_date = $('#start_date').val();
+        var end_date = $('#end_date').val();
+        var reportTitle = '<b>Monthly Cash Type Report</b>';
+        if(start_date != '' && end_date != ''){
+            reportTitle = '<b>Monthly Cash Type Report from '+start_date+' to '+end_date+'</b>';
+        }
+        var _c = $('#report-list').clone();
+        var ns = $('noscript').clone();
+        ns.append(_c);
+        var nw = window.open('','_blank','width=900,height=600');
+        nw.document.write('<p class="text-center">'+reportTitle+'</p>');
+        nw.document.write(ns.html());
+        nw.document.close();
+        nw.print();
+        setTimeout(() => { nw.close() }, 500);
+    });
 });
 
 
