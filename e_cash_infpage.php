@@ -488,6 +488,9 @@ $('#range').click(function(){
             data:{start_date:start_date, end_date:end_date},
             success:function(data){
                 $('#purchasse_order').html(data);
+                // Re-initialize the plugins on the new table
+                $('#report-list').dataTable();
+                $('#report-list').ddTableFilter();
             }
         });
     }
@@ -495,7 +498,7 @@ $('#range').click(function(){
     {
         swal("Please Select the Date");
     }
-    });
+});
 
 $('#print').click(function(){
         var _c = $('#report-list').clone();

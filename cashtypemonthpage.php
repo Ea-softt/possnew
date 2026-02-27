@@ -476,29 +476,24 @@ foreach ($fees->fetch_array() as $k => $v) {
 $('#report-list').ddTableFilter();
       
 
-$('#range').click(function(){
-    
-    var start_date = $('#start_date').val();
-    var end_date = $('#end_date').val();
-    if(start_date != '' && end_date != ''){
-
-        $.ajax({
-            url: "e_cash_infmonthly.php",
-            method: "POST",
-            data:{start_date:start_date, end_date:end_date},
-            success:function(data){
-               // alert(data);
-                $('#purchasse_order').html(data);
-               
-            }
-
-
-        });
-    }
-    else
-    {
-        swal("Please Select the Date");
-    }
+    $('#range').click(function(){
+        var start_date = $('#start_date').val();
+        var end_date = $('#end_date').val();
+        if(start_date != '' && end_date != ''){
+            $.ajax({
+                url: "e_cash_infmonthly.php",
+                method: "POST",
+                data:{start_date:start_date, end_date:end_date},
+                success:function(data){
+                    $('#purchasse_order').html(data);
+                    // Re-initialize the plugins on the new table
+                    $('#report-list').dataTable();
+                    $('#report-list').ddTableFilter();
+                }
+            });
+        } else {
+            swal("Please Select the Date");
+        }
     });
 });
 
