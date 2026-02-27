@@ -203,6 +203,11 @@ foreach ($fees->fetch_array() as $k => $v) {
             color: white;
             background-color: var(--sidebar-hover);
         }
+          .table th {
+        background-color: #000000;
+        color: white;
+        font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -497,7 +502,7 @@ $('#print').click(function(){
         var ns = $('noscript').clone();
             ns.append(_c)
         var nw = window.open('','_blank','width=900,height=600')
-        nw.document.write('<p class="text-center"><b>Total Sale as at <?php echo date("F, Y",strtotime($month)) ?></b></p>')
+        nw.document.write('<p class="text-center"><b>Daily Cash Type Report</b></p>')
         nw.document.write(ns.html())
         nw.document.close()
         nw.print()
