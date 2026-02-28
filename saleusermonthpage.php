@@ -392,7 +392,7 @@ foreach ($fees->fetch_array() as $k => $v) {
                         <td class="text-center"><?php echo $i++ ?></td>
                         <td class="text-center">
                             <!-- month=<?php echo date("Y-m-d",strtotime($month));?> -->
-                            <p><a href="saleuserecodemonth_1.php?month=<?php echo date("Ymd",strtotime($month1));?>&username=<?php echo $username;?>"><?php echo $customer_first;?></a></b></p>
+                            <p><a href="saleuserecodemonth_1page.php?month=<?php echo date("Ymd",strtotime($month1));?>&username=<?php echo $username;?>"><?php echo $customer_first;?></a></b></p>
                         </td>
                         <td class="text-center">
                             <p> <b><?php echo $row['discount'] ?></b></p>

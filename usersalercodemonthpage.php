@@ -7,6 +7,13 @@ foreach ($fees->fetch_array() as $k => $v) {
     $$k = $v;
     $meta[$k] = $v;
 }
+
+ $month = isset($_GET['month']) ? $_GET['month'] : date('Ymd');
+
+$fees = $conn->query("SELECT sp.*,us.*,ct.* FROM sales sp inner join newemployee us on sp.username = us.EmpID inner join customer ct on sp.customer_id = ct.customer_id where date_format(sp.created_date,'%Y%m%d') BETWEEN {$_GET["start_date"]} AND {$_GET["end_date"]} AND sp.username = {$_GET['username']} order by unix_timestamp(sp.created_date) asc ");
+foreach($fees->fetch_array() as $k => $v){
+	$$k= $v;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -203,11 +210,6 @@ foreach ($fees->fetch_array() as $k => $v) {
             color: white;
             background-color: var(--sidebar-hover);
         }
-          .table th {
-        background-color: #000000;
-        color: white;
-        font-weight: bold;
-        }
     </style>
 </head>
 <body>
@@ -339,180 +341,178 @@ foreach ($fees->fetch_array() as $k => $v) {
     <!-- Main Content -->
      <div class="main-content" id="mainContent">
 
-         <div class="col-lg-12">
-        <div class="card">
-            <div class="card-header bg-success text-white">
-                <b>Daily Cash Type</b>
-            </div>
-            <div class="card-body">
-            <div class="input-daterange row justify-content-center pt-4">
-                <label for="" class="mt-2">Select Date</label>
-                <div class="col-sm-3">
-                    <input type="date" name="start_date" id="start_date" value="<?php echo date('Y-m-d'); ?>" class="form-control">
+        <!-- Table Panel -->
+      <div class="col-md-12">
+        <div class="card">          
+                 
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <b>User customer view</b>
+                    <a class="btn btn-primary btn-sm" href="e_cash_infpage.php" id="new_supplier">
+                        <i class="fa fa-plus"></i> Back
+                    </a>
                 </div>
-                 <div class="col-sm-3">
-                    <input type="date" name="end_date" id="end_date" value="<?php echo date('Y-m-d'); ?>" class="form-control">
-                </div>
-                 <div class="col-sm-2">
-                    <input type="button" name="range" id="range" value="Range"  class="btn btn-success">
-                </div>
-            </div>
-            <hr>
-            <div id="purchasse_order" class="col-md-12">
-                <table  class="table table-bordered" id='report-list'>
-                    <thead class="bg-dark text-white">
-                        <tr>
-                            <th class="text-center">#</th>
-                            <th class="">User name</th>
-                            <th class="">Discount</th>
-                            <th class="">Total</th>
-                            <th class="">Cash Type</th>
-                            <th class="">Grandtotal</th>   
-                             <th class="">Date</th>                           
-                        </tr>
-                    </thead>       
-                    <tbody>
-                        <?php
-                      $i = 1;
-                      $total = 0;
-                      $grandtotal = 0;
-                      $start_date = date('Y-m-d');
-                      $end_date = date('Y-m-d');
-                      
-                      $payments = $conn->query("SELECT sp.*,ch.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID inner join cashtype ch on sp.typeofcash = ch.id where date_format(sp.created_date,'%Y-%m-%d') BETWEEN '$start_date' AND '$end_date' GROUP BY ch.id,date_format(sp.created_date,'%Y-%m-%d') order by unix_timestamp(sp.created_date) desc ");
-                      
-                      if($payments->num_rows > 0):
-                      while($row = $payments->fetch_assoc()): 
-                        $grandtotal += $row['grad'];
-                        $customer_first = $row['FullName'];
-                        $username = $row['username'];
-                         $month1 = $row['created_date'];
-                         $total += $row['total'];
-                      ?>
-                      <tr>
-                        <td class="text-center"><?php echo $i++ ?></td>
-                        <td class="text-center">
-                            <p><a href="usersalercodemonthpage.php?start_date=<?php echo date("Ymd",strtotime($start_date));?>&username=<?php echo $username;?>&end_date=<?php echo date("Ymd",strtotime($end_date));?>"><?php echo $customer_first;?></a></b></p>
-                        </td>
-                        <td class="text-center">
-                            <p> <b><?php echo $row['discount'] ?></b></p>
-                        </td>
-                        <td class="text-center">
-                            <p> <b><?php echo $row['total'] ?></b></p>
-                        </td>
-                         <td class="text-center">
-                            <p> <b><?php echo $row['typeofcash'] ?></b></p>
-                        </td>
-                         <td class="text-center">
-                            <p> <b><?php echo $row['grad'] ?></b></p>
-                        </td>
-                        <td class="text-center">
-                            <p> <b><?php echo date("Y-m-d",strtotime($month1)) ?></b></p>
-                        </td>                  
-                    </tr>
-                    <?php 
-                        endwhile;
-                        else:
+          
+            <table id="mytable" class="table table-condensed table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th class="text-center">#</th>
+                  <th class="text-center">Customer Name</th>
+                  <th class="text-center">Discount</th>
+                  <th class="text-center">Total</th>                  
+                  <th class="text-center">GrandTotal</th>
+                  <th class="text-center">Date</th>                  
+                  <th class="text-center">Print</th>
+
+                  
+                </tr>
+              </thead>   
+              <tbody> 
+                
+                 <?php
+                 $i = 1;
+                    $day1 = "";
+                    $month1 = "";
+                    $year1 = "";
+                /*  $day1 = $_SESSION['days'];
+                  $month1 = $_SESSION['month'];
+                   $year1 =  $_SESSION['years']; 
+
+                   date_format(sp.created_date,'%Y-%m-%d') = {$_GET['month']} and*/
+
+
+                $payments = $conn->query("SELECT sp.*,ct.* FROM sales sp inner join customer ct on sp.customer_id = ct.customer_id  WHERE  date_format(sp.created_date,'%Y%m%d') BETWEEN {$_GET["start_date"]} AND {$_GET["end_date"]} and sp.username = {$_GET['username']} GROUP BY date_format(sp.created_date,'%Y-%m-%d') order by unix_timestamp(sp.created_date) asc"); 
+                     
+                   
+                   if ($payments->num_rows > 0){
+                    while($row = $payments->fetch_assoc()){
+                      $customer_first = $row['firstnamec'];
+                      $customer_last = $row['lastnamec'];
+
+                       $day = $row['days'];
+                       $month = $row['month'];
+                       $years = $row['years']; 
+                       $discount = $row['discount']; 
+                       $total = $row['total'];
+                       $grandtotal = $row['grandtotal'];
+                      $reciept_no = $row['reciept_no'];
+                       $datee = $row['created_date'];
                     ?>
                     <tr>
-                            <th class="text-center" colspan="7">No Data for Selected Date.</th>
-                    </tr>
-                    <?php 
-                        endif;
-                    ?>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th colspan="4" class="text-right ">Total</th>
-                            <th class="text-right text-success"><?php echo number_format($total,2) ?></th>
-                             <th class="text-right text-success"><?php echo number_format($grandtotal,2) ?></th>
-                            <th></th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-                <hr>
-                <div class="col-md-12 mb-4">
-                    <center>
-                        <button class="btn btn-success btn-sm col-sm-3" type="button" id="print"><i class="fa fa-print"></i> Print</button>
-                    </center>
-                </div>
-            </div>
-            </div>
-        </div>
-    </div>
-</div>
-<noscript>
-    <style>
-        table#report-list{
-            width:100%;
-            border-collapse:collapse
-        }
-        table#report-list td,table#report-list th{
-            border:1px solid
-        }
-        p{
-            margin:unset;
-        }
-        .text-center{
-            text-align:center
-        }
-        .text-right{
-            text-align:right
-        }
-    </style>
-</noscript>
+                  <td class="text-center"><?php echo $i++ ?></td>
+                  <td class="text-center">
+                   <?php echo $customer_first. " ".$customer_last;?>
+                  </td>
+                  <td class="text-center">
+                     <?php echo $discount;?>
+                  </td>
+                   <td class="text-center">
+                     <?php echo $total;?>
+                  </td>
+                  <td class="text-center">
+                     <?php echo $grandtotal;?>
+                  </td>
+                  <td class="text-center">
+                     <?php echo date("Y-m-d",strtotime($datee)) ?>
+                  </td>
+                  <td class="text-center">
+                    <button class="btn btn-sm btn-outline-primary view_sales" type="button" data-id="<?php echo   $reciept_no; ?>"
+                      data-examID="<?php echo  $reciept_no; ?>">View</button>
+
+                  </td>
+                 
+                 
+               </
+               vtr>                           
+            
+                    <?php
+                    }
+                  }
+
+                  else{
+                      ?>
+                        
+                      <?php
+                  }  
+
+                
+                              
+                        
+                ?>
+
+              </tbody>
+                
+            </table>
+          
+        
+        </form>        
+      </div>
 
 
 
 
      </div>
-    <!-- Custom JS -->
-   <script>
 
-    $(document).ready(function(){
-    $('.table').dataTable()
+
+
+
+
+
+
+
+
   
-$('#report-list').ddTableFilter();
+<style>
+	img#cimg{
+		max-height: 100vh;
+		max-width: 10vw;		
+		position: relative;
+	}
+	img {
+		padding-right: 30px;
+	}
+</style>
+
+ <script>
+  $(document).ready(function(){
+    $('.table').dataTable();
+  
+$('#mytable').ddTableFilter();
+  })
+  
+
+
+  
+$('.view_sales').click(function(){
+    uni_modal("Report Details","view_salerecode.php?reciept_no="+$(this).attr('data-examin_ID')+"&reciept_no="+$(this).attr('data-id'),"mid-large")
+    
+
+
+   
   })
 
-$('#range').click(function(){
-    
-    var start_date = $('#start_date').val();
-    var end_date = $('#end_date').val();
-    if(start_date != '' && end_date != ''){
+  
+  
 
-        $.ajax({
-            url: "e_cash_infmonthly.php",
-            method: "POST",
-            data:{start_date:start_date, end_date:end_date},
-            success:function(data){
-                $('#purchasse_order').html(data);
-                // Re-initialize the plugins on the new table
-                $('#report-list').dataTable();
-                $('#report-list').ddTableFilter();
-            }
-        });
-    }
-    else
-    {
-        swal("Please Select the Date");
-    }
-});
+  
+  
+  
+  function supplier_company($id){
+    start_load()
+    $.ajax({
+      url:'easoftfun.php?action=supplier_company',
+      method:'POST',
+      data:{id:$id},
+      success:function(resp){
+        if(resp==1){
+          alert_toast("Data successfully deleted",'success')
+          setTimeout(function(){
+            location.reload()
+          },1500)
 
-$('#print').click(function(){
-        var _c = $('#report-list').clone();
-        var ns = $('noscript').clone();
-            ns.append(_c)
-        var nw = window.open('','_blank','width=900,height=600')
-        nw.document.write('<p class="text-center"><b>Daily Cash Type Report</b></p>')
-        nw.document.write(ns.html())
-        nw.document.close()
-        nw.print()
-        setTimeout(() => {
-            nw.close()
-        }, 500);
+        }
+      }
     })
+  }
 
         // Toggle Sidebar
         function toggleSidebar() {
