@@ -53,7 +53,7 @@ if(isset($_POST["start_date"], $_POST['end_date']))
                       	 <tr>
                         <td class="text-center">'.$i++.'</td> 
                         <td class="text-center">                            
-                            <a href="usersalercodemonth.php?start_date='.date("Ymd",strtotime($start_date)).'&username='.$username.'&end_date='.date("Ymd",strtotime($end_date)).'">'.$customer_first.'</a>
+                            <a href="usersalercodemonthpage.php?start_date='.date("Ymd",strtotime($start_date)).'&username='.$username.'&end_date='.date("Ymd",strtotime($end_date)).'">'.$customer_first.'</a>
                         </td>
                         <td class="text-center">
                             <p> <b>'.$row["discount"].'</b></p>

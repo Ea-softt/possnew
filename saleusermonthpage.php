@@ -349,11 +349,11 @@ foreach ($fees->fetch_array() as $k => $v) {
             <div class="input-daterange row justify-content-center pt-4">
                 <label for="" class="mt-2">Select Month</label>
                 <div class="col-sm-3">
-                    <input type="text" name="start_date" id="start_date" placeholder="From Date"  class="form-control">
+                    <input type="date" name="start_date" id="start_date" placeholder="From Date"  class="form-control">
                      
                 </div>
                  <div class="col-sm-3">
-                    <input type="text" name="end_date" id="end_date" placeholder="To Date"  class="form-control">
+                    <input type="date" name="end_date" id="end_date" placeholder="To Date"  class="form-control">
                      
                 </div>
                  <div class="col-sm-2">
@@ -470,25 +470,6 @@ foreach ($fees->fetch_array() as $k => $v) {
 $('#report-list').ddTableFilter();
   
   
-
-$(function(){
-    $("#start_date").datepicker({
-        dateFormat: 'yy-mm-dd',
-        changeYear: true,
-        changeMonth: true
-
-    });
-    $("#end_date").datepicker({
-         dateFormat: 'yy-mm-dd',
-        changeYear: true,
-        changeMonth: true
-        
-    });
-
-
-
-
-});
 
 $('#range').click(function(){
     
