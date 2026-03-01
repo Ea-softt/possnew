@@ -74,7 +74,7 @@ foreach($user->fetch_array() as $k =>$v){
 
 
 <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" id="submit" form="manage-moneyin"><i class="fas fa-thumbs-up"></i>&nbsp;&nbsp;Save</button>
+        <button type="submit" class="btn btn-primary" id="submit" form="login_user"><i class="fas fa-thumbs-up"></i>&nbsp;&nbsp;Save</button>
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-ban"></i>&nbsp;&nbsp;Cancel</button>
       </div>
 <script>
