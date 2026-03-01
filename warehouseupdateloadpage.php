@@ -342,7 +342,7 @@ foreach ($fees->fetch_array() as $k => $v) {
             <div class="row justify-content-center pt-4 bg-success">
                 <label for="" class="mt-2">Select Month</label>
                 <div class="col-sm-3">
-                    <input type="text" name="month" id="month" placeholder="Select Date" class="form-control">
+                    <input type="date" name="month" id="month" value="<?php echo $month ?>" placeholder="Select Date" class="form-control">
                 </div>
             </div>
             <hr>
@@ -369,7 +369,49 @@ foreach ($fees->fetch_array() as $k => $v) {
                       $tcost1 = '0';
                        $tcos = '0';
 
-                        $payments = $conn->query("SELECT *, (cprice * Quantity) as tcost FROM newstock ns inner join supplier sp on ns.supplier_id = sp.supplier_id  where date_format(date_created,'%Y-%m-%d') = '$month' order by unix_timestamp(date_created) desc");// where date_format(sp.created_date,'%Y-%m-%d') = '$month' GROUP BY sp.username  order by unix_timestamp(sp.created_date) desc ")
+                      $payments = $conn->query("SELECT *, (cprice * Quantity) as tcost FROM newstock ns inner join supplier sp on ns.supplier_id = sp.supplier_id  where date_format(date_created,'%Y-%m-%d') = '$month' order by unix_timestamp(date_created) desc");
+                      while($row = $payments->fetch_assoc()):
+                        $tcos += $row['tcost'];
+                        $tcost1 += $row['cprice'];
+                        $month1 = $row['expire_date'];
+                      ?>
+                      <tr>
+                        <td class="text-center"><?php echo $i++ ?></td>
+                       <td class="text-center">
+                            <p> <b><?php echo $row['product_no'] ?></b></p>
+                        </td>
+                         <td class="text-center">
+                            <p> <b><?php echo $row['companyname'] ?></b></p>
+                        </td>
+                        <td class="text-center">
+                            <p> <b><?php echo $row['product_name'] ?></b></p>
+                        </td>  
+                         <td class="text-center">
+                            <p> <b><?php echo $row['quantity'] ?></b></p>
+                        </td>                      
+                        <td class="text-center">
+                            <p> <b><?php echo $row['cprice'] ?></b></p>
+                        </td>
+                        <td class="text-center">
+                            <p> <b><?php echo $row['tcost'] ?></b></p>
+                        </td>
+                         <td class="text-center">
+                            <p> <b><?php echo $row['unit'] ?></b></p>
+                        </td>
+                        
+                        <td class="text-center">
+                            <p> <b><?php echo $row['remarks'] ?></b></p>
+                        </td>
+                         <td class="text-center">
+                           <p> <b><?php echo date("Y-m-d",strtotime($month1)) ?></b></p>
+                        </td>
+                        
+                         <td class="text-center">
+                            <p> <b><?php echo $row['date_created'] ?></b></p>
+                        </td>                  
+                    </tr>
+                    <?php 
+                        endwhile;
 
                       $payments = $conn->query("SELECT *,sp.companyname as companyname1, (uw.quantity * uw.price) as tcot FROM updatewarehouse uw inner join supplier sp on uw.Companyname = sp.supplier_id where date_format(created_date,'%Y-%m-%d') = '$month' order by unix_timestamp(created_date) desc");// where date_format(sp.created_date,'%Y-%m-%d') = '$month' GROUP BY sp.username  order by unix_timestamp(sp.created_date) desc ")
                      
@@ -478,18 +520,10 @@ foreach ($fees->fetch_array() as $k => $v) {
 $('#report-list').ddTableFilter();
   })
 
-$(function(){
-    $("#month").datepicker({
-        dateFormat: 'yy-mm-dd',
-        changeYear: true,
-        changeMonth: true
-
-    });
-     });
-
 $('#month').change(function(){
     location.replace('warehouseupdateloadpage.php?page=loaded_stock&month='+$(this).val())
 })
+
 $('#print').click(function(){
         var _c = $('#report-list').clone();
         var ns = $('noscript').clone();
