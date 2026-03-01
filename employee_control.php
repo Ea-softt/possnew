@@ -262,12 +262,12 @@ function displayImg(input,_this) {
             }
         })
     })
-$(document).ready(function() {
-    $('.select2').select2({
-        placeholder: 'Please select here',
-        width: '100%'
-    });
-});
+// $(document).ready(function() {
+//     $('.select2').select2({
+//         placeholder: 'Please select here',
+//         width: '100%'
+//     });
+// });
 
 
 </script>
