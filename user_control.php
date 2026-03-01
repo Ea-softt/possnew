@@ -16,7 +16,7 @@ foreach($user->fetch_array() as $k =>$v){
 		<div class="form-group">
 			<label for="uid">Username</label>
 
-			 <select name="uid" id="uid" class="custom-select input-sm select2" onchange="FetchState(this.value)" cols="30" rows="4" required="">
+			 <select name="uid" id="uid" class="custom-select input-sm" onchange="FetchState(this.value)" cols="30" rows="4" required="">
                 <option value="">--Select--</option>
                <option selected="" value="<?php echo isset ($meta['uid'])? $meta['uid']:'' ?>"><?php echo isset ($meta['uid'])? $meta['uid'] :'' ?></option>
                       
@@ -58,7 +58,7 @@ foreach($user->fetch_array() as $k =>$v){
 		
 		<div class="form-group">
 			<label for="type">User Type</label>
-			<select name="type" id="type" class="custom-select select2" required>
+			<select name="type" id="type" class="custom-select" required>
 				<option value="">--Select--</option>
 				<option selected="" value="<?php echo isset ($meta['type'])? $meta['type']:'' ?>"><?php echo isset ($meta['type'])? $meta['type'] :'' ?></option>
 				<!-- <option value="Student">Student</option> -->
@@ -71,14 +71,16 @@ foreach($user->fetch_array() as $k =>$v){
 
 	</form>
 </div>
+
+
+<div class="modal-footer">
+        <button type="submit" class="btn btn-primary" id="submit" form="manage-moneyin"><i class="fas fa-thumbs-up"></i>&nbsp;&nbsp;Save</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-ban"></i>&nbsp;&nbsp;Cancel</button>
+      </div>
 <script>
 
-$('.select2').select2({
-    placeholder:'Please select here',
-    width:'100%'
-  })
-	
-$('#login_user').submit(function(e){
+ $(document).on('submit', '#login_user', function(e) {
+//$('#login_user').submit(function(e){
         e.preventDefault()
         start_load()
         $('#msg').html('')
