@@ -149,12 +149,6 @@ foreach($fees->fetch_array() as $k => $v){
         </div>
     
 
-<div class="modal-footer">
-        <button type="submit" class="btn btn-primary" id="submit" form="manage-moneyin"><i class="fas fa-thumbs-up"></i>&nbsp;&nbsp;Save</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-ban"></i>&nbsp;&nbsp;Cancel</button>
-      </div>
-              
-
  </div>
 </div>
 <div id="moneyout_clone" style="display: none">
@@ -173,6 +167,13 @@ foreach($fees->fetch_array() as $k => $v){
             </tr>
     </table>
 </div>
+
+
+<div class="modal-footer">
+        <button type="submit" class="btn btn-primary" id="submit" form="manage-moneyout"><i class="fas fa-thumbs-up"></i>&nbsp;&nbsp;Save</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-ban"></i>&nbsp;&nbsp;Cancel</button>
+      </div>
+              
 
 <script>
     $('#manage-moneyout').on('reset',function(){
@@ -259,7 +260,3 @@ foreach($fees->fetch_array() as $k => $v){
     //     width:'100%'
     // })
 </script>
-
-
-
-
