@@ -1,12 +1,17 @@
 <?php
 include('headside.php');
 include('insert_sales.php');
-$month = isset($_GET['month']) ? $_GET['month'] : date('Y-m-d');
 
 $fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}'");
 foreach ($fees->fetch_array() as $k => $v) {
     $$k = $v;
     $meta[$k] = $v;
+}
+$month = isset($_GET['month']) ? $_GET['month'] : date('Ymd');
+
+$fees = $conn->query("SELECT sp.*,us.*,ct.* FROM sales sp inner join newemployee us on sp.username = us.EmpID inner join customer ct on sp.customer_id = ct.customer_id where date_format(sp.created_date,'%Y%m%d') = {$_GET['month']} and sp.username = {$_GET['username']} order by unix_timestamp(sp.created_date) asc ");
+foreach($fees->fetch_array() as $k => $v){
+	$$k= $v;
 }
 ?>
 <!DOCTYPE html>
@@ -335,174 +340,180 @@ foreach ($fees->fetch_array() as $k => $v) {
     <!-- Main Content -->
      <div class="main-content" id="mainContent">
 
-<div class="container-fluid">
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card_body">
-            <div class="row justify-content-center pt-4 bg-success">
-                <label for="" class="mt-2">Select Month</label>
-                <div class="col-sm-3">
-                    <input type="text" name="month" id="month" placeholder="Select Date" class="form-control">
+        <!-- Table Panel -->
+      <div class="col-md-12">
+        <div class="card">          
+        
+          <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <b>User customer view</b>
+                    <a class="btn btn-primary btn-sm" href="saleusertwopage.php" id="new_supplier">
+                        <i class="fa fa-plus"></i> Back
+                    </a>
                 </div>
-            </div>
-            <hr>
-            <div class="col-md-12">
-                <table  class="table table-bordered" id='report-list'>
-                    <thead>
-                        <tr>
-                            <th class="text-center">#</th>
-                            <th class="">ID</th> 
-                             <th class="">Companyname</th>                            
-                            <th class="">Product Name</th>   
-                            <th class="">Quantity</th>                          
-                            <th class="">Cost</th>   
-                            <th class="">Tcost</th> 
-                            <th class="">Unit</th>
-                             <th class="">Description</th>
-                            <th class="">Exp Date</th>                            
-                            <th class="">Date</th>                        
-                        </tr>
-                    </thead>       
-                    <tbody>
-                      <?php
-                      $i = 1;
-                      $tcost1 = '0';
-                       $tcos = '0';
 
-                        $payments = $conn->query("SELECT *, (cprice * Quantity) as tcost FROM newstock ns inner join supplier sp on ns.supplier_id = sp.supplier_id  where date_format(date_created,'%Y-%m-%d') = '$month' order by unix_timestamp(date_created) desc");// where date_format(sp.created_date,'%Y-%m-%d') = '$month' GROUP BY sp.username  order by unix_timestamp(sp.created_date) desc ")
 
-                      $payments = $conn->query("SELECT *,sp.companyname as companyname1, (uw.quantity * uw.price) as tcot FROM updatewarehouse uw inner join supplier sp on uw.Companyname = sp.supplier_id where date_format(created_date,'%Y-%m-%d') = '$month' order by unix_timestamp(created_date) desc");// where date_format(sp.created_date,'%Y-%m-%d') = '$month' GROUP BY sp.username  order by unix_timestamp(sp.created_date) desc ")
+
+            <table id="mytable" class="table table-condensed table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th class="text-center">#</th>
+                  <th class="text-center">Customer Name</th>
+                  <th class="text-center">Discount</th>
+                  <th class="text-center">Total</th>                  
+                  <th class="text-center">GrandTotal</th>
+                  <th class="text-center">Date</th>                  
+                  <th class="text-center">Print</th>
+
+                  
+                </tr>
+              </thead>   
+              <tbody> 
+                
+                 <?php
+                 $i = 1;
+                    $day1 = "";
+                    $month1 = "";
+                    $year1 = "";
+                /*  $day1 = $_SESSION['days'];
+                  $month1 = $_SESSION['month'];
+                   $year1 =  $_SESSION['years']; 
+
+                   date_format(sp.created_date,'%Y-%m-%d') = {$_GET['month']} and*/
+
+
+                $payments = $conn->query("SELECT sp.*,ct.* FROM sales sp inner join customer ct on sp.customer_id = ct.customer_id  WHERE  date_format(sp.created_date,'%Y%m%d') = {$_GET['month']} and sp.username = {$_GET['username']} order by unix_timestamp(sp.created_date) asc"); 
                      
-                      while($row = $payments->fetch_assoc()):
-                        $tcos += $row['tcot'];
-                      $month1 = $row['expiredate'];
-                     // $grandtotal += $row['tprice'];
-                       $tcost1 += $row['price'];
-                      // $tcost1 += $row['tcost']; product_id quantity price tprice companyname unity description images created_date*/
-                      ?>
-                      <tr>
-                        <td class="text-center"><?php echo $i++ ?></td>
-                      <!--  -->
-                       <td class="text-center">
-                            <p> <b><?php echo $row['product_id'] ?></b></p>
-                        </td>
-                         <td class="text-center">
-                            <p> <b><?php echo $row['companyname1'] ?></b></p>
-                        </td>
-                        <td class="text-center">
-                            <p> <b><?php echo $row['productname'] ?></b></p>
-                        </td>  
-                         <td class="text-center">
-                            <p> <b><?php echo $row['quantity'] ?></b></p>
-                        </td>                      
-                        <td class="text-center">
-                            <p> <b><?php echo $row['price'] ?></b></p>
-                        </td>
-                        <td class="text-center">
-                            <p> <b><?php echo $row['tcot'] ?></b></p>
-                        </td>
-                         <td class="text-center">
-                            <p> <b><?php echo $row['unity'] ?></b></p>
-                        </td>
-                        
-                        <td class="text-center">
-                            <p> <b><?php echo $row['description'] ?></b></p>
-                        </td>
-                         <td class="text-center">
-                           <p> <b><?php echo date("Y-m-d",strtotime($month1)) ?></b></p>
-                        </td>
-                        
-                         <td class="text-center">
-                            <p> <b><?php echo $row['created_date'] ?></b></p>
-                        </td>                  
-                    </tr>
-                    <?php 
-                        endwhile;
-                      
-                    ?>
                    
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th colspan="5" class="text-center">Total</th>  
-                             <th class="text-right text-danger"><?php echo number_format($tcost1,2) ?></th>
-                            <th class="text-right text-danger"><?php echo number_format($tcos,2) ?></th>
-                            
+                   if ($payments->num_rows > 0){
+                    while($row = $payments->fetch_assoc()){
+                      $customer_first = $row['firstnamec'];
+                      $customer_last = $row['lastnamec'];
 
-                        </tr>
-                    </tfoot>
-                </table>
-                <hr>
-                <div class="col-md-12 mb-4">
-                    <center>
-                        <button class="btn btn-success btn-sm col-sm-3" type="button" id="print"><i class="fa fa-print"></i> Print</button>
-                    </center>
-                </div>
-            </div>
-            </div>
-        </div>
-    </div>
-</div>
- </div>
-<noscript>
-    <style>
-        table#report-list{
-            width:100%;
-            border-collapse:collapse
-        }
-        table#report-list td,table#report-list th{
-            border:1px solid
-        }
-        p{
-            margin:unset;
-        }
-        .text-center{
-            text-align:center
-        }
-        .text-right{
-            text-align:right
-        }
-    </style>
-</noscript>
+                       $day = $row['days'];
+                       $month = $row['month'];
+                       $years = $row['years']; 
+                       $discount = $row['discount']; 
+                       $total = $row['total'];
+                       $grandtotal = $row['grandtotal'];
+                      $reciept_no = $row['reciept_no'];
+                       $datee = $row['created_date'];
+                    ?>
+                    <tr>
+                  <td class="text-center"><?php echo $i++ ?></td>
+                  <td class="text-center">
+                   <?php echo $customer_first. " ".$customer_last;?>
+                  </td>
+                  <td class="text-center">
+                     <?php echo $discount;?>
+                  </td>
+                   <td class="text-center">
+                     <?php echo $total;?>
+                  </td>
+                  <td class="text-center">
+                     <?php echo $grandtotal;?>
+                  </td>
+                  <td class="text-center">
+                     <?php echo date("Y-m-d",strtotime($datee)) ?>
+                  </td>
+                  <td class="text-center">
+                    <button class="btn btn-sm btn-outline-primary view_sales" type="button" data-id="<?php echo   $reciept_no; ?>"
+                      data-examID="<?php echo  $reciept_no; ?>">View</button>
+
+                  </td>
+                 
+                 
+               </
+               vtr>                           
+            
+                    <?php
+                    }
+                  }
+
+                  else{
+                      ?>
+                        
+                      <?php
+                  }  
+
+                
+                              
+                        
+                ?>
+
+              </tbody>
+                
+            </table>
+          
+        
+        </form>        
+      </div>
 
 
 
 
-    
-    <!-- Custom JS -->
-   <script>
+     </div>
+   
 
-    $(document).ready(function(){
-    $('.table').dataTable()
+
+
+     
+
+
+
+<style>
+	img#cimg{
+		max-height: 100vh;
+		max-width: 10vw;		
+		position: relative;
+	}
+	img {
+		padding-right: 30px;
+	}
+</style>
+
+ <script>
+  $(document).ready(function(){
+    $('.table').dataTable();
   
-$('#report-list').ddTableFilter();
+$('#mytable').ddTableFilter();
+  })
+  
+
+
+  
+$('.view_sales').click(function(){
+    uni_modal("Report Details","view_salerecode.php?reciept_no="+$(this).attr('data-examin_ID')+"&reciept_no="+$(this).attr('data-id'),"mid-large")
+    
+
+
+   
   })
 
-$(function(){
-    $("#month").datepicker({
-        dateFormat: 'yy-mm-dd',
-        changeYear: true,
-        changeMonth: true
+  
+  
 
-    });
-     });
+  
+  
+  
+  function supplier_company($id){
+    start_load()
+    $.ajax({
+      url:'easoftfun.php?action=supplier_company',
+      method:'POST',
+      data:{id:$id},
+      success:function(resp){
+        if(resp==1){
+          alert_toast("Data successfully deleted",'success')
+          setTimeout(function(){
+            location.reload()
+          },1500)
 
-$('#month').change(function(){
-    location.replace('warehouseupdateloadpage.php?page=loaded_stock&month='+$(this).val())
-})
-$('#print').click(function(){
-        var _c = $('#report-list').clone();
-        var ns = $('noscript').clone();
-            ns.append(_c)
-        var nw = window.open('','_blank','width=900,height=600')
-        nw.document.write('<p class="text-center"><b>Total Sale as at <?php echo date("F, Y",strtotime($month)) ?></b></p>')
-        nw.document.write(ns.html())
-        nw.document.close()
-        nw.print()
-        setTimeout(() => {
-            nw.close()
-        }, 500);
+        }
+      }
     })
+  }
+
+  
 
         // Toggle Sidebar
         function toggleSidebar() {

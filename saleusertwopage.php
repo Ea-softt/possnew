@@ -447,8 +447,8 @@ foreach ($fees->fetch_array() as $k => $v) {
                       <tr>
                         <td class="text-center"><?php echo $i++ ?></td>
                         <td class="text-center">
-                            <!-- month=<?php echo date("Y-m-d",strtotime($month));?> -->
-                            <p><a href="usersalerecode.php?month=<?php echo date("Ymd",strtotime($month));?>&username=<?php echo $username;?>"><?php echo $customer_first;?></a></b></p>
+                            <!-- month=<?php echo date("Y-m-d",strtotime($month1));?> -->
+                            <p><a href="usersalerecodepage.php?month=<?php echo date("Ymd",strtotime($month1));?>&username=<?php echo $username;?>"><?php echo $customer_first;?></a></b></p>
                         </td>
                         <td class="text-center">
                             <p> <b><?php echo $row['discount'] ?></b></p>
