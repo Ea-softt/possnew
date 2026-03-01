@@ -518,11 +518,10 @@ foreach ($fees->fetch_array() as $k => $v) {
     $('.table').dataTable()
   
 $('#report-list').ddTableFilter();
+    $('#month').change(function(){
+        window.location.href = 'warehouseupdateloadpage.php?page=loaded_stock&month='+$(this).val();
+    })
   })
-
-$('#month').change(function(){
-    location.replace('warehouseupdateloadpage.php?page=loaded_stock&month='+$(this).val())
-})
 
 $('#print').click(function(){
         var _c = $('#report-list').clone();
