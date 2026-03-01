@@ -5,7 +5,7 @@ include 'easoftsql.php';
 
 
 if(isset($_GET['id'])){
-$qry = $conn->query("SELECT mi.*,mi.name as Name  FROM moneyin mi inner join moneyin_des md on mi.id = md.money_id  where id= ".$_GET['id']);
+$qry = $conn->query("SELECT mi.*,md.description,mi.name as Name  FROM moneyin mi inner join moneyin_des md on mi.id = md.money_id  where id= ".$_GET['id']);
 foreach($qry->fetch_array() as $k => $val){
     $$k=$val;}
 }
