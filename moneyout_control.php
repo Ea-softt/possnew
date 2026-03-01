@@ -28,10 +28,16 @@ foreach($fees->fetch_array() as $k => $v){
                 <label for="" class="control-label">Name</label>        
               <input type="text" class="form-control" name="name"  value="<?php echo $FullName;?>" required="" readonly>
             </div>           
-             <div class="form-group">
+             <!-- <div class="form-group">
                 <label for="" class="control-label">Day</label>
                <select name="day" id="day" class="custom-select input-sm select2 "  cols="30" rows="4" required="">
-               <?php
+               -->
+                <div class="mb-3">
+                <label for="day" class="form-label">Day</label>
+               <select name="day" id="day" class="form-select" required>
+              
+              
+              <?php
                for($i = 0; $i <= 31; ++$i){
 
                 $time = strtotime(sprintf('+%d days',$i));
@@ -46,10 +52,14 @@ foreach($fees->fetch_array() as $k => $v){
 
                </select>
             </div>           
-         <div class="form-group">
+         <!-- <div class="form-group">
             <label for="" class="control-label">Month</label>
                <select name="month" id="month" class="custom-select input-sm select2" required="">
-               <?php
+               -->
+                <div class="mb-3">
+            <label for="month" class="form-label">Month</label>
+               <select name="month" id="month" class="form-select" required>
+              <?php
                for($i = 0; $i <= 12; ++$i){
 
                 $time = strtotime(sprintf('--%d months',$i));
@@ -61,9 +71,13 @@ foreach($fees->fetch_array() as $k => $v){
                 <option selected="" value="<?php echo isset ($month)? $month :'' ?>"><?php echo isset ($month)? $month :'' ?></option>
                </select>
             </div>           
-         <div class="form-group">
+         <!-- <div class="form-group">
             <label for="" class="control-label">Year</label>
                <select name="year" id="year" class="custom-select input-sm select2"   required="">
+              -->
+               <div class="mb-3">
+            <label for="year" class="form-label">Year</label>
+               <select name="year" id="year" class="form-select" required>
                <?php $y=(int)date("Y"); ?>
 
                <option value="<?php echo $y; ?>" selected="true"><?php echo $y; ?></option>

@@ -840,7 +840,12 @@ function save_moneyout(){
 		else{
 			$save = $this->db->query("UPDATE moneyout set $data where id = $id");
 			if($save){
-				$this->db->query("DELETE FROM moneyout_des where money_id = $id and id not in (".implode(',',$did).") ");
+				$ids = array_filter($did);
+				if(empty($ids)){
+					$this->db->query("DELETE FROM moneyout_des where money_id = $id ");
+				}else{
+					$this->db->query("DELETE FROM moneyout_des where money_id = $id and did not in (".implode(',',$ids).") ");
+				}
 				foreach($did as $k =>$v){
 					$data = " money_id = '$id' ";
 					$data .= ", description = '{$description[$k]}' ";
