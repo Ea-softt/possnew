@@ -5,7 +5,7 @@ include 'easoftsql.php';
 
 
 if(isset($_GET['id'])){
-$qry = $conn->query("SELECT mi.*,md.description,mi.name as Name  FROM moneyin mi inner join moneyin_des md on mi.id = md.money_id  where id= ".$_GET['id']);
+$qry = $conn->query("SELECT mi.*,md.description,md.money_id,mi.name as Name  FROM moneyin mi inner join moneyin_des md on mi.id = md.money_id  where id= ".$_GET['id']);
 foreach($qry->fetch_array() as $k => $val){
     $$k=$val;}
 }
@@ -121,7 +121,7 @@ foreach($fees->fetch_array() as $k => $v){
                         <tr>
                             <td  class="text-center"><button class="btn-sm btn-outline-danger" type="button" onclick="rem_list($(this))" ><i class="fa fa-times"></i></button></td>
                             <td>
-                                <input type="hidden" name="did[]" value="<?php echo $row['id'] ?>">
+                                <input type="hidden" name="did[]" value="<?php echo $row['money_id'] ?>">
                                 <input type="hidden" name="description[]" value="<?php echo $row['description'] ?>">
                                 <p ><small><b class="textdecription"><?php echo $row['description'] ?></b></small></p>
                             </td>
