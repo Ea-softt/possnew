@@ -149,7 +149,10 @@ foreach($fees->fetch_array() as $k => $v){
         </div>
     
 
-
+<div class="modal-footer">
+        <button type="submit" class="btn btn-primary" id="submit" form="manage-moneyin"><i class="fas fa-thumbs-up"></i>&nbsp;&nbsp;Save</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-ban"></i>&nbsp;&nbsp;Cancel</button>
+      </div>
               
 
  </div>
@@ -170,6 +173,7 @@ foreach($fees->fetch_array() as $k => $v){
             </tr>
     </table>
 </div>
+
 <script>
     $('#manage-moneyout').on('reset',function(){
         $('#msg').html('')
@@ -218,7 +222,8 @@ foreach($fees->fetch_array() as $k => $v){
         calculate_total()
         
     }
-    $('#manage-moneyout').submit(function(e){
+     $(document).on('submit', '#manage-moneyout', function(e) {
+    //$('#manage-moneyout').submit(function(e){
         e.preventDefault()
         start_load()
         $('#msg').html('')
@@ -249,10 +254,10 @@ foreach($fees->fetch_array() as $k => $v){
         })
     })
 
-    $('.select2').select2({
-        placeholder:"Please Select here",
-        width:'100%'
-    })
+    // $('.select2').select2({
+    //     placeholder:"Please Select here",
+    //     width:'100%'
+    // })
 </script>
 
 

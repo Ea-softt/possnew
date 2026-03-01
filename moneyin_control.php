@@ -222,7 +222,6 @@ foreach($fees->fetch_array() as $k => $v){
         
     }
      $(document).on('submit', '#manage-moneyin', function(e) {
-  //  $('#manage-moneyin').submit(function(e){
         e.preventDefault()
         start_load()
         $('#msg').html('')

@@ -359,12 +359,15 @@ foreach ($fees->fetch_array() as $k => $v) {
       <!-- Table Panel -->
       <div class="col-md-12">
         <div class="card">
-          <div class="card-header bg-success text-white">
-            <b>List of Money Out </b>
-            <span class="float:right"><a class="btn btn-primary btn-block btn-sm col-sm-2 float-right" href="javascript:void(0)" id="new_moneyout">
-          <i class="fa fa-plus"></i> New 
-        </a></span>
-          </div>
+        
+              <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <b>list of Money Out</b>
+                    <a class="btn btn-primary btn-sm" href="javascript:void(0)" id="new_moneyout">
+                        <i class="fa fa-plus"></i> New
+                    </a>
+                </div>
+
+
           <div class="card-body">
             
             <table id="mytable" class="table table-condensed table-bordered table-hover">
