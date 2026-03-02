@@ -478,7 +478,7 @@ $(function(){
      });
 
 $('#month').change(function(){
-    location.replace('newstock.php?page=loaded_stock&month='+$(this).val())
+    location.replace('newstockpage.php?page=loaded_stock&month='+$(this).val())
 })
 $('#print').click(function(){
         var _c = $('#report-list').clone();
