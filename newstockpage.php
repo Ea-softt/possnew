@@ -2,11 +2,6 @@
 include('headside.php');
 include('insert_sales.php');
 $month = isset($_GET['month']) ? $_GET['month'] : date('Y-m-d');
-$fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}'");
-foreach ($fees->fetch_array() as $k => $v) {
-    $$k = $v;
-    $meta[$k] = $v;
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -346,7 +341,7 @@ foreach ($fees->fetch_array() as $k => $v) {
             <div class="row justify-content-center pt-4 bg-success">
                 <label for="" class="mt-2">Select Month</label>
                 <div class="col-sm-3">
-                    <input type="text" name="month" id="month" placeholder="Select Date" class="form-control">
+                    <input type="date" name="month" id="month" value="<?php echo $month ?>" class="form-control">
                 </div>
             </div>
             <hr>
@@ -468,17 +463,10 @@ foreach ($fees->fetch_array() as $k => $v) {
 $('#report-list').ddTableFilter();
   })
 
-$(function(){
-    $("#month").datepicker({
-        dateFormat: 'yy-mm-dd',
-        changeYear: true,
-        changeMonth: true
-
-    });
-     });
-
 $('#month').change(function(){
-    location.replace('newstockpage.php?page=loaded_stock&month='+$(this).val())
+    if($(this).val() != '<?php echo $month ?>'){
+        location.replace('newstockpage.php?page=loaded_stock&month='+$(this).val())
+    }
 })
 $('#print').click(function(){
         var _c = $('#report-list').clone();
