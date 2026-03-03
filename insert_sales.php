@@ -29,7 +29,7 @@ $veemos = '1';
 	
 	
 
-	$customer_id = mysqli_query($conn, "SELECT customer_id FROM customer WHERE customer_id = '$veemos'");//CONCAT(firstnamec,' ',lastnamec)
+	$customer_id = mysqli_query($conn, "SELECT CONCAT(firstnamec,' ',lastnamec) as names FROM customer WHERE names= '$customer'");//CONCAT(firstnamec,' ',lastnamec)
 
 
 	if(mysqli_num_rows($customer_id) == 0){
