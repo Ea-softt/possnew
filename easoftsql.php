@@ -330,19 +330,18 @@ function new_customer(){
 		$vals = "'".str_replace("'","&#x2019;",$fname)."', '$lname', '$address', '$number'";
 		
 		
-	
-		if(($_FILES['img']['tmp_name'] != '')){
-						$picture -> strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['name'];
+		$picture = '';
+		if(isset($_FILES['img']['tmp_name']) && $_FILES['img']['tmp_name'] != ''){
+						$picture = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['name'];
 						$move = move_uploaded_file($_FILES['img']['tmp_name'],'../posnew/img/'. $picture);
-					$data .= ", image = '$picture' ";
-					$cols .= ", image";
-					$vals .= ", '$picture'";
-					//$finfo->file($_FILES['upfile']['tmp_name']
-
 		}
+		
+		$data .= ", image = '$picture' ";
+		$cols .= ", image";
+		$vals .= ", '$picture'";
 
 		
-		$check1 = $this->db->query("SELECT count(*) FROM customer where firstnamec ='$fname' and lastnamec = '$lname' or contact_number = $number ".(!empty($id) ? " and customer_id != {$id} " : ''))->fetchColumn();
+		$check1 = $this->db->query("SELECT count(*) FROM customer where (firstnamec ='$fname' and lastnamec = '$lname') or contact_number = '$number' ".(!empty($id) ? " and customer_id != {$id} " : ''))->fetchColumn();
 		if($check1 > 0){
 			return 2;
 			exit;
@@ -384,15 +383,15 @@ function new_supplier(){
 		$vals = "'".str_replace("'","&#x2019;",$cname)."', '$fname', '$lname', '$address', '$number'";
 		
 		
-	
-		if($_FILES['img']['tmp_name'] != ''){
+		$picture = '';
+		if(isset($_FILES['img']['tmp_name']) && $_FILES['img']['tmp_name'] != ''){
 						$picture = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['name'];
 						$move = move_uploaded_file($_FILES['img']['tmp_name'],'../posnew/img/'. $picture);
-					$data .= ", image = '$picture' ";
-					$cols .= ", image";
-					$vals .= ", '$picture'";
-
 		}
+		
+		$data .= ", image = '$picture' ";
+		$cols .= ", image";
+		$vals .= ", '$picture'";
 
 		
 	$check1 = $this->db->query("SELECT count(*) FROM supplier where companyname ='$cname' and contact_number ='$number' ".(!empty($id) ? " and supplier_id != {$id} " : ''))->fetchColumn();
@@ -451,7 +450,7 @@ function new_employee(){
 		
 		
 		$emname = '';
-		if($_FILES['img']['tmp_name'] != ''){
+		if(isset($_FILES['img']['tmp_name']) && $_FILES['img']['tmp_name'] != ''){
 						$emname = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['name'];
 						$move = move_uploaded_file($_FILES['img']['tmp_name'],'../posnew/img/'. $emname);
 		}
@@ -1113,9 +1112,9 @@ function save_sale(){
 
 				$sql1 = $this->db->query("SELECT quantity FROM products WHERE product_no='$product_id'");
 				//$result1 = $this->db->query($sql1);
-				$qty = $sql1->fetch(PDO::FETCH_ASSOC);
+				$qty_row = $sql1->fetch(PDO::FETCH_ASSOC);
 
-				$newqty = $qty['quantity'] - $qtyold;
+				$newqty = $qty_row['quantity'] - $qtyold;
 
 				$sql2 = $this->db->query("UPDATE products SET quantity=$newqty WHERE product_no='$product_id'");
 				//$result2 = mysqli_query($conn, $sql2);

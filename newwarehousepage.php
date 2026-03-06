@@ -6,6 +6,7 @@ include('insert_newwarehouse.php');
 
 $fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}'");
 foreach ($fees->fetch_array() as $k => $v) {
+foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     $$k = $v;
     $meta[$k] = $v;
 }
