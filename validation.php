@@ -27,28 +27,20 @@ if(isset($_POST["submit"]))
 
  $query_std = " select * from login where uid = '$uid' And username = '$username' And password = '".md5($password)."' And type ='$std'";
 
-$run_std = mysqli_query($conn,$query_std);
-$row = mysqli_fetch_assoc($run_std);
-
-
-
+$run_std = $conn->query($query_std);
+$res_std = $run_std->fetchAll();
 
 $query_adm = " select * from login where uid = '$uid' And username = '$username' And password = '".md5($password)."' And type ='$adm'";
-$run_adm =mysqli_query($conn,$query_adm);
-$row = mysqli_fetch_assoc($run_adm);
-
-
-
+$run_adm = $conn->query($query_adm);
+$res_adm = $run_adm->fetchAll();
 
 $query_tea = "select * from login where uid = '$uid' And username = '$username' And password = '".md5($password)."' And type ='$tea'";
-$run_tea = mysqli_query($conn,$query_tea);
-$row = mysqli_fetch_assoc($run_tea);
+$run_tea = $conn->query($query_tea);
+$res_tea = $run_tea->fetchAll();
 
-
-
- $std = mysqli_num_rows($run_std);
- $adm = mysqli_num_rows($run_adm);
- $tea = mysqli_num_rows($run_tea);
+ $std = count($res_std);
+ $adm = count($res_adm);
+ $tea = count($res_tea);
  		
 
 		if($std==1)
