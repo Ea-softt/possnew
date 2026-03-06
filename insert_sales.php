@@ -5,7 +5,7 @@ if(isset($_POST['product'])){
 	$total = $_POST['totalvalue'];
 	$price = $_POST['price'];
 	$product = $_POST['product'];
-	$customer = $_POST['customer'];
+	$customer = mysqli_real_escape_string($conn, $_POST['customer']);
 	$quantity = $_POST['quantity'];
 	$grandtotal = $_POST['grandtotal'];
 	$days = $_POST['days'];
@@ -29,7 +29,7 @@ $veemos = '1';
 	
 	
 
-	$customer_id = mysqli_query($conn, "SELECT CONCAT(firstnamec,' ',lastnamec) as names FROM customer WHERE names= '$customer'");//CONCAT(firstnamec,' ',lastnamec)
+	$customer_id = mysqli_query($conn, "SELECT customer_id FROM customer WHERE CONCAT(firstnamec,' ',lastnamec) = '$customer'");
 
 
 	if(mysqli_num_rows($customer_id) == 0){

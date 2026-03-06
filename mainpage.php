@@ -723,7 +723,8 @@ foreach ($fees->fetch_array() as $k => $v) {
                                         datee: datee
                                     },
                                     success: function(data) {
-                                        if(data) {
+                                        //if(data){
+                                        if(data && data != 'failure') {
                                             swal({
                                                 title: "Change is " + accounting.formatMoney(change, {symbol: "Ghc", format: "%s %v"}),
                                                 icon: "success",
