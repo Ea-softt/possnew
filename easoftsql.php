@@ -11,7 +11,7 @@ Class Action {
     $this->db = $conn;
 	}
 	function __destruct() {
-	    $this->db->close();
+	    $this->db = null;
 	    ob_end_flush();
 	}
 
@@ -25,7 +25,7 @@ Class Action {
 		$data .= ", type = '$type' ";		
 		
 		
-		$check = $this->db->query("SELECT * FROM login where uid ='$uid' and username ='$username' and password ='".md5($password)."' ".(!empty($id) ? " and id != {$id} " : ''))->num_rows;
+		$check = $this->db->query("SELECT count(*) FROM login where uid ='$uid' and username ='$username' and password ='".md5($password)."' ".(!empty($id) ? " and id != {$id} " : ''))->fetchColumn();
 		if($check > 0){
 			return 2;
 			exit;
@@ -76,7 +76,7 @@ function delete_login(){
 			//$save = $this->db->query("INSERT INTO courses set $data");
 			$save = $this->db->query("INSERT INTO courses (".implode(',', $cols).") VALUES (".implode(',', $vals).")");
 			if($save){
-				$id = $this->db->insert_id;
+				$id = $this->db->lastInsertId();
 				foreach($fid as $k =>$v){
 					//$data = " course_id = '$id' ";
 					//$data .= ", description = '{$type[$k]}' ";
@@ -127,7 +127,7 @@ function delete_login(){
 		$data .= ", amount = '$amount' ";
 		
 
-		$check = $this->db->query("SELECT * FROM paymen_supplier where batchno ='$batchno' AND companyname ='$companyname' AND typeofpayment = '$type' AND amount = '$amount' ".(!empty($id) ? " and id != {$id} " : ''))->num_rows;
+		$check = $this->db->query("SELECT count(*) FROM paymen_supplier where batchno ='$batchno' AND companyname ='$companyname' AND typeofpayment = '$type' AND amount = '$amount' ".(!empty($id) ? " and id != {$id} " : ''))->fetchColumn();
 		if($check > 0){
 			return 2;
 			exit;
@@ -161,7 +161,7 @@ function delete_login(){
 			//$save = $this->db->query("INSERT INTO paypay_supplier set $data");
 			$save = $this->db->query("INSERT INTO paypay_supplier (paymen_supplierID, amountt, remark) VALUES ('$paymen_supplierID', '$amountt', '$remark')");
 			if($save)
-				$id= $this->db->insert_id;
+				$id= $this->db->lastInsertId();
 		}else{
 			$save = $this->db->query("UPDATE paypay_supplier set $data where id = $id");
 		}
@@ -194,7 +194,7 @@ function delete_login(){
 			//$save = $this->db->query("INSERT INTO cashtypee set $data");
 			$save = $this->db->query("INSERT INTO cashtypee (supppliername) VALUES ('".str_replace("'","&#x2019;",$supppliername)."')");
 			if($save)
-				$id= $this->db->insert_id;
+				$id= $this->db->lastInsertId();
 		}else{
 			$save = $this->db->query("UPDATE cashtypee set $data where id = $id");
 		}
@@ -268,7 +268,7 @@ function eml_Payment(){
 			}
 		}
 		
-		$check = $this->db->query("SELECT * FROM lfepayment where id ='$id' ".(!empty($id) ? " and id != {$id} " : ''))->num_rows;
+		$check = $this->db->query("SELECT count(*) FROM lfepayment where id ='$id' ".(!empty($id) ? " and id != {$id} " : ''))->fetchColumn();
 		if($check > 0){
 			return 2;
 			exit;
@@ -278,7 +278,7 @@ function eml_Payment(){
 			$save = $this->db->query("INSERT INTO lfepayment (".implode(',', $cols).") VALUES (".implode(',', $vals).")");
 
 			if($save){
-				$id = $this->db->insert_id;
+				$id = $this->db->lastInsertId();
 				foreach($pid as $k =>$v){
 					//$data = " lfepayment_ID = '$id' ";
 					//$data .= ", description = '{$altype[$k]}' ";
@@ -342,7 +342,7 @@ function new_customer(){
 		}
 
 		
-		$check1 = $this->db->query("SELECT * FROM customer where firstnamec ='$fname' and lastnamec = '$lname' or contact_number = $number ".(!empty($id) ? " and customer_id != {$id} " : ''))->num_rows;
+		$check1 = $this->db->query("SELECT count(*) FROM customer where firstnamec ='$fname' and lastnamec = '$lname' or contact_number = $number ".(!empty($id) ? " and customer_id != {$id} " : ''))->fetchColumn();
 		if($check1 > 0){
 			return 2;
 			exit;
@@ -395,7 +395,7 @@ function new_supplier(){
 		}
 
 		
-	$check1 = $this->db->query("SELECT * FROM supplier where companyname ='$cname' and contact_number ='$number' ".(!empty($id) ? " and supplier_id != {$id} " : ''))->num_rows;
+	$check1 = $this->db->query("SELECT count(*) FROM supplier where companyname ='$cname' and contact_number ='$number' ".(!empty($id) ? " and supplier_id != {$id} " : ''))->fetchColumn();
 		if($check1 > 0){
 			return 2;
 			exit;
@@ -450,17 +450,17 @@ function new_employee(){
 		$vals = "'".str_replace("'","&#x2019;",$FullName)."', '$Gender', '$DOB', '$Age', '$Hometown', '$Nationality', '$Phonenum', '$Mail', '$Address', '$Address2', '$Status', '$Department', '$Lastschool', '$Qualification', '$StartingDate', '$Employer', '$Language', '$Religion'";
 		
 		
-
+		$emname = '';
 		if($_FILES['img']['tmp_name'] != ''){
 						$emname = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['name'];
 						$move = move_uploaded_file($_FILES['img']['tmp_name'],'../posnew/img/'. $emname);
-					$data .= ", picture = '$emname' ";
-					$cols .= ", picture";
-					$vals .= ", '$emname'";
-
 		}
+		
+		$data .= ", picture = '$emname' ";
+		$cols .= ", picture";
+		$vals .= ", '$emname'";
 
-		$check = $this->db->query("SELECT * FROM newemployee where EmpID ='$EmpID' ".(!empty($EmpID) ? " and EmpID != {$EmpID} " : ''))->num_rows;
+		$check = $this->db->query("SELECT count(*) FROM newemployee where EmpID ='$EmpID' ".(!empty($EmpID) ? " and EmpID != {$EmpID} " : ''))->fetchColumn();
 		if($check > 0){
 			return 2;
 			exit;
@@ -513,7 +513,7 @@ function new_section(){
 				$vals[] = "'$v'";
 			}
 		}
-		$check = $this->db->query("SELECT * FROM section where sectionID ='$sectionID' ".(!empty($sectionID) ? " and sectionID != {$sectionID} " : ''))->num_rows;
+		$check = $this->db->query("SELECT count(*) FROM section where sectionID ='$sectionID' ".(!empty($sectionID) ? " and sectionID != {$sectionID} " : ''))->fetchColumn();
 		if($check > 0){
 			return 2;
 			exit;
@@ -556,7 +556,7 @@ function new_academic(){
 				$vals[] = "'$v'";
 			}
 		}
-		$check = $this->db->query("SELECT * FROM academiccalendar where AcaID ='$AcaID' ".(!empty($AcaID) ? " and AcaID != {$AcaID} " : ''))->num_rows;
+		$check = $this->db->query("SELECT count(*) FROM academiccalendar where AcaID ='$AcaID' ".(!empty($AcaID) ? " and AcaID != {$AcaID} " : ''))->fetchColumn();
 		if($check > 0){
 			return 2;
 			exit;
@@ -608,7 +608,7 @@ function save_supplierdeliver(){
 			}
 		}
 			
-	$check = $this->db->query("SELECT * FROM suppliercompany where id ='$id' ".(!empty($id) ? " and id != {$id} " : ''))->num_rows;
+	$check = $this->db->query("SELECT count(*) FROM suppliercompany where id ='$id' ".(!empty($id) ? " and id != {$id} " : ''))->fetchColumn();
 		if($check > 0){
 			return 2;
 			exit;
@@ -618,7 +618,7 @@ function save_supplierdeliver(){
 			$save = $this->db->query("INSERT INTO suppliercompany (".implode(',', $cols).") VALUES (".implode(',', $vals).")");		
 						
 				if($save){
-				$id = $this->db->insert_id;
+				$id = $this->db->lastInsertId();
 				foreach($sid as $k =>$v){
 
 					//$data = " supplierid = '$id' ";
@@ -736,7 +736,7 @@ function save_supplierdeliverin() {
     $vals .= ", '$imagePathString'";
 
     // Check if the record already exists
-    $check = $this->db->query("SELECT * FROM supplierdeliver WHERE sid = '$id' " . (!empty($id) ? " AND sid != {$id} " : ""))->num_rows;
+    $check = $this->db->query("SELECT count(*) FROM supplierdeliver WHERE sid = '$id' " . (!empty($id) ? " AND sid != {$id} " : ""))->fetchColumn();
     if ($check > 0) {
         return 2;
     }
@@ -790,7 +790,7 @@ function save_supplierdeliverin() {
 				$vals[] = "'$v'";
 			}
 		}
-	$check = $this->db->query("SELECT * FROM moneyin where name ='$name' and day='$day' and month='$month' and year='$year' ".(!empty($id) ? " and id != {$id} " : ''))->num_rows;
+	$check = $this->db->query("SELECT count(*) FROM moneyin where name ='$name' and day='$day' and month='$month' and year='$year' ".(!empty($id) ? " and id != {$id} " : ''))->fetchColumn();
 		if($check > 0){
 			return 2;
 			exit;
@@ -799,7 +799,7 @@ function save_supplierdeliverin() {
 			//$save = $this->db->query("INSERT INTO moneyin set $data");
 			$save = $this->db->query("INSERT INTO moneyin (".implode(',', $cols).") VALUES (".implode(',', $vals).")");
 			if($save){
-				$id = $this->db->insert_id;
+				$id = $this->db->lastInsertId();
 				foreach($did as $k =>$v){
 					//$data = " money_id = '$id' ";
 					//$data .= ", description = '{$description[$k]}' ";
@@ -867,7 +867,7 @@ function save_moneyout(){
 				$vals[] = "'$v'";
 			}
 		}
-	$check = $this->db->query("SELECT * FROM moneyout where name ='$name' and day='$day' and month='$month' and year='$year' ".(!empty($id) ? " and id != {$id} " : ''))->num_rows;
+	$check = $this->db->query("SELECT count(*) FROM moneyout where name ='$name' and day='$day' and month='$month' and year='$year' ".(!empty($id) ? " and id != {$id} " : ''))->fetchColumn();
 		if($check > 0){
 			return 2;
 			exit;
@@ -876,7 +876,7 @@ function save_moneyout(){
 			//$save = $this->db->query("INSERT INTO moneyout set $data");
 			$save = $this->db->query("INSERT INTO moneyout (".implode(',', $cols).") VALUES (".implode(',', $vals).")");
 			if($save){
-				$id = $this->db->insert_id;
+				$id = $this->db->lastInsertId();
 				foreach($did as $k =>$v){
 					//$data = " money_id = '$id' ";
 					//$data .= ", description = '{$description[$k]}' ";
@@ -939,7 +939,7 @@ function save_comments(){
 		$cols = "uid, mgs, rpl, day, month, year";
 		$vals = "'$uid', '$mgs', '$rpl', '$day', '$month', '$year'";
 
-		$check1 = $this->db->query("SELECT * FROM comments where uid ='$uid' and day ='$day' and month ='$month' and year ='$year'    ".(!empty($id) ? " and id != {$id} " : ''))->num_rows;
+		$check1 = $this->db->query("SELECT count(*) FROM comments where uid ='$uid' and day ='$day' and month ='$month' and year ='$year'    ".(!empty($id) ? " and id != {$id} " : ''))->fetchColumn();
 		if($check1 > 0){
 			return 2;
 			exit;
@@ -1074,7 +1074,7 @@ function save_sale(){
 			//$save = $this->db->query("INSERT INTO customersale set $data");
 			$save = $this->db->query("INSERT INTO customersale (".implode(',', $cols).") VALUES (".implode(',', $vals).")");
 			if($save){
-				$id = $this->db->insert_id;
+				$id = $this->db->lastInsertId();
 				
 				//$id = $this->db->insert_id;
 				foreach($sid as $k =>$v){
@@ -1096,7 +1096,7 @@ function save_sale(){
 
 				$select = $this->db->query("SELECT salecustomerid FROM salecustomeriterm ORDER BY salecustomerid DESC LIMIT 1");
 				//$res = mysqli_query($this->db,$select);
-				$ssid = mysqli_fetch_array($select);
+				$ssid = $select->fetch(PDO::FETCH_NUM);
 				
 				for($i = 0;  $i < count($barcode); $i++){
 				$reciept[] = isset($ssid[0]);
@@ -1108,12 +1108,12 @@ function save_sale(){
 				
 				echo $ssid[0];
 			   for($num=0; $num<count($barcode); $num++){
-				$product_id = mysqli_real_escape_string($this->db, $barcode[$num]);
-				$qtyold = mysqli_real_escape_string($this->db, $qty[$num]);
+				$product_id = $barcode[$num];
+				$qtyold = $qty[$num];
 
 				$sql1 = $this->db->query("SELECT quantity FROM products WHERE product_no='$product_id'");
 				//$result1 = $this->db->query($sql1);
-				$qty = mysqli_fetch_array($sql1);
+				$qty = $sql1->fetch(PDO::FETCH_ASSOC);
 
 				$newqty = $qty['quantity'] - $qtyold;
 
@@ -1192,7 +1192,7 @@ function new_warehouse(){
 		if(empty($sid)){
 			//$save = $this->db->query("INSERT INTO warehouse set $data");
 			$save = $this->db->query("INSERT INTO warehouse ($cols) VALUES ($vals)");
-			$idd = $this->db->insert_id;
+			$idd = $this->db->lastInsertId();
 
 			extract($_POST);
 		$dataa  = " product_no = '$idd' ";
@@ -1211,7 +1211,7 @@ function new_warehouse(){
 			$save = $this->db->query("UPDATE warehouse set $data where sid = $sid");
 
 			//extract($_POST);
-		$check1 = $this->db->query("SELECT * FROM products where product_name ='$name' and productID ='$idd' ".(!empty($sid) ? " " : ''))->num_rows;
+		$check1 = $this->db->query("SELECT count(*) FROM products where product_name ='$name' and productID ='$idd' ".(!empty($sid) ? " " : ''))->fetchColumn();
 		if($check1 > 0){
 			return 1;
 			exit;
