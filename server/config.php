@@ -1,32 +1,11 @@
 <?php  
 		//session_start();	
-			$host = "localhost";
-			$dbuser = "root";
-			$dbpass = "";
-			$dbname = "pos";
-				//eMMA2020@
+			$dbname = "pos.db";
+
 			try {
-				$conn = new mysqli ("$host","$dbuser","$dbpass","$dbname") or die(conn_error($conn));
-				
-				
-			} catch (Exception $e) {
-				echo "$e";
-				
+				$conn = new PDO("sqlite:" . __DIR__ . "/" . $dbname);
+				$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			} catch (PDOException $e) {
+				echo "Connection failed: " . $e->getMessage();
 			}	
-
-			
-			/*$host = "sql202.epizy.com";
-			$dbuser = "epiz_29233641";
-			$dbpass = "fmxXZ4MwJQBuzk";
-			$dbname = "epiz_29233641_databaseschool1";
-
-			try {
-				$conn = new mysqli ("$host","$dbuser","$dbpass","$dbname") or die(conn_error($conn));
-				
-				
-			} catch (Exception $e) {
-				echo "$e";
-				
-			}*/
-
 ?>	

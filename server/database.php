@@ -1,427 +1,373 @@
 <?php  
 		//session_start();	
-			$host = "localhost";
-			$dbuser = "root";
-			$dbpass = ""; 
-			$dbname = "pos";
+			$dbname = "pos.db";
 
-        //eMMA2020@
-
-      
 			try {
-				$conn = new mysqli ("$host","$dbuser","$dbpass") or die(conn_error($conn));
-				
-				
-			} catch (Exception $e) {
-				echo "$e";
-				
+				$conn = new PDO("sqlite:" . __DIR__ . "/" . $dbname);
+				$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			} catch (PDOException $e) {
+				echo "Connection failed: " . $e->getMessage();
+				exit;
 			}	
-
-			
-			/*$host = "sql202.epizy.com";
-			$dbuser = "epiz_29233641";
-			$dbpass = "fmxXZ4MwJQBuzk";
-			$dbname = "epiz_29233641_databaseschool1";
-
-			try {
-				$conn = new mysqli ("$host","$dbuser","$dbpass","$dbname") or die(conn_error($conn));
-				
-				
-			} catch (Exception $e) {
-				echo "$e";
-				
-			}*/
-			
-// create a database
-$sql = "CREATE DATABASE IF NOT EXISTS pos";
-$result = mysqli_query($conn, $sql);
-
-if ($result){
-	$conn -> close();
-
-$host = "localhost";
-			$dbuser = "root";
-			$dbpass = "";//eMMA2020@
-			$dbname = "pos";
-
-			try {
-				$conn = new mysqli ("$host","$dbuser","$dbpass","$dbname") or die(conn_error($conn));
-				
-				
-			} catch (Exception $e) {
-				echo "$e";
-				
-			}	
-
 
 	$sql ="CREATE TABLE IF NOT EXISTS `cashflow` (
-  `transaction_id` int(11) NOT NULL AUTO_INCREMENT,
-  `description` text,
-  `amount` decimal(18,2) DEFAULT NULL,
-  `username` varchar(30) DEFAULT NULL,
-  `transaction_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (`transaction_id`)
+  `transaction_id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `description` TEXT,
+  `amount` REAL DEFAULT NULL,
+  `username` TEXT DEFAULT NULL,
+  `transaction_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
-	$result = mysqli_query($conn, $sql);
+	$conn->exec($sql);
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `customer` (
-  `customer_id` int(11) NOT NULL  AUTO_INCREMENT,
-  `firstnamec` varchar(40) DEFAULT NULL,
-  `lastnamec` varchar(40) DEFAULT NULL,
-  `address` text,
-  `contact_number` varchar(50) DEFAULT NULL,
-  `image` varchar(50) NOT NULL,PRIMARY KEY (`customer_id`)
+  `customer_id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `firstnamec` TEXT DEFAULT NULL,
+  `lastnamec` TEXT DEFAULT NULL,
+  `address` TEXT,
+  `contact_number` TEXT DEFAULT NULL,
+  `image` TEXT NOT NULL
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 $sql = "CREATE TABLE IF NOT EXISTS`cashtype` (
-  `id` int(11) NOT NULL,
-  `typeofcash` varchar(11) NOT NULL,PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY,
+  `typeofcash` TEXT NOT NULL
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `cashtypee` (
-  `id` int(35) NOT NULL AUTO_INCREMENT,
-  `supppliername` int(255) NOT NULL,
-  `batchno` varchar(255) NOT NULL,
-  `currentpayment` decimal(65,2) NOT NULL,
-  `suppliercurrentbilling` decimal(65,2) NOT NULL,
-  `amountpaid` decimal(65,2) NOT NULL,
-  `amountpayable` decimal(65,2) NOT NULL,
-  `remark` varchar(255) NOT NULL,
-  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `supppliername` INTEGER NOT NULL,
+  `batchno` TEXT NOT NULL,
+  `currentpayment` REAL NOT NULL,
+  `suppliercurrentbilling` REAL NOT NULL,
+  `amountpaid` REAL NOT NULL,
+  `amountpayable` REAL NOT NULL,
+  `remark` TEXT NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS `updatewarehouse` (
-  `id` int(255) NOT NULL AUTO_INCREMENT,
-  `product_id` int(255) NOT NULL,
-   `productname` varchar(255) NOT NULL,
-  `quantity` int(255) NOT NULL,
-  `price` decimal(65,2) NOT NULL,
-  `tprice` decimal(65,2) NOT NULL,
-  `companyname` varchar(255) NOT NULL,
-  `unity` varchar(255) NOT NULL,
-  `expiredate` int(255) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `images` int(255) NOT NULL,
-  `created_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `product_id` INTEGER NOT NULL,
+   `productname` TEXT NOT NULL,
+  `quantity` INTEGER NOT NULL,
+  `price` REAL NOT NULL,
+  `tprice` REAL NOT NULL,
+  `companyname` TEXT NOT NULL,
+  `unity` TEXT NOT NULL,
+  `expiredate` INTEGER NOT NULL,
+  `description` TEXT NOT NULL,
+  `images` INTEGER NOT NULL,
+  `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `customersale` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `salername` varchar(255) NOT NULL,
-  `customername` varchar(255) NOT NULL,
-  `totalsale` decimal(65,2) NOT NULL,
-  `discount` decimal(65,2) NOT NULL,
-  `grandtotal` decimal(65,2) NOT NULL,
-  `days` int(11) NOT NULL,
-  `month` varchar(11) NOT NULL,
-  `year` int(11) NOT NULL,
-  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `salername` TEXT NOT NULL,
+  `customername` TEXT NOT NULL,
+  `totalsale` REAL NOT NULL,
+  `discount` REAL NOT NULL,
+  `grandtotal` REAL NOT NULL,
+  `days` INTEGER NOT NULL,
+  `month` TEXT NOT NULL,
+  `year` INTEGER NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `login` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uid` int(11) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `username` varchar(255) NOT NULL,
-  `type` varchar(255) NOT NULL,PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `uid` INTEGER NOT NULL,
+  `password` TEXT NOT NULL,
+  `username` TEXT NOT NULL,
+  `type` TEXT NOT NULL
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 $query = "SELECT id FROM login";
-		$result12 = mysqli_query($conn, $query);
-		if(mysqli_num_rows($result12) == 0) {
+		$result12 = $conn->query($query);
+		if($result12 && count($result12->fetchAll()) == 0) {
 
 $sql = "INSERT INTO `login` (`id`, `uid`, `password`, `username`, `type`) VALUES
 (1, 1, 'c4ca4238a0b923820dcc509a6f75849b', 'a', 'Admin')";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 }
 
 $sql = "CREATE TABLE IF NOT EXISTS `moneyin` (
-  `id` int(255) NOT NULL AUTO_INCREMENT,
-  `total_amount` decimal(65,2) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `day` int(255) NOT NULL,
-  `month` varchar(255) NOT NULL,
-  `year` int(255) NOT NULL,PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `total_amount` REAL NOT NULL,
+  `name` TEXT NOT NULL,
+  `day` INTEGER NOT NULL,
+  `month` TEXT NOT NULL,
+  `year` INTEGER NOT NULL
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `moneyin_des` (
-  `did` int(11) NOT NULL AUTO_INCREMENT,
-  `money_id` int(11) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `amount` decimal(65,2) NOT NULL,PRIMARY KEY (`did`)
+  `did` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `money_id` INTEGER NOT NULL,
+  `description` TEXT NOT NULL,
+  `amount` REAL NOT NULL
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS `moneyout` (
-  `id` int(255) NOT NULL AUTO_INCREMENT,
-  `total_amount` decimal(65,2) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `day` int(11) NOT NULL,
-  `month` varchar(11) NOT NULL,
-  `year` int(11) NOT NULL,PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `total_amount` REAL NOT NULL,
+  `name` TEXT NOT NULL,
+  `day` INTEGER NOT NULL,
+  `month` TEXT NOT NULL,
+  `year` INTEGER NOT NULL
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `moneyout_des` (
-  `did` int(11) NOT NULL AUTO_INCREMENT,
-  `money_id` int(11) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `amount` decimal(65,2) NOT NULL,PRIMARY KEY (`did`)
+  `did` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `money_id` INTEGER NOT NULL,
+  `description` TEXT NOT NULL,
+  `amount` REAL NOT NULL
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS `newemployee` (
-  `EmpID` int(100) NOT NULL AUTO_INCREMENT,
-  `FullName` varchar(255) NOT NULL,
-  `Gender` varchar(255) NOT NULL,
-  `DOB` varchar(255) NOT NULL,
-  `Age` int(255) NOT NULL,
-  `Hometown` varchar(255) NOT NULL,
-  `Nationality` varchar(255) NOT NULL,
-  `Phonenum` varchar(20) NOT NULL,
-  `Mail` varchar(255) NOT NULL,
-  `Address` varchar(255) NOT NULL,
-  `Address2` varchar(255) NOT NULL,
-  `Status` varchar(255) NOT NULL,
-  `Department` varchar(255) NOT NULL,
-  `Lastschool` varchar(255) NOT NULL,
-  `Qualification` varchar(255) NOT NULL,
-  `StartingDate` varchar(255) NOT NULL,
-  `Employer` varchar(255) NOT NULL,
-  `Language` varchar(255) NOT NULL,
-  `Religion` varchar(255) NOT NULL,
-  `picture` varchar(255) NOT NULL,PRIMARY KEY (`EmpID`)
+  `EmpID` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `FullName` TEXT NOT NULL,
+  `Gender` TEXT NOT NULL,
+  `DOB` TEXT NOT NULL,
+  `Age` INTEGER NOT NULL,
+  `Hometown` TEXT NOT NULL,
+  `Nationality` TEXT NOT NULL,
+  `Phonenum` TEXT NOT NULL,
+  `Mail` TEXT NOT NULL,
+  `Address` TEXT NOT NULL,
+  `Address2` TEXT NOT NULL,
+  `Status` TEXT NOT NULL,
+  `Department` TEXT NOT NULL,
+  `Lastschool` TEXT NOT NULL,
+  `Qualification` TEXT NOT NULL,
+  `StartingDate` TEXT NOT NULL,
+  `Employer` TEXT NOT NULL,
+  `Language` TEXT NOT NULL,
+  `Religion` TEXT NOT NULL,
+  `picture` TEXT NOT NULL
 )";
 
-$result1 = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 
 $query = "SELECT EmpID FROM newemployee";
-		$result = mysqli_query($conn, $query);
-		if(mysqli_num_rows($result) == 0) {
+		$result = $conn->query($query);
+		if($result && count($result->fetchAll()) == 0) {
 
 $sql = "INSERT INTO `newemployee` (`EmpID`, `FullName`, `Gender`, `DOB`, `Age`, `Hometown`, `Nationality`, `Phonenum`, `Mail`, `Address`, `Address2`, `Status`, `Department`, `Lastschool`, `Qualification`, `StartingDate`, `Employer`, `Language`, `Religion`, `picture`) VALUES
 
 (1, 'benedicta YAA AKORLI', 'Male', '2005-02-02', 24, 'bokorkrom', 'Ghanaian', '0553896769', 'botee2020@gmail.com', '	bokorkrom d/a basic school post office box 88 daboase	\r\n		', '	bokorkrom d/a basic school post office box 88 daboase	\r\n		', 'Active', 'Active', 'benedicta YAA AKORLI', 'Degree', '2022-01-15', '', 'Nzema', 'Christian', '1641072420_1633495740_Ea-Softlogo.png')";
 
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 }
 
 $sql = "CREATE TABLE IF NOT EXISTS `logs` (
-  `id` int(255) NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL,
-  `purpose` varchar(255) NOT NULL,
-  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `username` TEXT NOT NULL,
+  `purpose` TEXT NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `note` (
-  `id` int(255) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL,
-  `notee` varchar(255) NOT NULL,
-  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `title` TEXT NOT NULL,
+  `notee` TEXT NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `prod` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `name` TEXT NOT NULL
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `products` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `product_no` varchar(11) NOT NULL,
-  `product_name` varchar(11) DEFAULT NULL,
-  `sell_price` decimal(18,2) DEFAULT NULL,
-  `cprice` decimal(65,2) NOT NULL,
-  `quantity` int(11) DEFAULT NULL,
-  `unit` varchar(30) DEFAULT NULL,
-  `min_stocks` int(11) DEFAULT NULL,
-  `expire_date` varchar(255) NOT NULL,
-  `remarks` text,
-  `location` varchar(255) NOT NULL,
-  `images` varchar(255) NOT NULL,PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `product_no` TEXT NOT NULL,
+  `product_name` TEXT DEFAULT NULL,
+  `sell_price` REAL DEFAULT NULL,
+  `cprice` REAL NOT NULL,
+  `quantity` INTEGER DEFAULT NULL,
+  `unit` TEXT DEFAULT NULL,
+  `min_stocks` INTEGER DEFAULT NULL,
+  `expire_date` TEXT NOT NULL,
+  `remarks` TEXT,
+  `location` TEXT NOT NULL,
+  `images` TEXT NOT NULL
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 $sql = "CREATE TABLE IF NOT EXISTS `salecustomeriterm` (
-  `barcode` int(11) NOT NULL AUTO_INCREMENT,
-  `product` varchar(255) NOT NULL,
-  `price` decimal(65,2) NOT NULL,
-  `unit` varchar(255) NOT NULL,
-  `qty` int(255) NOT NULL,
-  `subtotal` decimal(65,2) NOT NULL,
-  `salecustomerid` int(255) NOT NULL,PRIMARY KEY (`barcode`)
+  `barcode` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `product` TEXT NOT NULL,
+  `price` REAL NOT NULL,
+  `unit` TEXT NOT NULL,
+  `qty` INTEGER NOT NULL,
+  `subtotal` REAL NOT NULL,
+  `salecustomerid` INTEGER NOT NULL
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `sales` (
-  `reciept_no` int(11) NOT NULL AUTO_INCREMENT,
-  `customer_id` int(11) NOT NULL,
-  `username` varchar(30) NOT NULL,
-  `discount` decimal(65,2) NOT NULL,
-  `total` decimal(65,2) NOT NULL,
-  `grandtotal` decimal(65,2) NOT NULL,
-  `typeofcash`varchar(30) NOT NULL,
-  `days` int(11) NOT NULL,
-  `month` varchar(11) NOT NULL,
-  `years` int(11) NOT NULL,
-  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (`reciept_no`)
+  `reciept_no` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `customer_id` INTEGER NOT NULL,
+  `username` TEXT NOT NULL,
+  `discount` REAL NOT NULL,
+  `total` REAL NOT NULL,
+  `grandtotal` REAL NOT NULL,
+  `typeofcash` TEXT NOT NULL,
+  `days` INTEGER NOT NULL,
+  `month` TEXT NOT NULL,
+  `years` INTEGER NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `sales_product` (
-  `reciept_no` int(11) NOT NULL,
-  `product_id` varchar(20) NOT NULL,
-  `price` decimal(18,2) NOT NULL,
-  `qty` int(11) NOT NULL,
-  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `reciept_no` INTEGER NOT NULL,
+  `product_id` TEXT NOT NULL,
+  `price` REAL NOT NULL,
+  `qty` INTEGER NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `supplier` (
-  `supplier_id` int(11) NOT NULL AUTO_INCREMENT,
-  `companyname` varchar(30) NOT NULL,
-  `firstname` varchar(30) NOT NULL,
-  `lastname` varchar(30) NOT NULL,
-  `address` text NOT NULL,
-  `contact_number` varchar(30) NOT NULL,
-  `image` varchar(60) NOT NULL,PRIMARY KEY (`supplier_id`)
+  `supplier_id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `companyname` TEXT NOT NULL,
+  `firstname` TEXT NOT NULL,
+  `lastname` TEXT NOT NULL,
+  `address` TEXT NOT NULL,
+  `contact_number` TEXT NOT NULL,
+  `image` TEXT NOT NULL
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `suppliercompany` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `companynameid` int(11) NOT NULL,
-  `price2` decimal(65,2) NOT NULL,
-  `multtota2` decimal(65,2) NOT NULL,
-  `date_deliver` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `companynameid` INTEGER NOT NULL,
+  `price2` REAL NOT NULL,
+  `multtota2` REAL NOT NULL,
+  `date_deliver` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `supplierdeliver` (
-  `sid` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `image` int(11) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `supplierid` int(11) NOT NULL,
-  `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (`sid`)
+  `sid` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `name` TEXT NOT NULL,
+  `image` INTEGER NOT NULL,
+  `description` TEXT NOT NULL,
+  `supplierid` INTEGER NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `firstname` varchar(30) NOT NULL,
-  `lastname` varchar(30) NOT NULL,
-  `position` varchar(20) NOT NULL,
-  `contact_number` varchar(30) NOT NULL,
-  `picture` varchar(255) NOT NULL,PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `firstname` TEXT NOT NULL,
+  `lastname` TEXT NOT NULL,
+  `position` TEXT NOT NULL,
+  `contact_number` TEXT NOT NULL,
+  `picture` TEXT NOT NULL
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 
 $sql = "CREATE TABLE IF NOT EXISTS `warehouse` (
-  `sid` int(11) NOT NULL AUTO_INCREMENT,
-  `supplierid` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `price` decimal(65,2) NOT NULL,
-  `multtota` int(11) NOT NULL,
-  `unit` varchar(255) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `expire_date` varchar(11) NOT NULL,
-  `picture` varchar(255) NOT NULL,
-  `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (`sid`)
+  `sid` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `supplierid` INTEGER NOT NULL,
+  `name` TEXT NOT NULL,
+  `quantity` INTEGER NOT NULL,
+  `price` REAL NOT NULL,
+  `multtota` INTEGER NOT NULL,
+  `unit` TEXT NOT NULL,
+  `description` TEXT NOT NULL,
+  `expire_date` TEXT NOT NULL,
+  `picture` TEXT NOT NULL,
+  `create_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 
 $sql1 = "CREATE TABLE IF NOT EXISTS `newstock` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `productID` int(11) NOT NULL,
-  `product_no` varchar(11) NOT NULL,
-  `product_name` varchar(255) NOT NULL,
-  `sell_price` decimal(18,2) NOT NULL,
-  `cprice` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `unit` varchar(11) NOT NULL,
-  `min_stocks` int(11) NOT NULL,
-  `expire_date` varchar(11) NOT NULL,
-  `remarks` text NOT NULL,
-  `supplier_id` int(11) NOT NULL,
-  `images` varchar(11) NOT NULL,
-  `date_created` datetime NOT NULL DEFAULT current_timestamp(),PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `productID` INTEGER NOT NULL,
+  `product_no` TEXT NOT NULL,
+  `product_name` TEXT NOT NULL,
+  `sell_price` REAL NOT NULL,
+  `cprice` INTEGER NOT NULL,
+  `quantity` INTEGER NOT NULL,
+  `unit` TEXT NOT NULL,
+  `min_stocks` INTEGER NOT NULL,
+  `expire_date` TEXT NOT NULL,
+  `remarks` TEXT NOT NULL,
+  `supplier_id` INTEGER NOT NULL,
+  `images` TEXT NOT NULL,
+  `date_created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
-$result = mysqli_query($conn, $sql1);
+$conn->exec($sql1);
 
 
 
 $sql2 = "CREATE TABLE IF NOT EXISTS `cashtype` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `typeofcash` varchar(11) NOT NULL,PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `typeofcash` TEXT NOT NULL
 )";
-$result = mysqli_query($conn, $sql2);
+$conn->exec($sql2);
 
 
 $query = "SELECT id FROM cashtype";
-    $result = mysqli_query($conn, $query);
-    if(mysqli_num_rows($result) == 0) {
+    $result = $conn->query($query);
+    if($result && count($result->fetchAll()) == 0) {
 $sql ="INSERT INTO `cashtype` (`id`, `typeofcash`) VALUES
 (1, 'cash'),
 (2, 'e_cash')";
 
-$result = mysqli_query($conn, $sql);
+$conn->exec($sql);
 }
 
 $query1 ="CREATE TABLE IF NOT EXISTS`cashtypee` (
-  `id` int(35) NOT NULL AUTO_INCREMENT,
-  `supppliername` int(255) NOT NULL,
-  `batchno` varchar(255) NOT NULL,
-  `currentpayment` int(35) NOT NULL,
-  `suppliercurrentbilling` int(35) NOT NULL,
-  `amountpaid` decimal(65,2) NOT NULL,
-  `amountpayable` decimal(65,2) NOT NULL,
-  `remark` varchar(255) NOT NULL,
-  `created_date` timestamp NOT NULL DEFAULT current_timestamp(),PRIMARY KEY (`id`)
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `supppliername` INTEGER NOT NULL,
+  `batchno` TEXT NOT NULL,
+  `currentpayment` INTEGER NOT NULL,
+  `suppliercurrentbilling` INTEGER NOT NULL,
+  `amountpaid` REAL NOT NULL,
+  `amountpayable` REAL NOT NULL,
+  `remark` TEXT NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
-$result = mysqli_query($conn, $query1);
-
-
-
-$conn -> close();
-
-
-
-}else{
-	echo $result;
-}
+$conn->exec($query1);

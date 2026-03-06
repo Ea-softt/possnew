@@ -1,18 +1,15 @@
 <?php
-$database	= 'PointOfSale';
-$username	= 'root';
-$host		= 'localhost';
-$password	= '';		//eMMA2020@
+$database	= 'pos.db';
 $msg 		= '';
 
 ini_set('display_errors',1);
 error_reporting(E_ALL);
-mysqli_report(MYSQLI_REPORT_ERROR | E_DEPRECATED);
 
-$db	= mysqli_connect($host,$username,$password,$database);
-
-if($db == false){
-	die("Conne Failed: ".mysql_connect_error());
+try {
+	$db = new PDO("sqlite:" . __DIR__ . "/" . $database);
+	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch(PDOException $e) {
+	die("Connection Failed: " . $e->getMessage());
 }
 /*
 if(!isset($_SESSION)){
@@ -28,4 +25,3 @@ if (isset($_POST['logout'])){
 	header('location: ../index.php');
 }
 */
-
