@@ -3,11 +3,12 @@
 
 	if (isset($_POST['products'])){
 
-		$name = mysqli_real_escape_string($conn,$_POST['products']);
-		$show 	= "SELECT * FROM warehouse WHERE name LIKE '$name%' AND quantity > 0 OR sid = '$name' AND quantity > 0";
-		$query 	= mysqli_query($conn,$show);
-		if(mysqli_num_rows($query)>0){
-			while($row = mysqli_fetch_array($query)){
+		$name = $_POST['products'];
+		$stmt = $conn->prepare("SELECT * FROM warehouse WHERE (name LIKE :name AND quantity > 0) OR (sid = :sid AND quantity > 0)");
+		$stmt->execute([':name' => $name . '%', ':sid' => $name]);
+		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		if(count($result) > 0){
+			foreach($result as $row){
 				
 					echo '<div class="row ">
 					    <div class="col-lg-4 border-right">
@@ -151,20 +152,3 @@
 		echo '<option> No State Found </option>';
 		}
 } -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

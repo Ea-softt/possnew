@@ -2,13 +2,13 @@
 include('server/config.php');
 
 	
-	$query 	= mysqli_real_escape_string($conn, $_POST['query']);	
-	$show 	= "SELECT * FROM customer WHERE firstnamec LIKE '%{$query}%'";
-	$result	= mysqli_query($conn,$show);
+	$query 	= $_POST['query'];
+	$stmt 	= $conn->prepare("SELECT * FROM customer WHERE firstnamec LIKE :query");
+	$stmt->execute([':query' => '%' . $query . '%']);
+	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 	$array  = array();
 
-		while($row = mysqli_fetch_assoc($result)){
+		foreach($result as $row){
 			$array[] =$row['firstnamec'].' '.$row['lastnamec'];				
 		}
 		print json_encode($array);
-

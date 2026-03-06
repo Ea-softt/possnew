@@ -3,11 +3,12 @@ include('server/config.php');
 
 	if (isset($_POST['products'])){
 
-		$name = mysqli_real_escape_string($conn,$_POST['products']);
-		$show 	= "SELECT * FROM products WHERE product_name LIKE '$name%' AND quantity > 0 OR product_no LIKE '$name%' AND quantity > 0";
-		$query 	= mysqli_query($conn,$show);
-		if(mysqli_num_rows($query)>0){
-			while($row = mysqli_fetch_array($query)){
+		$name = $_POST['products'] . '%';
+		$stmt = $conn->prepare("SELECT * FROM products WHERE (product_name LIKE :name AND quantity > 0) OR (product_no LIKE :name AND quantity > 0)");
+		$stmt->execute([':name' => $name]);
+		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		if(count($result) > 0){
+			foreach($result as $row){
 				echo "<tr class='js-add' data-barcode=".$row['product_no']." data-product=".$row['product_name']." data-price=".$row['sell_price']." data-unt=".$row['unit']." data-min=".$row['min_stocks']." data-quantity=".$row['quantity']."><td>".$row['product_no']."</td><td>".$row['product_name']."</td>";
 				echo "<td>Ghc".$row['sell_price']."</td>";
 				echo "<td>".$row['unit']."</td>";
