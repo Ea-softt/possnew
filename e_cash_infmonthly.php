@@ -25,7 +25,7 @@ if(isset($_POST["start_date"], $_POST['end_date']))
 
 	 $sql =mysqli_query($conn, $query);*/
 
-	  $payments = $conn->query("SELECT sp.*,ch.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID inner join cashtype ch on sp.typeofcash = ch.id where date_format(sp.created_date,'%Y-%m-%d') BETWEEN '".$_POST["start_date"]."' AND '".$_POST["end_date"]."' GROUP BY ch.id,date_format(sp.created_date,'%Y-%m-%d') order by unix_timestamp(sp.created_date) desc ");
+	  $payments = $conn->query("SELECT sp.*,ch.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID inner join cashtype ch on sp.typeofcash = ch.id where strftime('%Y-%m-%d', sp.created_date) BETWEEN '".$_POST["start_date"]."' AND '".$_POST["end_date"]."' GROUP BY ch.id,strftime('%Y-%m-%d', sp.created_date) order by strftime('%s', sp.created_date) desc ");
 
 	 $result .= '
  			<table   class="table table-bordered" id="report-list">

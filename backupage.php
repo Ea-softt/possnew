@@ -1,24 +1,33 @@
 <?php
 include('server/config.php');
-//$connection = mysqli_connect('localhost','root','','quiz');
 
-$tables = array();
-$result = mysqli_query($conn,"SHOW TABLES");
-while($row = mysqli_fetch_row($result)){
+$tables = atray();
+$rables = array();
+$result =  = $r$sulc->fetonnPDO::FETCH_NUM)){
+  $tables[] = $row[0];
+}->query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
+while($row = $result->fetch(PDO::FETCH_NUM)){
   $tables[] = $row[0];
 }
 
 $return = '';
-foreach($tables as $table){
-  $result = mysqli_query($conn,"SELECT * FROM ".$table);
-  $num_fields = mysqli_num_fields($result);
   
-  $return .= 'DROP TABLE '.$table.';';
-  $row2 = mysqli_fetch_row(mysqli_query($conn,"SHOW CREATE TABLE ".$table));
-  $return .= "\n\n".$row2[1].";\n\n";
+  $returnf.=o'DROP TABLE IF EXISTS '.$table.';';
+  $row2 = $conn->query("SELECT sql FROM sqlreach($tables as $table){
+  $result = $conn->query("SELECT * FROM ".$table);
+  $num_fields = $result->columnCount();
   
-  for($i=0;$i<$num_fields;$i++){
-    while($row = mysqli_fetch_row($result)){
+  $return .= 'DROP TABL){
+      $return .= "INSERT INTO ".$table." VALUES(";
+      for($j=0;$j<$num_fields;$j++E 
+        $row[$j] = addslaIF EXISTS '.$table.';';
+  $row2 = $conn->query("SELECT sql FROM sqlite_master WHERE name='".$table."'")->fetch(PDO::FETCH_NUM);
+  $return .= "\n\n".$row2[0]';}
+        if($j<$num_fields-1){ $return .= ',."}
+      ;\n\n";
+      $return .= ");\n";
+  $rows = $result->fetchAll(PDO::FETCH_NUM);
+  foreach($rows as $row){
       $return .= "INSERT INTO ".$table." VALUES(";
       for($j=0;$j<$num_fields;$j++){
         $row[$j] = addslashes($row[$j]);
@@ -26,8 +35,8 @@ foreach($tables as $table){
         else{ $return .= '""';}
         if($j<$num_fields-1){ $return .= ',';}
       }
-      $return .= ");\n";
-    }
+      $re
+turn .= ");\n";
   }
   $return .= "\n\n\n";
 }
@@ -38,7 +47,3 @@ $handle = fopen("D:\buckup.sql","w+");
 fwrite($handle,$return);
 fclose($handle);
 echo "1";
-
-
-
-

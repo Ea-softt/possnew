@@ -379,7 +379,7 @@ foreach ($fees->fetch_array() as $k => $v) {
                       $start_date = date('Y-m-d');
                       $end_date = date('Y-m-d');
                       
-                      $payments = $conn->query("SELECT sp.*,ch.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID inner join cashtype ch on sp.typeofcash = ch.id where date_format(sp.created_date,'%Y-%m-%d') BETWEEN '$start_date' AND '$end_date' GROUP BY ch.id,date_format(sp.created_date,'%Y-%m-%d') order by unix_timestamp(sp.created_date) desc ");
+                      $payments = $conn->query("SELECT sp.*,ch.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID inner join cashtype ch on sp.typeofcash = ch.id where strftime('%Y-%m-%d', sp.created_date) BETWEEN '$start_date' AND '$end_date' GROUP BY ch.id,strftime('%Y-%m-%d', sp.created_date) order by strftime('%s', sp.created_date) desc ");
                       
                       if($payments->num_rows > 0):
                       while($row = $payments->fetch_assoc()): 

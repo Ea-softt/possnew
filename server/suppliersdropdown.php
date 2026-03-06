@@ -1,5 +1,5 @@
 <?php
-include 'server/config.php'; 
+include 'config.php'; 
 
 if ($_POST['aja_id']){
 	$query = "SELECT * FROM supplier WHERE supplier_id=".$_POST['aja_id'];

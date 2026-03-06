@@ -19,7 +19,7 @@ if(!isset($_SESSION)){
 if (isset($_POST['logout'])){
 	$user = $_SESSION['username'];
 	$insert	= "INSERT INTO logs (username,purpose) VALUES('$user','User $user logout')";
- 	$logs = mysqli_query($db,$insert);
+ 	$logs = $db->exec($insert);
 	session_destroy();
 	unset($_SESSION['username']);
 	header('location: ../index.php');
