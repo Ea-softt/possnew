@@ -116,9 +116,9 @@ include("head.php");
 */
                      $query = "SELECT * FROM sales WHERE created_date BETWEEN '$from_date' AND '$to_date'  GROUP BY grandtotal"; 
                      
-                    $data =mysqli_query($conn,$query) or die('error');
-                   if (mysqli_num_rows($data) > 0){
-                    while($row=mysqli_fetch_assoc($data)){
+                    $data =$conn->query($query);
+                   if ($data->rowCount() > 0){
+                    while($row=$data->fetch(PDO::FETCH_ASSOC)){
                       
                        $grandtotal += $row['grandtotal'];
                        $total += $row['total'];
@@ -176,9 +176,9 @@ include("head.php");
 
                 $query = "SELECT sp.*,ct.*, sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID WHERE sp.created_date BETWEEN '$from_date' AND '$to_date' GROUP BY username,grandtotal"; 
                      
-                    $data =mysqli_query($conn,$query) or die('error');
-                   if (mysqli_num_rows($data) > 0){
-                    while($row=$data->fetch_assoc()){
+                    $data =$conn->query($query);
+                   if ($data->rowCount() > 0){
+                    while($row=$data->fetch(PDO::FETCH_ASSOC)){
                       $customer_first = $row['FullName'];
                       
                       $grad = $row['grad'];

@@ -45,10 +45,10 @@ if(isset($_POST["start_date"], $_POST['end_date']))
                              <th class="text-center">Diff</th>  
                              <th class="text-center">Date</th>                             
                         </tr>';
-                         if($payments->num_rows ){
+                         if($payments->rowCount() > 0){
 
 
-                      while($row = $payments->fetch_array()){
+                      while($row = $payments->fetch(PDO::FETCH_ASSOC)){
                       	 $stotal += $row['stotal'];
                         $ctotal += $row['ctotal'];
                         $diff += $row['diff'];

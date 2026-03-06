@@ -3,11 +3,12 @@
 
 	if (isset($_POST['products'])){
 
-		$name = mysqli_real_escape_string($conn,$_POST['products']);
-		$show 	= "SELECT * FROM warehouse WHERE name LIKE '$name%' OR sid LIKE '$name%'";
-		$query 	= mysqli_query($conn,$show);
-		if(mysqli_num_rows($query)>0){
-			while($row = mysqli_fetch_array($query)){
+		$name = $_POST['products'];
+		$stmt = $conn->prepare("SELECT * FROM warehouse WHERE name LIKE :name OR sid LIKE :name");
+		$stmt->execute([':name' => $name . '%']);
+		$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		if(count($result) > 0){
+			foreach($result as $row){
 				
 				
 				echo '<div class="form-group">

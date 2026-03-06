@@ -3,7 +3,7 @@ include("server/config.php");
 
 if(isset($_GET['EmpID'])){
 $qry = $conn->query("SELECT * FROM newemployee where EmpID= ".$_GET['EmpID']);
-foreach($qry->fetch_array() as $k => $val){
+foreach($qry->fetch(PDO::FETCH_ASSOC) as $k => $val){
     $$k=$val;
      $meta[$k] = $val;
 }

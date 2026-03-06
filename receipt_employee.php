@@ -5,7 +5,7 @@ require_once('TCPDF-main/tcpdf.php');
 
 $classexamin = $conn->query("SELECT * FROM  newemployee  where EmpID = {$_GET['EmpID']}");
 
-foreach($classexamin->fetch_array() as $k => $v){
+foreach($classexamin->fetch(PDO::FETCH_ASSOC) as $k => $v){
 	$$k= $v;
 	$meta[$k] = $v;
 

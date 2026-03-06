@@ -23,7 +23,7 @@ if(isset($_POST["start_date"], $_POST['end_date']))
 	$result = '';
 	/* $query = "SELECT sp.*,ct.*, sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID WHERE date_format(sp.created_date,'%Y-%m-%d') BETWEEN '".$start_date."' AND '".$end_date."' GROUP BY username order by unix_timestamp(sp.created_date) asc ";  
 
-	 $sql =mysqli_query($conn, $query);*/
+	 $sql =$conn->query($query);*/
 
 	  $payments = $conn->query("SELECT sp.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID where date_format(sp.created_date,'%Y-%m-%d') BETWEEN '".$_POST["start_date"]."' AND '".$_POST["end_date"]."' GROUP BY sp.username,date_format(sp.created_date,'%Y-%m-%d') order by unix_timestamp(sp.created_date) desc ");
 
@@ -38,10 +38,10 @@ if(isset($_POST["start_date"], $_POST['end_date']))
                             <th class="text-center">Grandtotal</th>   
                             <th class="text-center">Date</th>                           
                         </tr>';
-                         if($payments->num_rows ){
+                         if($payments->rowCount() > 0){
 
 
-                      while($row = $payments->fetch_array()){
+                      while($row = $payments->fetch(PDO::FETCH_ASSOC)){
                       	 $grandtotal += $row['grad'];
                         $customer_first = $row['FullName'];
                         $username = $row['username'];
