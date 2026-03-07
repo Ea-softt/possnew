@@ -706,8 +706,8 @@ function save_supplierdeliverin() {
 
     $data = " name = '" . str_replace("'", "&#x2019;", $companyName) . "' ";
     $data .= ", `description` = '$description' ";
-    $cols = "name, description";
-    $vals = "'" . str_replace("'", "&#x2019;", $companyName) . "', '$description'";
+    $cols = "name, description, supplierid";
+    $vals = "'" . str_replace("'", "&#x2019;", $companyName) . "', '$description', '0'";
 
     // Handle existing images
     $existingImages = isset($existing_images) ? $existing_images : [];

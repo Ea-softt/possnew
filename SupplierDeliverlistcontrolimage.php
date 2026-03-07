@@ -85,7 +85,7 @@ foreach($qry->fetch_array() as $k => $val){
                                 <option value="" selected disabled>Select Company</option>
                                 <?php
                                 $companies = $conn->query("SELECT supplier_id, companyname FROM supplier");
-                                while ($company = $companies->fetch_assoc()) {
+                                while ($company = $companies->fetch(PDO::FETCH_ASSOC)) {
                                     $selected = (isset($companynameid) && $companynameid == $company['supplier_id']) ? 'selected' : '';
                                     echo "<option value='{$company['supplier_id']}' $selected>{$company['companyname']}</option>";
                                 }
