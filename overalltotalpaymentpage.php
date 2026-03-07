@@ -376,7 +376,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                                 $i = 1;
                                 $fees = $conn->query("SELECT c.*,s.* FROM cashtypee c inner join supplier s on  c.supppliername = s.supplier_id order by created_date  desc ");
 
-                                while($row=$fees->fetch_assoc()):
+                                while($row=$fees->fetch(PDO::FETCH_ASSOC)):
                                 /*  $paid = $conn->query("SELECT sum(amountt) as paid FROM paypay_supplier where paymen_supplierID=".$row['id']);
                                     $paid = $paid->num_rows > 0 ? $paid->fetch_array()['paid']:'';
                                     $balance = $row['amount'] - $paid;*/

@@ -45,11 +45,10 @@ if(isset($_GET['id'])){
 
                    while($row= $fees->fetch(PDO::FETCH_ASSOC)):          
                    	$ids = $row['supplier_id'];                                                                                                                                                                                                                                                                                                                    
-                   /*	$paid = $conn->query("SELECT sum(amountpayable) as paid, (suppliercurrentbilling) as bat FROM cashtypee  where supppliername = $ids");
-						$paid = $paid->num_rows > 0 ? $roww = $paid->fetch_array():'';
-						echo $paid;
-						$pai = $roww['paid'];
-                        $paid = $roww['bat'];*/
+                   	$paid_query = $conn->query("SELECT sum(amountpayable) as paid, suppliercurrentbilling as bat FROM cashtypee  where supppliername = $ids");
+					$roww = $paid_query->fetch(PDO::FETCH_ASSOC);
+					$pai = $roww['paid'] ?? 0;
+                    $paid = $roww['bat'] ?? 0;
                 ?> 
                  <option  value="<?php echo $row['supplier_id'] ?>" data-balance="<?php echo $pai ?>" data-paid="<?php echo $paid ?>" <?php echo isset($ef_id) && $ef_id == $row['supplier_id'] ? 'selected' : '' ?>><?php echo  ucwords($row['companyname']) ?></option>
 
@@ -107,10 +106,10 @@ if(isset($_GET['id'])){
 	</form>
 </div>
 <script>
-	$('.select2').select2({
-		placeholder:'Please select here',
-		width:'100%'
-	})
+	// $('.select2').select2({
+	// 	placeholder:'Please select here',
+	// 	width:'100%'
+	// })
 
 	$(document).ready(function(){
    var x = Number($("#currentpayment").val());
