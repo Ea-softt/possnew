@@ -105,7 +105,7 @@ foreach($classexamin->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             // Fetch images from the supplierdeliver table
             $imagesQuery = $conn->query("SELECT image FROM supplierdeliver WHERE sid = $sid");
             $images = [];
-            while ($row = $imagesQuery->fetch_assoc()) {
+            while ($row = $imagesQuery->fetch(PDO::FETCH_ASSOC)) {
                 if (!empty($row['image'])) {
                     $imagePaths = explode(',', $row['image']);
                     $images = array_merge($images, $imagePaths);
@@ -219,7 +219,7 @@ foreach($classexamin->fetch(PDO::FETCH_ASSOC) as $k => $v) {
 //require_once('TCPDF-main/tcpdf.php');
 $classexamin = $conn->query("SELECT * FROM suppliercompany sc inner join supplier s on sc.companynameid = s.supplier_id where id = {$_GET['id']}");
 
-foreach($classexamin->fetch_array() as $k => $v){
+foreach($classexamin->fetch(PDO::FETCH_ASSOC) as $k => $v){
 	$$k= $v;
 	  $meta[$k] = $v;
 }
@@ -307,7 +307,7 @@ foreach($classexamin->fetch_array() as $k => $v){
 				$ttotal = 0;
 				$ptotal = 0;
 
-				while ($row = $cfees->fetch_assoc()) {
+				while ($row = $cfees->fetch(PDO::FETCH_ASSOC)) {
 					$ptotal += $row['price'];
 					$ttotal += $row['multtota'];
 				?>

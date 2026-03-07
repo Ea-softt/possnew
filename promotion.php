@@ -224,7 +224,7 @@ include('insert_stockdrop.php');
               <?php 
                  $i = 1;
                  $student = $conn->query("SELECT * FROM warehouse order by quantity asc ");
-                    while($row=$student->fetch_assoc()):
+                    while($row=$student->fetch(PDO::FETCH_ASSOC)):
                         ?>
                 <tr >
                    

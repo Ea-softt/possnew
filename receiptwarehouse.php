@@ -118,7 +118,7 @@ foreach($feet->fetch_array() as $t => $u){
                 $i = 1;
                 $fees = $conn->query("SELECT * FROM warehouse order by quantity desc ");
 
-                while($row=$fees->fetch_assoc()):
+                while($row=$fees->fetch(PDO::FETCH_ASSOC)):
 					
 	   
                 ?>

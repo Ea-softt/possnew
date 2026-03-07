@@ -3,7 +3,8 @@ include('server/config.php');
 
 if(isset($_GET['id'])){
 $user = $conn->query("SELECT * FROM login where id =".$_GET['id']);
-foreach($user->fetch_array() as $k =>$v){
+
+foreach($user->fetch(PDO::FETCH_ASSOC) as $k =>$v){
 	$meta[$k] = $v;
 }
 }
@@ -24,8 +25,9 @@ foreach($user->fetch_array() as $k =>$v){
                  <?php
                     $query = "SELECT * FROM newemployee";
                     $result = $conn->query($query);
-                   if ($result->num_rows > 0) {
-                    while($row= $result->fetch_assoc()){                    
+                                 
+                   if ($result->rowCount() > 0) {
+                    while($row= $result->fetch(PDO::FETCH_ASSOC)){                    
              
                     }
                   }
@@ -33,7 +35,7 @@ foreach($user->fetch_array() as $k =>$v){
                    <?php
                     $fees = $conn->query("SELECT * FROM newemployee ");
 
-                    while($row= $fees->fetch_assoc()):
+                    while($row= $fees->fetch(PDO::FETCH_ASSOC)):
                         
                 ?>
                 <option value="<?php echo $row['EmpID'] ?>" ><?php echo 'Staff'.' | '.$row['EmpID'].' | '.ucwords($row['FullName']) ?></option>

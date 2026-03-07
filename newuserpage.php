@@ -380,7 +380,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
  					 					
  					$users = $conn->query("SELECT * FROM login order by id desc");
  					$i = 1;
- 					while($row= $users->fetch_assoc()):
+ 					while($row= $users->fetch(PDO::FETCH_ASSOC)):
 				 ?>
 				 <tr>
 				 	<td class="text-center">

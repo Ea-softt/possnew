@@ -69,7 +69,7 @@ while($row=$payments->fetch_array()){
 					<?php 
 				$cfees = $conn->query("SELECT * FROM paymen_supplier where id = $paymen_supplierID");
 				$ftotal = 0;
-				while ($row = $cfees->fetch_assoc()) {
+				while ($row = $cfees->fetch(PDO::FETCH_ASSOC)) {
 					$ftotal += $row['amount'];
 				?>
 				<tr>

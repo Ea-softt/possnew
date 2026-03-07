@@ -24,8 +24,8 @@ if(isset($_GET['id'])){
                  <?php
                     $query = "SELECT * FROM supplier ";
                     $result = $conn->query($query);
-                   if ($result->num_rows > 0) {
-                    while($row= $result->fetch_assoc()){                    
+                   if ($result->rowCount() > 0) {
+                    while($row= $result->fetch(PDO::FETCH_ASSOC)){                    
              
                     }
                   }
@@ -43,10 +43,10 @@ if(isset($_GET['id'])){
 
 					 $fees = $conn->query("SELECT supplier_id, companyname, supppliername FROM supplier s inner join cashtypee c on  c.supppliername = s.supplier_id order by id limit 1");
 
-                   while($row= $fees->fetch_assoc()):          
+                   while($row= $fees->fetch(PDO::FETCH_ASSOC)):          
                    	$ids = $row['supplier_id'];                                                                                                                                                                                                                                                                                                                    
                    	$paid = $conn->query("SELECT sum(amountpayable) as paid, (suppliercurrentbilling) as bat FROM cashtypee  where supppliername = $ids");
-						$paid = $paid->num_rows > 0 ? $roww = $paid->fetch_array():'';
+						$paid = $paid->rowCount() > 0 ? $roww = $paid->fetch(PDO::FETCH_ASSOC):'';
 						echo $paid;
 						$pai = $roww['paid'];
                         $paid = $roww['bat'];

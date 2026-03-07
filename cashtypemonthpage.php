@@ -381,8 +381,8 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                       $total = 0;
                       $grandtotal = 0;
                       $payments = $conn->query("SELECT sp.*,ch.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID inner join cashtype ch on sp.typeofcash = ch.id GROUP BY ch.id  order by strftime('%s', sp.created_date) desc ");
-                      if($payments->num_rows > 0):
-                      while($row = $payments->fetch_assoc()): //date_format(sp.created_date,'%Y-%m-%d')
+                      if($payments->rowCount() > 0):
+                      while($row = $payments->fetch(PDO::FETCH_ASSOC)): //date_format(sp.created_date,'%Y-%m-%d')
                         $grandtotal += $row['grad'];
                         $customer_first = $row['FullName'];
                         $username = $row['username'];

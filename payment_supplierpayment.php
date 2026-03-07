@@ -39,9 +39,9 @@ include'head.php';
 								$i = 1;
 								$fees = $conn->query("SELECT p.*,ps.* FROM paypay_supplier ps inner join paymen_supplier p on p.id = ps.paymen_supplierID GROUP BY ps.paymen_supplierID   order by ps.date_create  desc ");
 
-								while($row=$fees->fetch_assoc()):
+								while($row=$fees->fetch(PDO::FETCH_ASSOC)):
 									$paid = $conn->query("SELECT sum(amountt) as paid FROM paypay_supplier where paymen_supplierID=".$row['id']);
-									$paid = $paid->num_rows > 0 ? $paid->fetch_array()['paid']:'';
+									$paid = $paid->rowCount() > 0 ? $paid->fetch(PDO::FETCH_ASSOC)['paid']:'';
 									$balance = $row['amount'] - $paid;
 									
 								?>

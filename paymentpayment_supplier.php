@@ -22,8 +22,8 @@ if(isset($_GET['id'])){
                  <?php
                     $query = "SELECT * FROM paymen_supplier";
                     $result = $conn->query($query);
-                   if ($result->num_rows > 0) {
-                    while($row= $result->fetch_assoc()){                    
+                   if ($result->rowCount() > 0) {
+                    while($row= $result->fetch(PDO::FETCH_ASSOC)){                    
              
                     }
                   }
@@ -31,9 +31,9 @@ if(isset($_GET['id'])){
                    <?php
                     $fees = $conn->query("SELECT * FROM paymen_supplier ");
 
-                   while($row= $fees->fetch_assoc()):                                                                                                                                                                                                                                                                                                                                                                                                                  
+                   while($row= $fees->fetch(PDO::FETCH_ASSOC)):                                                                                                                                                                                                                                                                                                                                                                                                                  
                    	$paid = $conn->query("SELECT sum(amountt) as paid FROM paypay_supplier where paymen_supplierID=".$row['id'].(isset($id) ? " and id!=$id " : ''));
-						$paid = $paid->num_rows > 0 ? $paid->fetch_array()['paid']:'';
+						$paid = $paid->rowCount() > 0 ? $paid->fetch(PDO::FETCH_ASSOC)['paid']:'';
 						echo $paid;
 						$balance = $row['amount'] - $paid;
 
