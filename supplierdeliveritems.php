@@ -2,7 +2,7 @@
 include("head.php");
 
   $qry = $conn->query("SELECT sc.*,su.*,sd.* FROM suppliercompany sc inner join supplier su on sc.companynameid = su.supplier_id inner join supplierdeliver sd on sc.id = sd.supplierid where id = {$_GET['id']}");
-foreach($qry->fetch_array() as $k => $val){
+foreach($qry->fetch(PDO::FETCH_ASSOC) as $k => $val){
     $$k=$val;
 }
 
@@ -42,7 +42,7 @@ foreach($qry->fetch_array() as $k => $val){
                         if(isset($id)):
                     $fees = $conn->query("SELECT sc.*,sd.* FROM suppliercompany sc inner join supplierdeliver sd on sc.id = sd.supplierid where  id= $id");
                         
-                    while($row=$fees->fetch_assoc()): 
+                    while($row=$fees->fetch(PDO::FETCH_ASSOC)): 
                           $price2 += $row['price'];
                           $multtota2 += $row['multtota'];
                     ?>

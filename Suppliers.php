@@ -7,7 +7,7 @@ include 'easoftsql.php';
 
 if(isset($_GET['supplier_id'])){
 $qry = $conn->query("SELECT * FROM supplier where supplier_id= ".$_GET['supplier_id']);
-foreach($qry->fetch_array() as $k => $val){
+foreach($qry->fetch(PDO::FETCH_ASSOC) as $k => $val){
     $$k=$val;
     $meta[$k] = $val;
 }

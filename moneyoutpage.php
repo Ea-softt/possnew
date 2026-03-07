@@ -3,7 +3,7 @@ include('headside.php');
 include('insert_sales.php');
 
 $fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}'");
-foreach ($fees->fetch_array() as $k => $v) {
+foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     $$k = $v;
     $meta[$k] = $v;
 }
@@ -387,8 +387,8 @@ foreach ($fees->fetch_array() as $k => $v) {
                 $i = 1;
                 $total = 0;
                 $student = $conn->query("SELECT * FROM moneyout order by id desc ");
-                if($student->num_rows > 0):
-                while($row=$student->fetch_assoc()):
+                if($student->rowCount() > 0):
+                while($row=$student->fetch(PDO::FETCH_ASSOC)):
                    $total += $row['total_amount'];
                 ?>
                 <tr>

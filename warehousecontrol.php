@@ -7,7 +7,7 @@ include 'easoftsql.php';
 
 if(isset($_GET['sid'])){
 $qry = $conn->query("SELECT w.*, s.* FROM warehouse w inner join supplier s on w.supplierid = s.supplier_id  where sid=".$_GET['sid']);
-foreach($qry->fetch_array() as $k => $val){
+foreach($qry->fetch(PDO::FETCH_ASSOC) as $k => $val){
     $$k=$val;
     $meta[$k] = $val;
 }
@@ -54,8 +54,8 @@ foreach($qry->fetch_array() as $k => $val){
                  <?php
                     $query = "SELECT * FROM supplier";
                     $result = $conn->query($query);
-                   if ($result->num_rows > 0) {
-                    while($row= $result->fetch_assoc()){                    
+                   if ($result->rowCount() > 0) {
+                    while($row= $result->fetch(PDO::FETCH_ASSOC)){                    
              
                     }
                   }
@@ -63,7 +63,7 @@ foreach($qry->fetch_array() as $k => $val){
                     <?php
                     $fees = $conn->query("SELECT * FROM supplier");
 
-                    while($row= $fees->fetch_assoc()):
+                    while($row= $fees->fetch(PDO::FETCH_ASSOC)):
                         
                 ?>
                 <option value="<?php echo $row['supplier_id'] ?>" ><?php echo  $row['supplier_id'].' | '.ucwords($row['companyname']) ?></option>

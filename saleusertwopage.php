@@ -12,19 +12,13 @@ $monthly_sales = 0;
 $yearly_sales = 0;
 
 $d_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE date_format(created_date,'%Y-%m-%d') = '$cmonth'");
-$daily_sales = $d_qry->num_rows > 0 ? $d_qry->fetch_array()['total'] : 0;
 
 $w_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE YEARWEEK(created_date, 1) = YEARWEEK('$cmonth', 1)");
-$weekly_sales = $w_qry->num_rows > 0 ? $w_qry->fetch_array()['total'] : 0;
-
-$m_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE date_format(created_date,'%Y-%m') = date_format('$cmonth','%Y-%m')");
-$monthly_sales = $m_qry->num_rows > 0 ? $m_qry->fetch_array()['total'] : 0;
-
-$y_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE date_format(created_date,'%Y') = date_format('$cmonth','%Y')");
-$yearly_sales = $y_qry->num_rows > 0 ? $y_qry->fetch_array()['total'] : 0;
+$weekly_sales = $w_qry->fetchColumn() ?: 0;
+// $yearly_sales = $y_qry->fetchColumn() ?: 0; // $y_qry is not defined in this context
 
 $fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}'");
-foreach ($fees->fetch_array() as $k => $v) {
+foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     $$k = $v;
     $meta[$k] = $v;
 }

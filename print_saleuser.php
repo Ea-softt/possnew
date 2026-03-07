@@ -3,12 +3,12 @@ include 'server/config.php';
 require_once('TCPDF-main/tcpdf.php');
 
 $fees = $conn->query("SELECT * FROM sales sp inner join users us on sp.username = us.id inner join customer ct on sp.customer_id = ct.customer_id where username = {$_GET['username']}");
-foreach($fees->fetch_array() as $k => $v){
+foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
 	$$k= $v;
 }
 
 $feet = $conn->query("SELECT * FROM  sales_product  where username = {$_GET['username']}");
-foreach($feet->fetch_array() as $t => $u){
+foreach($feet->fetch(PDO::FETCH_ASSOC) as $t => $u){
 	$$t= $u;
 }
 

@@ -5,7 +5,7 @@ include 'easoftsql.php';
 
 if(isset($_GET['customer_id'])){
 $qry = $conn->query("SELECT * FROM customer where customer_id= ".$_GET['customer_id']);
-foreach($qry->fetch_array() as $k => $val){
+foreach($qry->fetch(PDO::FETCH_ASSOC) as $k => $val){
     $$k=$val;
     $meta[$k] = $val;
 }

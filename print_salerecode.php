@@ -2,7 +2,7 @@
 include 'server/config.php';
 
 $fees = $conn->query("SELECT * FROM sales sp inner join newemployee us on sp.username = us.EmpID inner join customer ct on sp.customer_id = ct.customer_id where reciept_no = {$_GET['reciept_no']}");
-foreach($fees->fetch_array() as $k => $v){
+foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
 	$$k= $v;
 }
 ?>

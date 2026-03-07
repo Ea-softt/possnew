@@ -6,12 +6,12 @@ include 'easoftsql.php';
 
 if(isset($_GET['id'])){
 $qry = $conn->query("SELECT mi.*,mi.name as Name  FROM moneyout mi inner join moneyout_des md on mi.id = md.money_id  where id= ".$_GET['id']);
-foreach($qry->fetch_array() as $k => $val){
+foreach($qry->fetch(PDO::FETCH_ASSOC) as $k => $val){
     $$k=$val;
 }
 }
 $fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}' ");
-foreach($fees->fetch_array() as $k => $v){
+foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
   $$k= $v;
   $meta[$k] = $v;
 }
@@ -129,7 +129,7 @@ foreach($fees->fetch_array() as $k => $v){
                         if(isset($id)):
                         $fees = $conn->query("SELECT * FROM moneyout_des where  money_id= $id");
                         $total = 0;
-                        while($row=$fees->fetch_assoc()): 
+                        while($row=$fees->fetch(PDO::FETCH_ASSOC)): 
                             $total += $row['amount'];
                     ?>
                         <tr>
