@@ -4,7 +4,7 @@ include("server/config.php");
 
 if(isset($_GET['id'])){
 $qry = $conn->query("SELECT * FROM note where id= ".$_GET['id']);
-foreach($qry->fetch_array() as $k => $val){
+foreach($qry->fetch(PDO::FETCH_ASSOC) as $k => $val){
     $$k=$val;
 }
 }

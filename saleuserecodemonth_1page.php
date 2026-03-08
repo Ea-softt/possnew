@@ -3,7 +3,7 @@ include('headside.php');
 include('insert_sales.php');
 
 $fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}'");
-foreach ($fees->fetch_array() as $k => $v) {
+foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     $$k = $v;
     $meta[$k] = $v;
 }
@@ -11,7 +11,7 @@ foreach ($fees->fetch_array() as $k => $v) {
  $month = isset($_GET['month']) ? $_GET['month'] : date('Ymd');
 
 $fees = $conn->query("SELECT sp.*,us.*,ct.* FROM sales sp inner join newemployee us on sp.username = us.EmpID inner join customer ct on sp.customer_id = ct.customer_id where date_format(sp.created_date,'%Y%m%d') = {$_GET['month']} and sp.username = {$_GET['username']} order by unix_timestamp(sp.created_date) asc ");
-foreach($fees->fetch_array() as $k => $v){
+foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
 	$$k= $v;
 }
 ?>

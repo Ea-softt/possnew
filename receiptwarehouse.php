@@ -4,7 +4,7 @@ require_once('TCPDF-main/tcpdf.php');
 
 
 $fees = $conn->query("SELECT * FROM warehouse ");
-foreach($fees->fetch_array() as $k => $v){
+foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
 	$$k= $v;
 }
 

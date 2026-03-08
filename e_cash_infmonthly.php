@@ -42,7 +42,7 @@ if(isset($_POST["start_date"], $_POST['end_date']))
                          if($payments->num_rows ){
 
 
-                      while($row = $payments->fetch_array()){
+                      while($row = $payments->fetch(PDO::FETCH_ASSOC)){
                       	 $grandtotal += $row['grad'];
                         $customer_first = $row['FullName'];
                         $username = $row['username'];

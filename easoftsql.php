@@ -1167,20 +1167,20 @@ function new_warehouse(){
 		
 		
 	
-		if($_FILES['img']['tmp_name'] != ''){
+		if(isset($_FILES['img']['tmp_name']) && $_FILES['img']['tmp_name'] != ''){
 						$picture = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['name'];
 						$move = move_uploaded_file($_FILES['img']['tmp_name'],'../posnew/img/'. $picture);
 					$data .= ", picture = '$picture' ";
 					$cols .= ", picture";
 					$vals .= ", '$picture'";
-
-					
-
+		} else {
+			$cols .= ", picture";
+			$vals .= ", ''";
 		}
 
 		
 
-	$check = $this->db->query("SELECT * FROM warehouse where name ='$name' and unit ='$unit' and quantity ='$quantity' and expire_date ='$expire_date' ".(!empty($id) ? " and id != {$id} " : ''))->num_rows;
+	$check = $this->db->query("SELECT count(*) FROM warehouse where name ='$name' and unit ='$unit' and quantity ='$quantity' and expire_date ='$expire_date' ".(!empty($id) ? " and id != {$id} " : ''))->fetchColumn();
 		if($check > 0){
 			return 2;
 			exit;
@@ -1197,8 +1197,8 @@ function new_warehouse(){
 		$dataa  = " product_no = '$idd' ";
 		$dataa .= ", product_name = '".str_replace("'","&#x2019;",$name)."' ";
 		//$dataa .= ", product_no = '0' ";
-		$colsa = "product_no, product_name";
-		$valsa = "'$idd', '".str_replace("'","&#x2019;",$name)."'";
+		$colsa = "product_no, product_name, cprice, sell_price, quantity, unit, min_stocks, expire_date, location, remarks, images";
+		$valsa = "'$idd', '".str_replace("'","&#x2019;",$name)."', '$price', '0', '0', '$unit', '0', '$expire_date', '', '', ''";
 		
 		
 		
@@ -1210,18 +1210,17 @@ function new_warehouse(){
 			$save = $this->db->query("UPDATE warehouse set $data where sid = $sid");
 
 			//extract($_POST);
-		$check1 = $this->db->query("SELECT count(*) FROM products where product_name ='$name' and productID ='$idd' ".(!empty($sid) ? " " : ''))->fetchColumn();
+		$check1 = $this->db->query("SELECT count(*) FROM products where product_name ='$name' and product_no ='$sid' ".(!empty($sid) ? " " : ''))->fetchColumn();
 		if($check1 > 0){
 			return 1;
 			exit;
 		}
 
 			extract($_POST);
-		$dataa  = " productID = '$sid' ";
+		$dataa  = " product_no = '$sid' ";
 		$dataa .= ", product_name = '".str_replace("'","&#x2019;",$name)."' ";
-		$dataa .= ", product_no = '0' ";	
-		$colsa = "productID, product_name, product_no";
-		$valsa = "'$sid', '".str_replace("'","&#x2019;",$name)."', '0'";
+		$colsa = "product_no, product_name, cprice, sell_price, quantity, unit, min_stocks, expire_date, location, remarks, images";
+		$valsa = "'$sid', '".str_replace("'","&#x2019;",$name)."', '$price', '0', '0', '$unit', '0', '$expire_date', '', '', ''";
 		
 
 			//$save = $this->db->query("INSERT INTO products set $dataa");

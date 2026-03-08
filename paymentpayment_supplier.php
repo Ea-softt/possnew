@@ -2,7 +2,7 @@
 
 if(isset($_GET['id'])){
 	$qry = $conn->query("SELECT * FROM paymen_supplier where pay_id = {$_GET['id']} ");
-	foreach($qry->fetch_array() as $k => $v){
+	foreach($qry->fetch(PDO::FETCH_ASSOC) as $k => $v){
 		$$k = $v;
 	}
 }

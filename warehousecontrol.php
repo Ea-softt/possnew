@@ -249,6 +249,7 @@ $(document).on('click', '#cancel', function(){
         $('#msg').html('')
       if($.trim($('#companynameid').val()).length == 0){
       swal("Warning","Please Select Supplier!","warning");
+      end_load()
       return false;
     }
       
@@ -261,7 +262,7 @@ $(document).on('click', '#cancel', function(){
             method: 'POST',
             type: 'POST',
             success:function(resp){
-                alert('opwoepw');
+               // alert('opwoepw');
                 if(resp==1){
                     alert_toast("Data successfully saved.",'success')
                         setTimeout(function(){

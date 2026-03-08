@@ -1,12 +1,12 @@
 <?php 
 include 'server/config.php';
 $fees = $conn->query("SELECT p.*,ps.* FROM paymen_supplier p inner join paypay_supplier ps on p.id = ps.paymen_supplierID  where paymen_supplierID = {$_GET['paymen_supplierID']}");
-foreach($fees->fetch_array() as $k => $v){
+foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
 	$$k= $v;
 }
 $payments = $conn->query("SELECT * FROM paypay_supplier where paymen_supplierID = $id ");
 $pay_arr = array();
-while($row=$payments->fetch_array()){
+while($row=$payments->fetch(PDO::FETCH_ASSOC)){
 	$pay_arr[$row['pay_id']] = $row;
 }
 ?>

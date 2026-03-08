@@ -412,7 +412,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                                         <?php 
                                         $i = 1;
                                         $student = $conn->query("SELECT wh.*,sp.* FROM warehouse wh inner join supplier sp on wh.supplierid = sp.supplier_id ORDER BY wh.name ASC ");
-                                        while($row=$student->fetch_assoc()):
+                                        while($row=$student->fetch(PDO::FETCH_ASSOC)):
                                         ?>
                                         <tr>
                                             <td class="text-center">
