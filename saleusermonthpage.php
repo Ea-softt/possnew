@@ -379,7 +379,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                       $i = 1;
                       $total = 0;
                       $grandtotal = 0;
-                      $payments = $conn->query("SELECT sp.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID GROUP BY date_format(sp.created_date,'%Y-%m-%d')  order by unix_timestamp(sp.created_date) desc ");
+                      $payments = $conn->query("SELECT sp.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID GROUP BY strftime('%Y-%m-%d', sp.created_date)  order by strftime('%s', sp.created_date) desc ");
                       if($payments->rowCount() > 0):
                       while($row = $payments->fetch(PDO::FETCH_ASSOC)):
                         $grandtotal += $row['grad'];

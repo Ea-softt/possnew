@@ -369,7 +369,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                       $tcost1 = '0';
                        $tcos = '0';
 
-                      $payments = $conn->query("SELECT *, (cprice * Quantity) as tcost FROM newstock ns inner join supplier sp on ns.supplier_id = sp.supplier_id  where date_format(date_created,'%Y-%m-%d') = '$month' order by unix_timestamp(date_created) desc");
+                      $payments = $conn->query("SELECT *, (cprice * Quantity) as tcost FROM newstock ns inner join supplier sp on ns.supplier_id = sp.supplier_id  where strftime('%Y-%m-%d', date_created) = '$month' order by strftime('%s', date_created) desc");
                       while($row = $payments->fetch(PDO::FETCH_ASSOC)):
                         $tcos += $row['tcost'];
                         $tcost1 += $row['cprice'];
@@ -413,7 +413,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                     <?php 
                         endwhile;
 
-                      $payments = $conn->query("SELECT *,sp.companyname as companyname1, (uw.quantity * uw.price) as tcot FROM updatewarehouse uw inner join supplier sp on uw.Companyname = sp.supplier_id where date_format(created_date,'%Y-%m-%d') = '$month' order by unix_timestamp(created_date) desc");// where date_format(sp.created_date,'%Y-%m-%d') = '$month' GROUP BY sp.username  order by unix_timestamp(sp.created_date) desc ")
+                      $payments = $conn->query("SELECT *,sp.companyname as companyname1, (uw.quantity * uw.price) as tcot FROM updatewarehouse uw inner join supplier sp on uw.Companyname = sp.supplier_id where strftime('%Y-%m-%d', created_date) = '$month' order by strftime('%s', created_date) desc");// where date_format(sp.created_date,'%Y-%m-%d') = '$month' GROUP BY sp.username  order by unix_timestamp(sp.created_date) desc ")
                      
                       while($row = $payments->fetch(PDO::FETCH_ASSOC)):
                         $tcos += $row['tcot'];

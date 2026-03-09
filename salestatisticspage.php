@@ -383,7 +383,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                       $ctotal = 0;
                        $diff = 0;
                       $grandtotal = 0;
-                      $payments = $conn->query("SELECT sp.*, p.*, sum(sp.qty) as qty1, (p.sell_price * sum(sp.qty)) as stotal, (p.cprice * sum(sp.qty)) as ctotal,((p.sell_price * sum(sp.qty))-(p.cprice * sum(sp.qty))) as diff FROM sales_product sp inner join products p on sp.product_id = p.product_no GROUP BY sp.product_id,created_date order by unix_timestamp(sp.created_date) desc");
+                      $payments = $conn->query("SELECT sp.*, p.*, sum(sp.qty) as qty1, (p.sell_price * sum(sp.qty)) as stotal, (p.cprice * sum(sp.qty)) as ctotal,((p.sell_price * sum(sp.qty))-(p.cprice * sum(sp.qty))) as diff FROM sales_product sp inner join products p on sp.product_id = p.product_no GROUP BY sp.product_id,created_date order by strftime('%s', sp.created_date) desc");
                       if($payments->num_rows > 0):
                       while($row = $payments->fetch_assoc()):
                        $stotal += $row['stotal'];

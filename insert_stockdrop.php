@@ -107,7 +107,7 @@ if(isset($_POST['product'])){
 					$sql3 = "UPDATE products SET quantity=$newqty, product_no='$barcode_clean', min_stocks='$minstock_clean', product_name='$product_clean',sell_price='$sprice_clean',cprice='$cprice_clean',unit='$unit_clean',expire_date='$expiredate_clean',remarks='$description_clean'  WHERE product_no='$product_id'";
 					$conn->exec($sql3);
 				} else {
-					$sql3 = "INSERT INTO products (product_no, product_name, sell_price, cprice, quantity, unit, min_stocks, expire_date, remarks) VALUES ('$barcode_clean', '$product_clean', '$sprice_clean', '$cprice_clean', '$qtyold', '$unit_clean', '$minstock_clean', '$expiredate_clean', '$description_clean')";
+					$sql3 = "INSERT INTO products (product_no, product_name, sell_price, cprice, quantity, unit, min_stocks, expire_date, remarks, location, images) VALUES ('$barcode_clean', '$product_clean', '$sprice_clean', '$cprice_clean', '$qtyold', '$unit_clean', '$minstock_clean', '$expiredate_clean', '$description_clean', '$location', '$images')";
 					$conn->exec($sql3);
 				}
 			}

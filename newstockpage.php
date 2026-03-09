@@ -366,7 +366,7 @@ $month = isset($_GET['month']) ? $_GET['month'] : date('Y-m-d');
                       <?php
                       $i = 1;
                       $tcost1 = '0';
-                      $payments = $conn->query("SELECT *, (cprice * Quantity) as tcost FROM newstock ns inner join supplier sp on ns.supplier_id = sp.supplier_id  where date_format(date_created,'%Y-%m-%d') = '$month' order by unix_timestamp(date_created) desc");// where date_format(sp.created_date,'%Y-%m-%d') = '$month' GROUP BY sp.username  order by unix_timestamp(sp.created_date) desc ")
+                      $payments = $conn->query("SELECT *, (cprice * Quantity) as tcost FROM newstock ns inner join supplier sp on ns.supplier_id = sp.supplier_id  where strftime('%Y-%m-%d', date_created) = '$month' order by strftime('%s', date_created) desc");// where date_format(sp.created_date,'%Y-%m-%d') = '$month' GROUP BY sp.username  order by unix_timestamp(sp.created_date) desc ")
                      
                       while($row = $payments->fetch_assoc()):
                        $month1 = $row['date_created'];

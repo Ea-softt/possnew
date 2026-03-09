@@ -11,9 +11,9 @@ $weekly_sales = 0;
 $monthly_sales = 0;
 $yearly_sales = 0;
 
-$d_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE date_format(created_date,'%Y-%m-%d') = '$cmonth'");
+$d_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE strftime('%Y-%m-%d', created_date) = '$cmonth'");
 
-$w_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE YEARWEEK(created_date, 1) = YEARWEEK('$cmonth', 1)");
+$w_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE strftime('%Y%W', created_date) = strftime('%Y%W', '$cmonth')");
 $weekly_sales = $w_qry->fetchColumn() ?: 0;
 // $yearly_sales = $y_qry->fetchColumn() ?: 0; // $y_qry is not defined in this context
 
@@ -429,7 +429,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                       $i = 1;
                       $total = 0;
                       $grandtotal = 0;
-                      $payments = $conn->query("SELECT sp.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID where date_format(sp.created_date,'%Y-%m-%d') BETWEEN '$start_date' AND '$end_date' GROUP BY sp.username  order by unix_timestamp(sp.created_date) desc ");
+                      $payments = $conn->query("SELECT sp.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID where strftime('%Y-%m-%d', sp.created_date) BETWEEN '$start_date' AND '$end_date' GROUP BY sp.username  order by strftime('%s', sp.created_date) desc ");
                       if($payments->num_rows > 0):
                       while($row = $payments->fetch_assoc()):
                         $grandtotal += $row['grad'];
