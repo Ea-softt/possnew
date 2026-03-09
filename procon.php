@@ -3,7 +3,7 @@
 $image = '';
  $output = '';
  $sql = "SELECT * FROM products WHERE product_name LIKE product_name AND product_no > 0 order by quantity desc ";
- $result = mysqli_query($conn, $sql);
+ $result = $conn->query($sql);
  
    $output .='
    
@@ -40,10 +40,10 @@ $image = '';
  			</tr>
        </thead>';
 
- if(mysqli_num_rows($result) > 0)
+ if($result->rowCount() > 0)
  {
 
- 	while($row = mysqli_fetch_array($result)){
+ 	while($row = $result->fetch(PDO::FETCH_ASSOC)){
   $output .= '<tr>
 
   <td class="product_no text-center" data-product_no="'.$row["product_no"].'" contenteditable>'.$row["product_no"].'</td>

@@ -39,7 +39,7 @@ if(isset($_POST["start_date"], $_POST['end_date']))
                             <th class="text-center">Grandtotal</th>   
                             <th class="text-center">Date</th>                           
                         </tr>';
-                         if($payments->num_rows ){
+                         if($payments->rowCount() > 0){
 
 
                       while($row = $payments->fetch(PDO::FETCH_ASSOC)){

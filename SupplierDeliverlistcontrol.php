@@ -5,7 +5,7 @@ include 'easoftsql.php';
 
 if(isset($_GET['id'])){
 $qry = $conn->query("SELECT sd.*,su.* FROM supplierdeliver sd  inner join supplier su on sd.name = su.supplier_id  where sid= ".$_GET['id']);
-foreach($qry->fetch_array() as $k => $val){
+foreach($qry->fetch(PDO::FETCH_ASSOC) as $k => $val){
     $$k=$val;
 }
 }

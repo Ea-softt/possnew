@@ -353,7 +353,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                    <?php
                     $fees = $conn->query("SELECT * FROM products ");
 
-                    while($row= $fees->fetch_assoc()):
+                    while($row= $fees->fetch(PDO::FETCH_ASSOC)):
                         
                 ?>
                 <option ><?php echo  $row['product_no']." ".$row['product_name'];?></option>
