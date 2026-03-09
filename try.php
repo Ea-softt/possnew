@@ -83,7 +83,7 @@ echo "$data";
                 <?php 
                 $i = 1;
                 $student = $conn->query("SELECT * FROM products");
-                while($row=$student->fetch_assoc()):
+                while($row=$student->fetch(PDO::FETCH_ASSOC)):
                 ?>
                 <tr>
                   <td class="text-center"><?php echo $i++ ?></td>

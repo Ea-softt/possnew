@@ -137,7 +137,7 @@ foreach($feet->fetch(PDO::FETCH_ASSOC) as $t => $u){
                 $i = 1;
                 $reciept1 = $conn->query("SELECT * FROM  sales sl inner join sales_product sp on sl.reciept_no = sp.reciept_no inner join products pd on pd.product_no = sp.product_id where sl.reciept_no = {$_GET['username']}");
 
-                while($row=$reciept1->fetch_assoc()):
+                while($row=$reciept1->fetch(PDO::FETCH_ASSOC)):
 					$subtotal = ($row['qty']*$row['price']);
 					$totalsales =($row['total']);
 					

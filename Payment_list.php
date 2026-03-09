@@ -54,7 +54,7 @@ include("head.php");
 								$i = 1;
 								$fees = $conn->query("SELECT * FROM paymen_supplier order by id desc");
 
-								while($row=$fees->fetch_assoc()):
+								while($row=$fees->fetch(PDO::FETCH_ASSOC)):
 									//$paid = $conn->query("SELECT sum(amount) as paid FROM payments where ef_id=".$row['id']);
 								//	$paid = $paid->num_rows > 0 ? $paid->fetch_array()['paid']:'';
 								//	$balance = $row['total_fee'] - $paid;

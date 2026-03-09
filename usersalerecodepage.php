@@ -381,7 +381,7 @@ foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
                    date_format(sp.created_date,'%Y-%m-%d') = {$_GET['month']} and*/
 
 
-                $payments = $conn->query("SELECT sp.*,ct.* FROM sales sp inner join customer ct on sp.customer_id = ct.customer_id  WHERE  date_format(sp.created_date,'%Y%m%d') = {$_GET['month']} and sp.username = {$_GET['username']} order by unix_timestamp(sp.created_date) asc"); 
+                $payments = $conn->query("SELECT sp.*,ct.* FROM sales sp inner join customer ct on sp.customer_id = ct.customer_id  WHERE  strftime('%Y%m%d', sp.created_date) = '{$_GET['month']}' and sp.username = '{$_GET['username']}' order by strftime('%s', sp.created_date) asc"); 
                      
                    
                    if ($payments->rowCount() > 0){

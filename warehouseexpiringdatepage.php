@@ -375,9 +375,9 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
               <tbody>
                 <?php 
                 $i = 1;
-                $fees = $conn->query("SELECT * FROM warehouse order by  unix_timestamp(expire_date) asc ");
+                $fees = $conn->query("SELECT * FROM warehouse order by strftime('%s', expire_date) asc ");
 
-                while($row=$fees->fetch_assoc()):
+                while($row=$fees->fetch(PDO::FETCH_ASSOC)):
                   $exp_date = $row['expire_date'];
                   $today_date = date('Y-m-d');
 

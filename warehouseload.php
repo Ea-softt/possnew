@@ -34,10 +34,10 @@ include 'head.php';
                     <tbody>
 			          <?php
                       $i = 1;
-                      $tcost1 = '0';
-                      $payments = $conn->query("SELECT *, (cprice * Quantity) as tcost FROM newstock ns inner join supplier sp on ns.supplier_id = sp.supplier_id  where date_format(date_created,'%Y-%m-%d') = '$month' order by unix_timestamp(date_created) desc");// where date_format(sp.created_date,'%Y-%m-%d') = '$month' GROUP BY sp.username  order by unix_timestamp(sp.created_date) desc ")
+                      $tcost1 = 0.0;
+                      $payments = $conn->query("SELECT *, (cprice * Quantity) as tcost FROM newstock ns inner join supplier sp on ns.supplier_id = sp.supplier_id  where strftime('%Y-%m-%d', date_created) = '$month' order by strftime('%s', date_created) desc");
                      
-			          while($row = $payments->fetch_assoc()):
+			          while($row = $payments->fetch(PDO::FETCH_ASSOC)):
                        $month1 = $row['date_created'];
                       // $grandtotal += $row['grad'];
                        $tcost1 += $row['tcost'];

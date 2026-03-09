@@ -177,7 +177,7 @@ foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
                $fees = $conn->query("SELECT * FROM sales where  username= '$EmpID' and days= '$days' and month = '$monthname' and years = $y ");
                         $classt = 0;
                         $examt = 0;
-                    while($row=$fees->fetch_assoc()): 
+                    while($row=$fees->fetch(PDO::FETCH_ASSOC)): 
                            $classt += $row['grandtotal'];                          
             ?>
 

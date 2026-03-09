@@ -3,7 +3,7 @@ include('head.php');
  include('insert_sales.php');
 
 $fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}' ");
-foreach($fees->fetch_array() as $k => $v){
+foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
   $$k= $v;
   $meta[$k] = $v;
 }
@@ -169,9 +169,9 @@ foreach($fees->fetch_array() as $k => $v){
              <?php
                if(isset($EmpID)):
                $fees = $conn->query("SELECT * FROM sales where  username= '$EmpID' and created_date = '$date' ");
-                        $classt = 0;
+                        $classt = 0.0;
                         $examt = 0;
-                    while($row=$fees->fetch_assoc()): 
+                    while($row=$fees->fetch(PDO::FETCH_ASSOC)): 
                            $classt += $row['grandtotal'];                          
             ?>
 

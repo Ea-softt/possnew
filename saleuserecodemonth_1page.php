@@ -385,7 +385,7 @@ foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
                      
                    
                    if ($payments->num_rows > 0){
-                    while($row = $payments->fetch_assoc()){
+                    while($row = $payments->fetch(PDO::FETCH_ASSOC)){
                       $customer_first = $row['firstnamec'];
                       $customer_last = $row['lastnamec'];
 

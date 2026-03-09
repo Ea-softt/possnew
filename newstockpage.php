@@ -368,7 +368,7 @@ $month = isset($_GET['month']) ? $_GET['month'] : date('Y-m-d');
                       $tcost1 = '0';
                       $payments = $conn->query("SELECT *, (cprice * Quantity) as tcost FROM newstock ns inner join supplier sp on ns.supplier_id = sp.supplier_id  where strftime('%Y-%m-%d', date_created) = '$month' order by strftime('%s', date_created) desc");// where date_format(sp.created_date,'%Y-%m-%d') = '$month' GROUP BY sp.username  order by unix_timestamp(sp.created_date) desc ")
                      
-                      while($row = $payments->fetch_assoc()):
+                      while($row = $payments->fetch(PDO::FETCH_ASSOC)):
                        $month1 = $row['date_created'];
                       // $grandtotal += $row['grad'];
                        $tcost1 += $row['tcost'];
