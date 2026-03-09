@@ -85,20 +85,7 @@ if(isset($_POST['product'])){
 
 			}
 
-			for($numm=0; $numm<count($sid); $numm++){
-			   $product_id = $sid[$numm];
-
-				$sql1 = "SELECT product_no FROM products WHERE product_no = '$product_id' ";
-				$result4 = $conn->query($sql1);
-				$qty = $result4->fetch(PDO::FETCH_ASSOC);
-					
-				
-			
-				
-			}
-			if(isset($qty['product_no'])){
-				
-				for($nump = 0; $nump < count($sid); $nump++){
+			for($nump = 0; $nump < count($sid); $nump++){
 				$product_id = $sid[$nump];
 				$qtyold = $quantity1[$nump];
 				$barcode_clean = $barcode[$nump];
@@ -110,22 +97,20 @@ if(isset($_POST['product'])){
 				$minstock_clean = $min_stock[$nump];
 				$expiredate_clean = $expiredate[$nump];
 				$description_clean = $description[$nump];
-				
-
 
 				$sql1 = "SELECT quantity FROM products WHERE product_no ='$product_id'";
 				$result1 = $conn->query($sql1);
 				$qty = $result1->fetch(PDO::FETCH_ASSOC);
 
-				$newqty = $qty['quantity'] + $qtyold;
- 					
-
-				$sql3 = "UPDATE products SET quantity=$newqty, product_no=$barcode_clean, min_stocks=$minstock_clean, product_name='$product_clean',sell_price=$sprice_clean,cprice=$cprice_clean,unit='$unit_clean',expire_date='$expiredate_clean',remarks='$description_clean'  WHERE product_no='$product_id'";
-			
-				$conn->exec($sql3);
+				if ($qty) {
+					$newqty = $qty['quantity'] + $qtyold;
+					$sql3 = "UPDATE products SET quantity=$newqty, product_no='$barcode_clean', min_stocks='$minstock_clean', product_name='$product_clean',sell_price='$sprice_clean',cprice='$cprice_clean',unit='$unit_clean',expire_date='$expiredate_clean',remarks='$description_clean'  WHERE product_no='$product_id'";
+					$conn->exec($sql3);
+				} else {
+					$sql3 = "INSERT INTO products (product_no, product_name, sell_price, cprice, quantity, unit, min_stocks, expire_date, remarks) VALUES ('$barcode_clean', '$product_clean', '$sprice_clean', '$cprice_clean', '$qtyold', '$unit_clean', '$minstock_clean', '$expiredate_clean', '$description_clean')";
+					$conn->exec($sql3);
 				}
-
-		}
+			}
 
  			 for($count = 0; $count < count($sid); $count++){
  			 	$productID_clean = $sid[$count];

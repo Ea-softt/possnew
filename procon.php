@@ -61,7 +61,7 @@ $image = '';
 
 
 
-<td class="images" text-center" data-image="'.$row["product_no"].'" contenteditable>'.$row["expire_date"].'
+<td class="images text-center" data-image="'.$row["product_no"].'" contenteditable>'.$row["expire_date"].'
 </td>
 
 <td class="text-center"><button name="btn delete" id="btn_delete" class="btn btn-xs btn-danger btn_delete" data-delete_btn="'.$row["product_no"].'" >x</button></td> </tr>';
@@ -89,7 +89,7 @@ $image = '';
  {
 $output .='<tr>
 
-		<td colspan="4">Data not Found! </ta>
+		<td colspan="9">Data not Found! </td>
 
 		</tr>';
 
