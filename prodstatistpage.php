@@ -389,8 +389,8 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                 $ctotal = 0;
                 $diff =0;
                 $student = $conn->query("SELECT *, (sell_price * Quantity) as stotal, (cprice * Quantity) as ctotal, ((sell_price * Quantity)-(cprice * Quantity)) as diff  FROM products order by id desc ");
-                 if($student->num_rows > 0):
-                while($row=$student->fetch_assoc()):
+                 if($student->rowCount() > 0):
+                while($row=$student->fetch(PDO::FETCH_ASSOC)):
                    $stotal += $row['stotal'];
                     $ctotal += $row['ctotal'];
                      $diff += $row['diff'];
