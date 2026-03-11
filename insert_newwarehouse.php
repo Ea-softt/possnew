@@ -81,8 +81,8 @@ if(isset($_POST['product'])){
 				$result1 = $conn->query($sql1);
 				$qty = $result1->fetch(PDO::FETCH_ASSOC);
 
-				$newqty = $qty['quantity'] + $qtyold;
- 				$newmult =$qty['multtota'] + $tcost1_clean;
+				$newqty = (int)$qty['quantity'] + (int)$qtyold;
+ 				$newmult = (float)$qty['multtota'] + (float)$tcost1_clean;
  				
  				//echo ($newmult);
 				$sql2 = "UPDATE warehouse SET quantity=$newqty, price=$price1_clean, multtota=$newmult, unit='$unit_clean', description ='$description_clean', expire_date ='$expiredate_clean', supplierid=$companyname_clean, name='$product_clean'  WHERE sid='$product_id'";

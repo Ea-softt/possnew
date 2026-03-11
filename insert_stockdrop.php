@@ -76,7 +76,7 @@ if(isset($_POST['product'])){
 				$result1 = $conn->query($sql1);
 				$qty = $result1->fetch(PDO::FETCH_ASSOC);
 
-				$newqty = $qty['quantity'] - $qtyold;
+				$newqty = (int)$qty['quantity'] - (int)$qtyold;
  					
  					
 
