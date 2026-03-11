@@ -2,8 +2,10 @@
  include('server/config.php');
 $image = '';
  $output = '';
+// $sql = "SELECT * FROM products WHERE product_no > 0 ORDER BY quantity DESC";
  $sql = "SELECT * FROM products WHERE product_name LIKE product_name AND product_no > 0 order by quantity desc ";
- $result = $conn->query($sql);
+
+$result = $conn->query($sql);
  
    $output .='
    
@@ -39,11 +41,10 @@ $image = '';
       <th >Action</th>
  			</tr>
        </thead>';
+ $rows = $result->fetchAll(PDO::FETCH_ASSOC);
 
- if($result->rowCount() > 0)
- {
-
- 	while($row = $result->fetch(PDO::FETCH_ASSOC)){
+if (count($rows) > 0) {
+    foreach ($rows as $row) {
   $output .= '<tr>
 
   <td class="product_no text-center" data-product_no="'.$row["product_no"].'" contenteditable>'.$row["product_no"].'</td>

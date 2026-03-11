@@ -1178,9 +1178,9 @@ function new_warehouse(){
 			$vals .= ", ''";
 		}
 
-		
+		//SELECT * FROM warehouse WHERE name LIKE :name OR sid LIKE :name
 
-	$check = $this->db->query("SELECT count(*) FROM warehouse where name ='$name' and unit ='$unit' and quantity ='$quantity' and expire_date ='$expire_date' ".(!empty($id) ? " and id != {$id} " : ''))->fetchColumn();
+	$check = $this->db->query("SELECT count(*) FROM warehouse where name ='$name'".(!empty($id) ? " and id != {$id} " : ''))->fetchColumn();
 		if($check > 0){
 			return 2;
 			exit;
