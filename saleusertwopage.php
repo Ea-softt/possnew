@@ -462,7 +462,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                         else:
                     ?>
                     <tr>
-                            <th class="text-center" colspan="4">No Data for Selected Date.</th>
+                            <th class="text-center" colspan="6">No Data for Selected Date.</th>
                     </tr>
                     <?php 
                         endif;

@@ -434,7 +434,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                         else:
                     ?>
                     <tr>
-                            <th class="text-center" colspan="7">No Data for Selected Month.</th>
+                            <th class="text-center" colspan="9">No Data for Selected Month.</th>
                     </tr>
                     <?php 
                         endif;
