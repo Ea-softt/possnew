@@ -458,6 +458,44 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             $('#mytable').ddTableFilter();
         });
 
+        // Validation for numeric cells
+        $(document).on('blur', '#tableData1 .sprice, #tableData1 .min_stock, #tableData1 .quantity1', function() {
+            var cell = $(this);
+            var value = cell.text().trim();
+            if (value === '' || isNaN(parseFloat(value)) || !isFinite(value)) {
+                swal("Invalid Input", "Please enter a valid number.", "error");
+                cell.text('0').focus();
+            }
+        });
+
+        // Validation for price cells
+        $(document).on('blur', '#tableData1 .cprice', function() {
+            var cell = $(this);
+            var value = cell.text().trim();
+            var cleanValue = value.replace(/Ghc/g, '').replace(/,/g, '').trim();
+
+            if (cleanValue === '' || isNaN(parseFloat(cleanValue)) || !isFinite(cleanValue)) {
+                swal("Invalid Input", "Please enter a valid number for the price.", "error");
+                cell.text(accounting.formatMoney(0, {symbol:"Ghc",format: "%s %v"})).focus();
+            } else {
+                // Re-format after editing
+                cell.text(accounting.formatMoney(parseFloat(cleanValue), {symbol:"Ghc",format: "%s %v"}));
+            }
+        });
+
+        // Validation for string cells
+        $(document).on('blur', '#tableData1 .product', function() {
+            var cell = $(this);
+            var value = cell.text().trim();
+            if (value === '') {
+                swal("Invalid Input", "Product name cannot be empty.", "error");
+                cell.text('Unnamed Product').focus();
+            } else if (!isNaN(value) && value.trim() !== '' && isFinite(value)) {
+                swal("Invalid Input", "Product name cannot be just a number.", "error");
+                cell.text('Invalid Product').focus();
+            }
+        });
+
         $('.tablet').click(function() {
             var sendToNum = $('#tableData1');
             sendToNum.text('');
