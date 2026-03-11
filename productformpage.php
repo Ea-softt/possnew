@@ -445,7 +445,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             </div>
 
             <div class="modal-footer mt-3">
-                <button type="button" class="btn btn-primary" id='submit'><i class="fas fa-thumbs-up"></i>&nbsp;&nbsp;Save</button>
+                <button type="button" class="btn btn-primary" id='submit' disabled><i class="fas fa-thumbs-up"></i>&nbsp;&nbsp;Save</button>
                 <button type="button" id="cancel" class="btn btn-danger"><i class="fas fa-ban"></i>&nbsp;&nbsp;Cancel</button>
             </div>
         </form>
@@ -454,9 +454,48 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     <!-- Custom JS -->
     <script>
         $(document).ready(function(){
-            $('.table').dataTable();
+            $('.table').dataTable({ "paging": false }); // Disable pagination for better UX with checkbox selection
             $('#mytable').ddTableFilter();
+            validateTable(); // Initial validation check and button state
         });
+
+        function validateTable() {
+            var isTableValid = true;
+            var rowCount = $('#tableData1 tr').length;
+
+            if (rowCount === 0) {
+                isTableValid = false;
+            } else {
+                $('#tableData1 tr').each(function() {
+                    var row = $(this);
+
+                    // Validate numeric fields (sprice, min_stock, quantity1)
+                    row.find('.sprice, .min_stock, .quantity1').each(function() {
+                        var value = $(this).text().trim();
+                        if (value === '' || isNaN(parseFloat(value)) || !isFinite(value) || parseFloat(value) <= 0) {
+                            isTableValid = false;
+                            return false; // break the .each loop
+                        }
+                    });
+                    if (!isTableValid) return false;
+
+                    // Validate cprice
+                    var cpriceValue = row.find('.cprice').text().trim().replace(/Ghc/g, '').replace(/,/g, '').trim();
+                    if (cpriceValue === '' || isNaN(parseFloat(cpriceValue)) || !isFinite(cpriceValue)) {
+                        isTableValid = false;
+                        return false;
+                    }
+
+                    // Validate product name
+                    var productValue = row.find('.product').text().trim();
+                    if (productValue === '' || (!isNaN(parseFloat(productValue)) && isFinite(productValue))) {
+                        isTableValid = false;
+                        return false;
+                    }
+                });
+            }
+            $('#submit').prop('disabled', !isTableValid);
+        }
 
         // Validation for numeric cells
         $(document).on('blur', '#tableData1 .sprice, #tableData1 .min_stock, #tableData1 .quantity1', function() {
@@ -466,6 +505,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                 swal("Invalid Input", "Please enter a valid number.", "error");
                 cell.text('0').focus();
             }
+            validateTable();
         });
 
         // Validation for price cells
@@ -480,6 +520,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             } else {
                 // Re-format after editing
                 cell.text(accounting.formatMoney(parseFloat(cleanValue), {symbol:"Ghc",format: "%s %v"}));
+                validateTable();
             }
         });
 
@@ -494,6 +535,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                 swal("Invalid Input", "Product name cannot be just a number.", "error");
                 cell.text('Invalid Product').focus();
             }
+            validateTable();
         });
 
         $('.tablet').click(function() {
@@ -518,8 +560,9 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                 var datee = dateee++;
                 var min_stock = parseFloat(1);
 
-                sendToNum.append("<tr class='prd'><td class='sid text-center'>"+sid+"</td><td class='barcode text-center' contenteditable>"+sid+""+dateee+""+barc+"</td><td class='sprice text-center' contenteditable>"+sprice+"</td><td class='min_stock text-center' contenteditable>"+min_stock+"</td><td class='product text-center' contenteditable>"+product+"</td><td class='cprice text-center' contenteditable>"+accounting.formatMoney(price,{symbol:"Ghc",format: "%s %v"})+" </td><td class='quantity1 text-center' contenteditable>"+quantity+"</td><td class='unit1 text-center' contenteditable>"+unit+"</td><td class='expiredate text-center' contenteditable>"+expire+"</td><td style='display:none;' class='multtota text-center' contenteditable>"+accounting.formatMoney(multtota,{symbol:"Ghc",format: "%s %v"})+"</td><td class='description text-center' style='display:none;' contenteditable>"+description+"</td><td style='display:none;' class='supplierid text-center' contenteditable>"+supplierid+"</td><td class='text-center p-1'><button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times'></i></button></td></tr>");
+                sendToNum.append("<tr class='prd'><td class='sid text-center'>"+sid+"</td><td class='barcode text-center'>"+sid+""+dateee+""+barc+"</td><td class='sprice text-center' contenteditable>"+sprice+"</td><td class='min_stock text-center' contenteditable>"+min_stock+"</td><td class='product text-center'>"+product+"</td><td class='cprice text-center' contenteditable>"+accounting.formatMoney(price,{symbol:"Ghc",format: "%s %v"})+" </td><td class='quantity1 text-center' contenteditable>"+quantity+"</td><td class='unit1 text-center' contenteditable>"+unit+"</td><td class='expiredate text-center' contenteditable>"+expire+"</td><td style='display:none;' class='multtota text-center' contenteditable>"+accounting.formatMoney(multtota,{symbol:"Ghc",format: "%s %v"})+"</td><td class='description text-center' style='display:none;' contenteditable>"+description+"</td><td style='display:none;' class='supplierid text-center' contenteditable>"+supplierid+"</td><td class='text-center p-1'><button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times'></i></button></td></tr>");
             });
+            validateTable();
         });
 
         var $selectAll = $('#selectall');

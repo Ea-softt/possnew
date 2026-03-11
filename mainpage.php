@@ -454,13 +454,14 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                                             <div id="product_area" class="table-responsive-sm mt-2 table-wrapper-scroll-y my-custom-scrollbar">
                                                 <table class="w-100" style="cursor: pointer;" id="table1">
                                                     <thead>
-                                                        <tr class='text-center text-black'><b>
+                                                        <tr class='text-black'><b>
                                                             <td>Barcode</td>
                                                             <td>Product</td>
                                                             <td>Price</td>
                                                             <td>Unit</td>
                                                             <td>Qty</td>
                                                             <td>Ex Date</td>
+                                                             <td> Action </td>
                                                         </b></tr>
                                                     </thead>
                                                     <tbody id="products"></tbody>
@@ -618,7 +619,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                             swal("Warning", "Please Selected Product is getting finish", "warning");
                         }
                         var total = parseInt(value, 10) * parseFloat(price);
-                        $('#tableData').append("<tr class='prd'><td input class='barcode text-center'>" + barcode + "</td><td class='text-left'>" + (product) + "</td><td class='price text-center'>" + accounting.formatMoney(price, {symbol: "Ghc", format: "%s %v"}) + "</td><td class='text-center'>" + unit + "</td><td class='qty text-center'>" + value + "</td><td class='totalPrice text-center'>" + accounting.formatMoney(total, {symbol: "Ghc", format: "%s %v"}) + "</td><td class='text-center p-1'><button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times-circle'></i></button><tr>");
+                        $('#tableData').append("<tr class='prd'><td input class='barcode text-center'>" + barcode + "</td><td class='text-center'>" + (product) + "</td><td class='price text-center'>" + accounting.formatMoney(price, {symbol: "Ghc", format: "%s %v"}) + "</td><td class='text-center'>" + unit + "</td><td class='qty text-center'>" + value + "</td><td class='totalPrice text-center'>" + accounting.formatMoney(total, {symbol: "Ghc", format: "%s %v"}) + "</td><td class='text-center p-1'><button class='btn btn-danger btn-sm text-center' type='button' id='delete-row'><i class='fas fa-times-circle'></i></button><tr>");
                         GrandTotal();
                         $('#search').focus();
                     }
