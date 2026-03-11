@@ -1153,9 +1153,9 @@ function delete_erdeliver(){
 
 function new_warehouse(){
 		extract($_POST);
-		
+
 		$data = " name = '".str_replace("'","&#x2019;",$name)."' ";
-		$data .= ", supplierid = '$companynameid ' ";
+		$data .= ", supplierid = '$companynameid' ";
 		$data .= ", quantity = '$quantity' ";
 		$data .= ", price = '$price' ";
 		$data .= ", multtota = '$multtota' ";
@@ -1164,72 +1164,44 @@ function new_warehouse(){
 		$data .= ", expire_date = '$expire_date' ";
 		$cols = "name, supplierid, quantity, price, multtota, unit, description, expire_date";
 		$vals = "'".str_replace("'","&#x2019;",$name)."', '$companynameid', '$quantity', '$price', '$multtota', '$unit', '$description', '$expire_date'";
-		
-		
-	
+
 		if(isset($_FILES['img']['tmp_name']) && $_FILES['img']['tmp_name'] != ''){
-						$picture = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['name'];
-						$move = move_uploaded_file($_FILES['img']['tmp_name'],'../posnew/img/'. $picture);
-					$data .= ", picture = '$picture' ";
-					$cols .= ", picture";
-					$vals .= ", '$picture'";
-		} else {
+			$picture = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['name'];
+			$move = move_uploaded_file($_FILES['img']['tmp_name'],'../posnew/img/'. $picture);
+			$data .= ", picture = '$picture' ";
+			if (empty($sid)) {
+				$cols .= ", picture";
+				$vals .= ", '$picture'";
+			}
+		} elseif (empty($sid)) {
 			$cols .= ", picture";
 			$vals .= ", ''";
 		}
 
-		//SELECT * FROM warehouse WHERE name LIKE :name OR sid LIKE :name
-
-	$check = $this->db->query("SELECT count(*) FROM warehouse where name ='$name'".(!empty($id) ? " and id != {$id} " : ''))->fetchColumn();
+		$check = $this->db->query("SELECT count(*) FROM warehouse where name ='$name'".(!empty($sid) ? " and sid != {$sid} " : ''))->fetchColumn();
 		if($check > 0){
 			return 2;
 			exit;
 		}		
 
-
-
 		if(empty($sid)){
-			//$save = $this->db->query("INSERT INTO warehouse set $data");
 			$save = $this->db->query("INSERT INTO warehouse ($cols) VALUES ($vals)");
-			$idd = $this->db->lastInsertId();
-
-			extract($_POST);
-		$dataa  = " product_no = '$idd' ";
-		$dataa .= ", product_name = '".str_replace("'","&#x2019;",$name)."' ";
-		//$dataa .= ", product_no = '0' ";
-		$colsa = "product_no, product_name, cprice, sell_price, quantity, unit, min_stocks, expire_date, location, remarks, images";
-		$valsa = "'$idd', '".str_replace("'","&#x2019;",$name)."', '$price', '0', '0', '$unit', '0', '$expire_date', '', '', ''";
-		
-		
-		
-
-			//$save = $this->db->query("INSERT INTO products set $dataa");
-			$save = $this->db->query("INSERT INTO products ($colsa) VALUES ($valsa)");
-
+			if ($save) {
+				$idd = $this->db->lastInsertId();
+				$colsa = "product_no, product_name, cprice, sell_price, quantity, unit, min_stocks, expire_date, location, remarks, images";
+				$valsa = "'$idd', '".str_replace("'","&#x2019;",$name)."', '$price', '0', '0', '$unit', '0', '$expire_date', '', '$description', ''";
+				$this->db->query("INSERT INTO products ($colsa) VALUES ($valsa)");
+			}
 		}else{
 			$save = $this->db->query("UPDATE warehouse set $data where sid = $sid");
-
-			//extract($_POST);
-		$check1 = $this->db->query("SELECT count(*) FROM products where product_name ='$name' and product_no ='$sid' ".(!empty($sid) ? " " : ''))->fetchColumn();
-		if($check1 > 0){
-			return 1;
-			exit;
-		}
-
-			extract($_POST);
-		$dataa  = " product_no = '$sid' ";
-		$dataa .= ", product_name = '".str_replace("'","&#x2019;",$name)."' ";
-		$colsa = "product_no, product_name, cprice, sell_price, quantity, unit, min_stocks, expire_date, location, remarks, images";
-		$valsa = "'$sid', '".str_replace("'","&#x2019;",$name)."', '$price', '0', '0', '$unit', '0', '$expire_date', '', '', ''";
-		
-
-			//$save = $this->db->query("INSERT INTO products set $dataa");
-			$save = $this->db->query("INSERT INTO products ($colsa) VALUES ($valsa)");
-
-
-
-
-
+			if ($save) {
+				$dataa  = "product_name = '".str_replace("'","&#x2019;",$name)."'";
+				$dataa .= ", cprice = '$price'";
+				$dataa .= ", unit = '$unit'";
+				$dataa .= ", expire_date = '$expire_date'";
+				$dataa .= ", remarks = '$description'";
+				$this->db->query("UPDATE products SET $dataa WHERE product_no = '$sid'");
+			}
 		}
 		if($save)			
 			return 1;	
@@ -1237,6 +1209,7 @@ function new_warehouse(){
 
 function delete_warehouse(){
 		extract($_POST);
+		$this->db->query("DELETE FROM products where product_no = ".$sid);
 		$delete = $this->db->query("DELETE FROM warehouse where sid = ".$sid);
 		if($delete){
 			return 1;
