@@ -505,6 +505,15 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                 swal("Invalid Input", "Please enter a valid number.", "error");
                 cell.text('0').focus();
             }
+            
+            if (cell.hasClass('quantity1')) {
+                var maxQty = parseFloat(cell.attr('data-max'));
+                var currentQty = parseFloat(value);
+                if (currentQty > maxQty) {
+                    swal("Warning", "Quantity cannot be greater than available stock: " + maxQty, "warning");
+                    cell.text(maxQty);
+                }
+            }
             validateTable();
         });
 
@@ -560,7 +569,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                 var datee = dateee++;
                 var min_stock = parseFloat(1);
 
-                sendToNum.append("<tr class='prd'><td class='sid text-center'>"+sid+"</td><td class='barcode text-center'>"+sid+""+dateee+""+barc+"</td><td class='sprice text-center' contenteditable>"+sprice+"</td><td class='min_stock text-center' contenteditable>"+min_stock+"</td><td class='product text-center'>"+product+"</td><td class='cprice text-center' contenteditable>"+accounting.formatMoney(price,{symbol:"Ghc",format: "%s %v"})+" </td><td class='quantity1 text-center' contenteditable>"+quantity+"</td><td class='unit1 text-center' contenteditable>"+unit+"</td><td class='expiredate text-center' contenteditable>"+expire+"</td><td style='display:none;' class='multtota text-center' contenteditable>"+accounting.formatMoney(multtota,{symbol:"Ghc",format: "%s %v"})+"</td><td class='description text-center' style='display:none;' contenteditable>"+description+"</td><td style='display:none;' class='supplierid text-center' contenteditable>"+supplierid+"</td><td class='text-center p-1'><button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times'></i></button></td></tr>");
+                sendToNum.append("<tr class='prd'><td class='sid text-center'>"+sid+"</td><td class='barcode text-center'>"+sid+""+dateee+""+barc+"</td><td class='sprice text-center' contenteditable>"+sprice+"</td><td class='min_stock text-center' contenteditable>"+min_stock+"</td><td class='product text-center'>"+product+"</td><td class='cprice text-center' contenteditable>"+accounting.formatMoney(price,{symbol:"Ghc",format: "%s %v"})+" </td><td class='quantity1 text-center' data-max='"+quantity+"' contenteditable>"+quantity+"</td><td class='unit1 text-center' contenteditable>"+unit+"</td><td class='expiredate text-center' contenteditable>"+expire+"</td><td style='display:none;' class='multtota text-center' contenteditable>"+accounting.formatMoney(multtota,{symbol:"Ghc",format: "%s %v"})+"</td><td class='description text-center' style='display:none;' contenteditable>"+description+"</td><td style='display:none;' class='supplierid text-center' contenteditable>"+supplierid+"</td><td class='text-center p-1'><button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times'></i></button></td></tr>");
             });
             validateTable();
         });
