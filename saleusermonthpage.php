@@ -380,7 +380,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                       $total = 0;
                       $grandtotal = 0;
                       $payments = $conn->query("SELECT sp.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID GROUP BY strftime('%Y-%m-%d', sp.created_date)  order by strftime('%s', sp.created_date) desc ");
-                      if($payments->rowCount() > 0):
+                     // if($payments->rowCount() > 0):
                       while($row = $payments->fetch(PDO::FETCH_ASSOC)):
                         $grandtotal += $row['grad'];
                         $customer_first = $row['FullName'];
@@ -409,13 +409,13 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                     </tr>
                     <?php 
                         endwhile;
-                        else:
+                       // else:
                     ?>
                      <tr>
                             <th class="text-center" colspan="4">No Data for Selected Month.</th>
                     </tr>
                     <?php 
-                        endif;
+                       // endif;
                     ?>
                     
                       

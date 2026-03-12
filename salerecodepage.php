@@ -22,8 +22,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     <!-- Font Awesome -->
     <link href="bootstrap5/font_awesome_all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-    <!-- Custom CSS -->
+    
     <style>
         :root {
             --bg-color: #f8f9fa;
@@ -218,7 +217,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             <!-- User Profile -->
             <div class="user-profile">
                 <span><?php echo $FullName; ?></span>
-                <img src="<?php echo isset($meta['picture']) ? '../img/' . $meta['picture'] : '' ?>" alt="Profile">
+                <img src="<?php echo isset($meta['picture']) ? 'img/' . $meta['picture'] : '' ?>" alt="Profile">
                 <div class="dropdown">
                     <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown"></button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
@@ -368,38 +367,30 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
 </div>
 <div>
 <?php
-   $grandtotal = '0';
+   $grandtotal_sum = 0;
     $from_date = '';
     $to_date = '';
    
-            if(isset($_POST['search'])){
-                 $from_date = $_POST['from_date'];
-                 $to_date = $_POST['to_date'];
-}
-                  
-
-                   /* $sql1 = "SELECT * FROM sales WHERE days = '$day' AND month = '$month' AND years = '$years' GROUP BY  grandtotal";// DESC
-                    $query1 = mysqli_query($conn,$sql1);
-                    ($rowcount = mysqli_num_rows($query1))
-*/
-                     $query = "SELECT * FROM sales WHERE created_date BETWEEN '$from_date' AND '$to_date' GROUP BY grandtotal"; 
-                     
-                    $data =$conn->query($query);
-                   if ($data->rowCount() > 0){
-                    while($row=$data->fetch(PDO::FETCH_ASSOC)){
-                      
-                       $grandtotal += $row['grandtotal'];
-                    
-                  }
-     
-               }
+    if(isset($_POST['search'])){
+        $from_date = $_POST['from_date'];
+        $to_date = $_POST['to_date'];
+        if (!empty($from_date) && !empty($to_date)) {
+            $query = "SELECT SUM(grandtotal) as total FROM sales WHERE DATE(created_date) BETWEEN :from_date AND :to_date";
+            $stmt = $conn->prepare($query);
+            $stmt->execute([':from_date' => $from_date, ':to_date' => $to_date]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result && $result['total']) {
+                $grandtotal_sum = $result['total'];
+            }
+        }
+    }
 ?>
 </div> 
 
 
 <div class="col-md-2 text-primary" style="margin-top: 10px; font-size: 20px;">
 
- <span class="number counter"><?php echo "Total:Ghc  "; echo  htmlentities($grandtotal);?></span>
+ <span class="number counter"><?php echo "Total:Ghc  "; echo  number_format($grandtotal_sum, 2);?></span>
  
 </div>
 
@@ -426,77 +417,67 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                 </tr>
               </thead>   
               <tbody> 
-                
-                 <?php
-                 $i = 1;
-                  if(isset($_POST['search'])){
+                <?php
+$i = 1;
+if(isset($_POST['search'])) {
+  
+    $from_date = $_POST['from_date'];
+    $to_date = $_POST['to_date'];
+
+    if(!empty($from_date) && !empty($to_date)) {
+          
+       // Use a prepared statement for the table data as well to be safe
+        $query = "SELECT sp.*, ct.firstnamec, ct.lastnamec 
+                  FROM sales sp 
+                  INNER JOIN customer ct ON sp.customer_id = ct.customer_id 
+                  WHERE DATE(sp.created_date) BETWEEN :from_date AND :to_date"; 
+              
+        $stmt = $conn->prepare($query);
+        $stmt->execute([':from_date' => $from_date, ':to_date' => $to_date]);
         
-                /* $day = $_POST['day'];sp inner join customer ct on sp.customer_id = ct.customer_id    GROUP BY grandtotal
-                 $month = $_POST['month'];
-                 $years = $_POST['years'];*/
-                 $from_date = $_POST['from_date'];
-                 $to_date = $_POST['to_date'];
-
-                if($from_date != "" || $to_date != ""){
-
-                $query = "SELECT * FROM sales sp inner join customer ct on sp.customer_id = ct.customer_id WHERE created_date BETWEEN '$from_date' AND '$to_date' "; 
-                     
-                    $data =$conn->query($query);
-                   if ($data->rowCount() > 0){
-                    while($row=$data->fetch(PDO::FETCH_ASSOC)){
-                      $customer_first = $row['firstnamec'];
-                      $customer_last = $row['lastnamec'];
-
-                       $day = $row['days'];
-                       $month = $row['month'];
-                       $years = $row['years']; 
-                       $discount = $row['discount']; 
-                       $total = $row['total'];
-                       $grandtotal = $row['grandtotal'];
-                       $datee = $row['created_date'];
-                    ?>
-                    <tr>
-                  <td class="text-center"><?php echo $i++ ?></td>
-                  <td class="text-center">
-                   <?php echo $customer_first. " ".$customer_last;?>
-                  </td>
-                  <td class="text-center">
-                     <?php echo $discount;?>
-                  </td>
-                   <td class="text-center">
-                     <?php echo $grandtotal;?>
-                  </td>
-                  <td class="text-center">
-                     <?php echo $total;?>
-                  </td>
-                  <td class="text-center">
-                     <?php echo $datee;?>
-                  </td>
-                  
-                  <td class="text-center">
-                    <button class="btn btn-sm btn-outline-primary view_sales" type="button" data-id="<?php echo  $row['reciept_no']; ?>"
-                      data-examID="<?php echo $row['reciept_no']; ?>">View</button>
-
-                  </td>
-               <tr>                            
-                
-                    <?php
-                    }
-                  }
-
-                  else{
-                      ?>
-                        <tr>
-                          <td> Records Not Found! </td>
-
-                        </tr>
-                      <?php
-                  }  
-
-                }
-              }                 
-                        
+     //   if ($stmt->rowCount() > 0) {
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                  // $customer_first = $row['firstnamec'];
+                    //var_dump( 'kkkkkkkkkkjj');
+               // echo $customer_first;
                 ?>
+                <tr>
+                    <td class="text-center"><?php echo $i++ ?></td>
+                    <td>
+                        <?php echo htmlspecialchars($row['firstnamec'] . " " . $row['lastnamec']); ?>
+                    </td>
+                    <td class="text-right">
+                        <?php echo number_format($row['discount'], 2); ?>
+                    </td>
+                    <td class="text-right">
+                        <?php echo number_format($row['total'], 2); ?>
+                    </td>
+                    <td class="text-right">
+                        <?php echo number_format($row['grandtotal'], 2); ?>
+                    </td>
+                    <td class="text-center">
+                        <?php echo date("M d, Y", strtotime($row['created_date'])); ?>
+                    </td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary view_sales" type="button" 
+                                data-id="<?php echo $row['reciept_no']; ?>">
+                            View
+                        </button>
+                    </td>
+                </tr>
+                <?php
+            }
+        } else {
+            ?>
+            <tr>
+                <td class="text-center" colspan="7">No Records Found.</td>
+                
+            </tr>
+            <?php
+        }
+    }
+       // }
+        ?>
 
               </tbody>
                 
@@ -514,21 +495,31 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     <!-- Custom JS -->
    <script>
 
-    $(document).ready(function(){
-    $('table').dataTable()
+//     $(document).ready(function(){
+//     $('table').dataTable()
   
-$('#mytable').ddTableFilter();
-  })
+// $('#mytable').ddTableFilter();
+//   })
   
 
+$(document).ready(function(){
+
+    if ($.fn.DataTable.isDataTable('#mytable')) {
+        $('#mytable').DataTable().destroy();
+    }
+
+    $('#mytable').DataTable({
+        paging: true,
+        searching: true,
+        info: true,
+        ordering: true
+    });
+
+});
 
   
 $('.view_sales').click(function(){
-    uni_modal("Report Details","view_salerecode.php?reciept_no="+$(this).attr('data-examin_ID')+"&reciept_no="+$(this).attr('data-id'),"mid-large")
-    
-
-
-   
+    uni_modal("Report Details","view_salerecode.php?reciept_no="+$(this).attr('data-id'),"mid-large");
   })
 
   

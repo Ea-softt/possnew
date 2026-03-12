@@ -149,10 +149,10 @@ include("head.php");
                      <?php echo $discount;?>
                   </td>
                    <td class="text-center">
-                     <?php echo $grandtotal;?>
+                     <?php echo $total;?>
                   </td>
                   <td class="text-center">
-                     <?php echo $total;?>
+                     <?php echo $grandtotal;?>
                   </td>
                   <td class="text-center">
                      <?php echo $datee;?>
@@ -163,7 +163,7 @@ include("head.php");
                       data-examID="<?php echo $row['reciept_no']; ?>">View</button>
 
                   </td>
-               <tr>                            
+               </tr>                            
                 
                     <?php
                     }
@@ -172,8 +172,7 @@ include("head.php");
                   else{
                       ?>
                         <tr>
-                          <td> Records Not Found! </td>
-
+                          <td class="text-center" colspan="7"> Records Not Found! </td>
                         </tr>
                       <?php
                   }  

@@ -387,7 +387,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                 $i = 1;
                 $total = 0;
                 $student = $conn->query("SELECT * FROM moneyout order by id desc ");
-                if($student->rowCount() > 0):
+              //  if($student->rowCount() > 0):
                 while($row=$student->fetch(PDO::FETCH_ASSOC)):
                    $total += $row['total_amount'];
                 ?>
@@ -416,13 +416,13 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                 </tr>
                <?php 
                         endwhile;
-                        else:
+                     //   else:
                     ?>
                     <tr>
                             <th class="text-center" colspan="7">No Data for Selected Month.</th>
                     </tr>
                     <?php 
-                        endif;
+                       // endif;
                     ?>
               </tbody>
                <tfoot>

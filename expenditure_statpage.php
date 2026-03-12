@@ -387,7 +387,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                 $i = 1;
                 $total = 0;
                 $student = $conn->query("SELECT mi.*,mi.name as Name,mi.day as Day,mi.month as Month, mi.year as Year,mi.total_amount as profit,mo.total_amount as loss,((mi.total_amount) -(mo.total_amount)) as Remark FROM moneyin mi inner join moneyout mo on mi.year = mo.year where mi.day = mo.day and mi.month = mo.month and mi.year = mo.year and mi.day = mo.day and mi.name = mo.name order by mi.id desc ");
-                if($student->rowCount() > 0):
+               // if($student->rowCount() > 0):
                 while($row=$student->fetch(PDO::FETCH_ASSOC)):
                $total += $row['Remark'];
 
@@ -438,13 +438,13 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                 </tr>
                 <?php 
                         endwhile;
-                        else:
+                        //else:
                     ?>
                     <tr>
                             <th class="text-center" colspan="9">No Data for Selected Month.</th>
                     </tr>
                     <?php 
-                        endif;
+                       // endif;
                     ?>
               </tbody>
                <tfoot>

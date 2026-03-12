@@ -383,8 +383,10 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                       $ctotal = 0;
                        $diff = 0;
                       $grandtotal = 0;
+                     //  if(!empty($from_date) && !empty($to_date)) {
                       $payments = $conn->query("SELECT sp.*, p.*, sum(sp.qty) as qty1, (p.sell_price * sum(sp.qty)) as stotal, (p.cprice * sum(sp.qty)) as ctotal,((p.sell_price * sum(sp.qty))-(p.cprice * sum(sp.qty))) as diff FROM sales_product sp inner join products p on sp.product_id = p.product_no GROUP BY sp.product_id,created_date order by strftime('%s', sp.created_date) desc");
-                      if($payments->rowCount() > 0):
+                    //  if($payments->rowCount() > 0):
+                   // var_dump($payments);
                       while($row = $payments->fetch(PDO::FETCH_ASSOC)):
                        $stotal += $row['stotal'];
                         $ctotal += $row['ctotal'];
@@ -422,13 +424,13 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                     </tr>
                     <?php 
                         endwhile;
-                        else:
+                      //  else:
                     ?>
                     <!--  <tr>
                             <th class="text-center" colspan="4">No Data for Selected Month.</th>
                     </tr> -->
                     <?php 
-                        endif;
+                      //  endif;
                     ?>
                     
                       

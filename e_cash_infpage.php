@@ -381,7 +381,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                       
                       $payments = $conn->query("SELECT sp.*,ch.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID inner join cashtype ch on sp.typeofcash = ch.id where strftime('%Y-%m-%d', sp.created_date) BETWEEN '$start_date' AND '$end_date' GROUP BY ch.id,strftime('%Y-%m-%d', sp.created_date) order by strftime('%s', sp.created_date) desc ");
                       
-                      if($payments->rowCount() > 0):
+                     // if($payments->rowCount() > 0):
                       while($row = $payments->fetch(PDO::FETCH_ASSOC)): 
                         $grandtotal += $row['grad'];
                         $customer_first = $row['FullName'];
@@ -412,13 +412,13 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                     </tr>
                     <?php 
                         endwhile;
-                        else:
+                      //  else:
                     ?>
                     <tr>
                             <th class="text-center" colspan="7">No Data for Selected Date.</th>
                     </tr>
                     <?php 
-                        endif;
+                      //  endif;
                     ?>
                     </tbody>
                     <tfoot>
