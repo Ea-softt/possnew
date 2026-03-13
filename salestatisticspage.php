@@ -7,6 +7,8 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     $$k = $v;
     $meta[$k] = $v;
 }
+$start_date = date('Y-m-d');
+$end_date = date('Y-m-d');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -338,25 +340,27 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
 
     <!-- Main Content -->
      <div class="main-content" id="mainContent">
-
+        <form action="salestatisticspage.php" method="post"> 
          <div class="col-lg-12">
         <div class="card">
             <div class="card-header bg-success text-white">
                 <b>Sales Statistics</b>
             </div>
             <div class="card-body">
+
             <div class="input-daterange row justify-content-center pt-4">
                 <label for="" class="mt-2">Select Month</label>
                 <div class="col-sm-3">
-                    <input type="date" name="start_date" id="start_date" placeholder="From Date"  class="form-control">
+                    <input type="date" name="from_date" id="start_date" value="<?php echo $start_date; ?>" placeholder="From Date"  class="form-control">
                      
                 </div>
                  <div class="col-sm-3">
-                    <input type="date" name="end_date" id="end_date" placeholder="To Date"  class="form-control">
+                    <input type="date" name="to_date" id="end_date" value="<?php echo $end_date; ?>" placeholder="To Date"  class="form-control">
                      
                 </div>
                  <div class="col-sm-2">
-                    <input type="button" name="range" id="range" value="Range"  class="btn btn-success">
+                    <!-- <input type="button" name="range" id="range" value="Range"  class="btn btn-success"> -->
+                    <input align="right" type="submit" class="btn btn-primary btn-right btn-lg" name="search" value="Search">
                      
                 </div>
             </div>
@@ -377,24 +381,40 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                         </tr>
                     </thead>       
                     <tbody>
-                        <?php
-                      $i = 1;
+
+                            <?php
+                       $i = 1;
                       $stotal = 0;
                       $ctotal = 0;
                        $diff = 0;
                       $grandtotal = 0;
-                     //  if(!empty($from_date) && !empty($to_date)) {
-                      $payments = $conn->query("SELECT sp.*, p.*, sum(sp.qty) as qty1, (p.sell_price * sum(sp.qty)) as stotal, (p.cprice * sum(sp.qty)) as ctotal,((p.sell_price * sum(sp.qty))-(p.cprice * sum(sp.qty))) as diff FROM sales_product sp inner join products p on sp.product_id = p.product_no GROUP BY sp.product_id,created_date order by strftime('%s', sp.created_date) desc");
-                    //  if($payments->rowCount() > 0):
-                   // var_dump($payments);
-                      while($row = $payments->fetch(PDO::FETCH_ASSOC)):
-                       $stotal += $row['stotal'];
-                        $ctotal += $row['ctotal'];
-                        $diff += $row['diff'];
-                         $month1 = $row['created_date'];
 
-                      ?>
-                      <tr>
+                    if(isset($_POST['search'])) {
+                    
+                        $from_date = $_POST['from_date'];
+                        $to_date = $_POST['to_date'];
+
+                        if(!empty($from_date) && !empty($to_date)) {
+                            
+                        // Use a prepared statement for the table data as well to be safe
+                            // $query = "SELECT sp.*, ct.firstnamec, ct.lastnamec 
+                            //         FROM sales sp 
+                            //         INNER JOIN customer ct ON sp.customer_id = ct.customer_id 
+                            //         WHERE DATE(sp.created_date) BETWEEN :from_date AND :to_date"; 
+                             $query =("SELECT sp.*, p.*, sum(sp.qty) as qty1, (p.sell_price * sum(sp.qty)) as stotal, (p.cprice * sum(sp.qty)) as ctotal,((p.sell_price * sum(sp.qty))-(p.cprice * sum(sp.qty))) as diff FROM sales_product sp inner join products p on sp.product_id = p.product_no WHERE strftime('%Y-%m-%d', sp.created_date) BETWEEN :from_date AND :to_date GROUP BY sp.product_id,created_date order by strftime('%s', sp.created_date) desc");
+                        
+                            $stmt = $conn->prepare($query);
+                            $stmt->execute([':from_date' => $from_date, ':to_date' => $to_date]);
+                            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            if (count($rows) > 0) {
+                                foreach($rows as $row) {
+                                      $stotal += $row['stotal'];
+                                        $ctotal += $row['ctotal'];
+                                        $diff += $row['diff'];
+                                        $month1 = $row['created_date'];
+
+                                 ?>
+                              <tr>
                         <td class="text-center"><?php echo $i++ ?></td>
                         
                         <td class="text-center">
@@ -422,16 +442,19 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                             <p> <b><?php echo date("Y-m-d",strtotime($month1)) ?></b></p>
                         </td>                  
                     </tr>
-                    <?php 
-                        endwhile;
-                      //  else:
-                    ?>
-                    <!--  <tr>
-                            <th class="text-center" colspan="4">No Data for Selected Month.</th>
-                    </tr> -->
-                    <?php 
-                      //  endif;
-                    ?>
+                   <?php
+            } // end foreach
+        } else {
+            ?>
+                     <tr>
+                            <th class="text-center" colspan="9">No Data for Selected Month.</th>
+                            
+                    </tr>
+                    <?php
+        }
+    } // end if(!empty...)
+} // end if(isset($_POST['search']))
+?>
                     
                       
                     </tbody>
@@ -457,6 +480,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             </div>
         </div>
     </div>
+</form>
 </div>
 <noscript>
     <style>

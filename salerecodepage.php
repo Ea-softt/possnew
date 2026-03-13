@@ -7,6 +7,9 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     $$k = $v;
     $meta[$k] = $v;
 }
+
+$start_date = date('Y-m-01');
+$end_date = date('Y-m-t');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -336,14 +339,14 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
 <div class="container-fluid">   
    
       <!-- FORM Panel -->
-
+    
   <form action="salerecodepage.php" method="post"> 
   <div class="row "> 
       <div class="col-md-2 border-right ">
         <div class="form-group">
                  <label for="" class="control-label">From Date</label>
                 
-               <input type="date" name="from_date" class="form-control">
+               <input type="date" name="from_date" value="<?php echo $start_date; ?>" class="form-control">
             </div>  
 
 
@@ -354,7 +357,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
         <div class="form-group">
             <label for="" class="control-label">To Date</label>
                
-               <input type="date" name="to_date" class="form-control">
+               <input type="date" name="to_date" value="<?php echo $end_date; ?>" class="form-control">
             </div> 
             <hr>
           </div>
@@ -434,12 +437,9 @@ if(isset($_POST['search'])) {
               
         $stmt = $conn->prepare($query);
         $stmt->execute([':from_date' => $from_date, ':to_date' => $to_date]);
-        
-     //   if ($stmt->rowCount() > 0) {
-            while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                  // $customer_first = $row['firstnamec'];
-                    //var_dump( 'kkkkkkkkkkjj');
-               // echo $customer_first;
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (count($rows) > 0) {
+            foreach($rows as $row) {
                 ?>
                 <tr>
                     <td class="text-center"><?php echo $i++ ?></td>
@@ -466,18 +466,17 @@ if(isset($_POST['search'])) {
                     </td>
                 </tr>
                 <?php
-            }
+            } // end foreach
         } else {
             ?>
             <tr>
                 <td class="text-center" colspan="7">No Records Found.</td>
-                
             </tr>
             <?php
         }
-    }
-       // }
-        ?>
+    } // end if(!empty...)
+} // end if(isset($_POST['search']))
+?>
 
               </tbody>
                 

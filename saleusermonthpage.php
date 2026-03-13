@@ -7,6 +7,8 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     $$k = $v;
     $meta[$k] = $v;
 }
+$start_date = date('Y-m-01');
+$end_date = date('Y-m-d');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -339,7 +341,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     <!-- Main Content -->
      <div class="main-content" id="mainContent">
 
-
+     <form action="saleusermonthpage.php" method="post"> 
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header bg-success text-white">
@@ -349,17 +351,16 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             <div class="input-daterange row justify-content-center pt-4">
                 <label for="" class="mt-2">Select Month</label>
                 <div class="col-sm-3">
-                    <input type="date" name="start_date" id="start_date" placeholder="From Date"  class="form-control">
-                     
+                    <input type="date" name="from_date" id="start_date" value="<?php echo $start_date; ?>" placeholder="From Date"  class="form-control">
                 </div>
                  <div class="col-sm-3">
-                    <input type="date" name="end_date" id="end_date" placeholder="To Date"  class="form-control">
-                     
-                </div>
+                    <input type="date" name="to_date" id="end_date" value="<?php echo $end_date; ?>" placeholder="To Date"  class="form-control">
+                 </div>
                  <div class="col-sm-2">
-                    <input type="button" name="range" id="range" value="Range"  class="btn btn-success">
-                     
+                    
+                     <button class="btn btn-primary" type="submit" name="search" value="Search">Filter</button>
                 </div>
+            </form>
             </div>
             <hr>
             <div id="purchasse_order" class="col-md-12">
@@ -371,23 +372,41 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                             <th class="">Discount.</th>
                             <th class="">Total.</th>
                             <th class="">Grandtotal</th>   
-                            <th class="">Total</th>                           
+                            <th class="">Date</th>                           
                         </tr>
                     </thead>       
                     <tbody>
-                        <?php
-                      $i = 1;
-                      $total = 0;
-                      $grandtotal = 0;
-                      $payments = $conn->query("SELECT sp.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID GROUP BY strftime('%Y-%m-%d', sp.created_date)  order by strftime('%s', sp.created_date) desc ");
-                     // if($payments->rowCount() > 0):
-                      while($row = $payments->fetch(PDO::FETCH_ASSOC)):
-                        $grandtotal += $row['grad'];
-                        $customer_first = $row['FullName'];
-                        $username = $row['username'];
-                         $month1 = $row['created_date'];
 
-                      ?>
+                  <?php
+                    $i = 1;
+                    if(isset($_POST['search'])) {
+                    
+                        $from_date = $_POST['from_date'];
+                        $to_date = $_POST['to_date'];
+
+                        if(!empty($from_date) && !empty($to_date)) {
+                            
+                        // Use a prepared statement for the table data as well to be safe
+                            // $query = "SELECT sp.*, ct.firstnamec, ct.lastnamec 
+                            //         FROM sales sp 
+                            //         INNER JOIN customer ct ON sp.customer_id = ct.customer_id 
+                            //         WHERE DATE(sp.created_date) BETWEEN :from_date AND :to_date"; 
+                                 $query = ("SELECT sp.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp 
+                                 INNER JOIN newemployee ct on sp.username = ct.EmpID 
+                                 WHERE strftime('%Y-%m-%d', sp.created_date) BETWEEN :from_date AND :to_date 
+                                 GROUP BY sp.username, strftime('%Y-%m-%d', sp.created_date)  order by strftime('%s', sp.created_date) desc ");
+                     
+                            $stmt = $conn->prepare($query);
+                            $stmt->execute([':from_date' => $from_date, ':to_date' => $to_date]);
+                            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            if (count($rows) > 0) {
+                                foreach($rows as $row) {
+
+                                //  $grandtotal += $row['grad'];
+                                  $customer_first = $row['FullName'];
+                                  $username = $row['username'];
+                                  $month1 = $row['created_date'];
+                                  ?>
                       <tr>
                         <td class="text-center"><?php echo $i++ ?></td>
                         <td class="text-center">
@@ -407,15 +426,17 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                             <p> <b><?php echo date("Y-m-d",strtotime($month1)) ?></b></p>
                         </td>                  
                     </tr>
-                    <?php 
-                        endwhile;
-                       // else:
+                    <?php
+                    } // end foreach
+                } else {
                     ?>
                      <tr>
-                            <th class="text-center" colspan="4">No Data for Selected Month.</th>
+                            <th class="text-center" colspan="6">No Data for Selected Month.</th>
                     </tr>
-                    <?php 
-                       // endif;
+                    <?php
+                            }
+                        } // end if(!empty...)
+                    } // end if(isset($_POST['search']))
                     ?>
                     
                       
@@ -435,6 +456,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             </div>
         </div>
     </div>
+</form>
 </div>
 <noscript>
     <style>
@@ -471,31 +493,31 @@ $('#report-list').ddTableFilter();
   
   
 
-$('#range').click(function(){
+// $('#range').click(function(){
     
-    var start_date = $('#start_date').val();
-    var end_date = $('#end_date').val();
-    if(start_date != '' && end_date != ''){
+//     var start_date = $('#start_date').val();
+//     var end_date = $('#end_date').val();
+//     if(start_date != '' && end_date != ''){
 
-        $.ajax({
-            url: "insert_saleusermonth.php",
-            method: "POST",
-            data:{start_date:start_date, end_date:end_date},
-            success:function(data){
-               // alert(data);
-                $('#purchasse_order').html(data);
+//         $.ajax({
+//             url: "insert_saleusermonth.php",
+//             method: "POST",
+//             data:{start_date:start_date, end_date:end_date},
+//             success:function(data){
+//                // alert(data);
+//                 $('#purchasse_order').html(data);
                
-            }
+//             }
 
 
-        });
-    }
-    else
-    {
-        swal("Please Select the Date");
-    }
-    });
-});
+//         });
+//     }
+//     else
+//     {
+//         swal("Please Select the Date");
+//     }
+//     });
+// });
 
         // Toggle Sidebar
         function toggleSidebar() {

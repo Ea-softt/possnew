@@ -376,13 +376,13 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                       $i = 1;
                       $total = 0;
                       $grandtotal = 0;
-                      $start_date = date('Y-m-d');
+                      $start_date = date('Y-m-01');
                       $end_date = date('Y-m-d');
                       
-                      $payments = $conn->query("SELECT sp.*,ch.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID inner join cashtype ch on sp.typeofcash = ch.id where strftime('%Y-%m-%d', sp.created_date) BETWEEN '$start_date' AND '$end_date' GROUP BY ch.id,strftime('%Y-%m-%d', sp.created_date) order by strftime('%s', sp.created_date) desc ");
-                      
-                     // if($payments->rowCount() > 0):
-                      while($row = $payments->fetch(PDO::FETCH_ASSOC)): 
+                      $payments_query = $conn->query("SELECT sp.*,ch.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID inner join cashtype ch on sp.typeofcash = ch.id where strftime('%Y-%m-%d', sp.created_date) BETWEEN '$start_date' AND '$end_date' GROUP BY ch.id,strftime('%Y-%m-%d', sp.created_date) order by strftime('%s', sp.created_date) desc ");
+                      $payments = $payments_query->fetchAll(PDO::FETCH_ASSOC);
+                      if(count($payments) > 0):
+                        foreach($payments as $row):
                         $grandtotal += $row['grad'];
                         $customer_first = $row['FullName'];
                         $username = $row['username'];
@@ -411,14 +411,14 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                         </td>                  
                     </tr>
                     <?php 
-                        endwhile;
-                      //  else:
+                        endforeach;
+                        else:
                     ?>
                     <tr>
                             <th class="text-center" colspan="7">No Data for Selected Date.</th>
                     </tr>
                     <?php 
-                      //  endif;
+                        endif;
                     ?>
                     </tbody>
                     <tfoot>
@@ -476,29 +476,29 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
 $('#report-list').ddTableFilter();
   })
 
-$('#range').click(function(){
+// $('#range').click(function(){
     
-    var start_date = $('#start_date').val();
-    var end_date = $('#end_date').val();
-    if(start_date != '' && end_date != ''){
+//     var start_date = $('#start_date').val();
+//     var end_date = $('#end_date').val();
+//     if(start_date != '' && end_date != ''){
 
-        $.ajax({
-            url: "e_cash_infmonthly.php",
-            method: "POST",
-            data:{start_date:start_date, end_date:end_date},
-            success:function(data){
-                $('#purchasse_order').html(data);
-                // Re-initialize the plugins on the new table
-                $('#report-list').dataTable();
-                $('#report-list').ddTableFilter();
-            }
-        });
-    }
-    else
-    {
-        swal("Please Select the Date");
-    }
-});
+//         $.ajax({
+//             url: "e_cash_infmonthly.php",
+//             method: "POST",
+//             data:{start_date:start_date, end_date:end_date},
+//             success:function(data){
+//                 $('#purchasse_order').html(data);
+//                 // Re-initialize the plugins on the new table
+//                 $('#report-list').dataTable();
+//                 $('#report-list').ddTableFilter();
+//             }
+//         });
+//     }
+//     else
+//     {
+//         swal("Please Select the Date");
+//     }
+// });
 
 $('#print').click(function(){
         var _c = $('#report-list').clone();

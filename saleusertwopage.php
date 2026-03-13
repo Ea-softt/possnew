@@ -2,7 +2,7 @@
 include('headside.php');
 include('insert_sales.php');
 
-$start_date = isset($_GET['start_date']) ? $_GET['start_date'] : date('Y-m-d');
+$start_date = isset($_GET['start_date']) ? $_GET['start_date'] : date('Y-m-01');
 $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d');
 $cmonth = date('Y-m-d', strtotime($end_date));
 
@@ -11,11 +11,35 @@ $weekly_sales = 0;
 $monthly_sales = 0;
 $yearly_sales = 0;
 
-$d_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE strftime('%Y-%m-%d', created_date) = '$cmonth'");
+// $d_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE strftime('%Y-%m-%d', created_date) = '$cmonth'");
 
-$w_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE strftime('%Y%W', created_date) = strftime('%Y%W', '$cmonth')");
-$weekly_sales = $w_qry->fetchColumn() ?: 0;
+// $w_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE strftime('%Y%W', created_date) = strftime('%Y%W', '$cmonth')");
+// $weekly_sales = $w_qry->fetchColumn() ?: 0;
 // $yearly_sales = $y_qry->fetchColumn() ?: 0; // $y_qry is not defined in this context
+
+// $d_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE  strftime(created_date,'%Y-%m-%d') = '$cmonth'");
+// $daily_sales = $d_qry->num_rows > 0 ? $d_qry->fetch_array()['total'] : 0;
+
+// $w_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE YEARWEEK(created_date, 1) = YEARWEEK('$cmonth', 1)");
+// $weekly_sales = $w_qry->num_rows > 0 ? $w_qry->fetch_array()['total'] : 0;
+
+// $m_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE  strftime(created_date,'%Y-%m') =  strftime('$cmonth','%Y-%m')");
+// $monthly_sales = $m_qry->num_rows > 0 ? $m_qry->fetch_array()['total'] : 0;
+
+// $y_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE  strftime(created_date,'%Y') =  strftime('$cmonth','%Y')");
+// $yearly_sales = $y_qry->num_rows > 0 ? $y_qry->fetch_array()['total'] : 0;
+
+
+
+
+
+
+
+
+
+
+
+
 
 $fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}'");
 foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
@@ -430,8 +454,9 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                       $total = 0;
                       $grandtotal = 0;
                       $payments = $conn->query("SELECT sp.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID where strftime('%Y-%m-%d', sp.created_date) BETWEEN '$start_date' AND '$end_date' GROUP BY sp.username  order by strftime('%s', sp.created_date) desc ");
-                     // if($payments->rowCount() > 0):
-                      while($row = $payments->fetch(PDO::FETCH_ASSOC)):
+                      $payment_rows = $payments->fetchAll(PDO::FETCH_ASSOC);
+                      if(count($payment_rows) > 0):
+                        foreach($payment_rows as $row):
                         $grandtotal += $row['grad'];
                         $customer_first = $row['FullName'];
                         $username = $row['username'];
@@ -458,14 +483,14 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                         </td>                  
                     </tr>
                     <?php 
-                        endwhile;
-                      //  else:
+                        endforeach;
+                        else:
                     ?>
                     <tr>
                             <th class="text-center" colspan="6">No Data for Selected Date.</th>
                     </tr>
                     <?php 
-                       // endif;
+                        endif;
                     ?>
                     </tbody>
                     <tfoot>

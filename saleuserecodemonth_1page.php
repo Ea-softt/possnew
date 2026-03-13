@@ -383,9 +383,9 @@ foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
 
                 $payments = $conn->query("SELECT sp.*,ct.* FROM sales sp inner join customer ct on sp.customer_id = ct.customer_id  WHERE  strftime('%Y%m%d', sp.created_date) = '{$_GET['month']}' and sp.username = '{$_GET['username']}' order by strftime('%s', sp.created_date) asc"); 
                      
-                   
-                   if ($payments->num_rows > 0){
-                    while($row = $payments->fetch(PDO::FETCH_ASSOC)){
+                   $payment_rows = $payments->fetchAll(PDO::FETCH_ASSOC);
+                   if (count($payment_rows) > 0){
+                    foreach($payment_rows as $row){
                       $customer_first = $row['firstnamec'];
                       $customer_last = $row['lastnamec'];
 
@@ -425,7 +425,7 @@ foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
                </tr>                           
             
                     <?php
-                    }
+                    } // end foreach
                   }
 
                   else{

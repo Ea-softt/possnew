@@ -7,6 +7,8 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     $$k = $v;
     $meta[$k] = $v;
 }
+$start_date = date('Y-m-01');
+$end_date = date('Y-m-t');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -348,11 +350,11 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             <div class="input-daterange row justify-content-center pt-4">
                 <label for="" class="mt-2">Select Month</label>
                 <div class="col-sm-3">
-                    <input type="date" name="start_date" id="start_date" placeholder="From Date"  class="form-control">
+                    <input type="date" name="start_date" id="start_date" value="<?php echo $start_date; ?>" placeholder="From Date"  class="form-control">
                      
                 </div>
                  <div class="col-sm-3">
-                    <input type="date" name="end_date" id="end_date" placeholder="To Date"  class="form-control">
+                    <input type="date" name="end_date" id="end_date" value="<?php echo $end_date; ?>" placeholder="To Date"  class="form-control">
                      
                 </div>
                  <div class="col-sm-2">
@@ -380,9 +382,10 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                       $i = 1;
                       $total = 0;
                       $grandtotal = 0;
-                      $payments = $conn->query("SELECT sp.*,ch.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID inner join cashtype ch on sp.typeofcash = ch.id GROUP BY ch.id  order by strftime('%s', sp.created_date) desc ");
-                     // if($payments->rowCount() > 0):
-                      while($row = $payments->fetch(PDO::FETCH_ASSOC)): //date_format(sp.created_date,'%Y-%m-%d')
+                      $payments_query = $conn->query("SELECT sp.*,ch.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID inner join cashtype ch on sp.typeofcash = ch.id WHERE strftime('%Y-%m-%d', sp.created_date) BETWEEN '$start_date' AND '$end_date' GROUP BY ch.id, strftime('%Y-%m-%d', sp.created_date) order by strftime('%s', sp.created_date) desc ");
+                      $payments = $payments_query->fetchAll(PDO::FETCH_ASSOC);
+                      if(count($payments) > 0):
+                        foreach($payments as $row): //date_format(sp.created_date,'%Y-%m-%d')
                         $grandtotal += $row['grad'];
                         $customer_first = $row['FullName'];
                         $username = $row['username'];
@@ -415,14 +418,14 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                         </td>                  
                     </tr>
                     <?php 
-                        endwhile;
-                       // else:
+                        endforeach;
+                        else:
                     ?>
-                    <!--  <tr>
-                            <th class="text-center" colspan="4">No Data for Selected Month.</th>
-                    </tr> -->
+                     <tr>
+                            <th class="text-center" colspan="7">No Data for Selected Month.</th>
+                    </tr>
                     <?php 
-                       // endif;
+                        endif;
                     ?>
                     
                       
