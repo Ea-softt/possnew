@@ -7,6 +7,8 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     $$k = $v;
     $meta[$k] = $v;
 }
+$start_date = date('Y-m-01');
+$end_date = date('Y-m-d');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -339,6 +341,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     <!-- Main Content -->
      <div class="main-content" id="mainContent">
 
+     <form action="e_cash_infpage.php" method="post">
          <div class="col-lg-12">
         <div class="card">
             <div class="card-header bg-success text-white">
@@ -348,13 +351,13 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             <div class="input-daterange row justify-content-center pt-4">
                 <label for="" class="mt-2">Select Date</label>
                 <div class="col-sm-3">
-                    <input type="date" name="start_date" id="start_date" value="<?php echo date('Y-m-d'); ?>" class="form-control">
+                    <input type="date" name="from_date" id="start_date" value="<?php echo $start_date; ?>" class="form-control">
                 </div>
                  <div class="col-sm-3">
-                    <input type="date" name="end_date" id="end_date" value="<?php echo date('Y-m-d'); ?>" class="form-control">
+                    <input type="date" name="to_date" id="end_date" value="<?php echo $end_date; ?>" class="form-control">
                 </div>
                  <div class="col-sm-2">
-                    <input type="button" name="range" id="range" value="Range"  class="btn btn-success">
+                    <button class="btn btn-primary" type="submit" name="search" value="Search">Filter</button>
                 </div>
             </div>
             <hr>
@@ -363,64 +366,74 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                     <thead class="bg-dark text-white">
                         <tr>
                             <th class="text-center">#</th>
-                            <th class="">User name</th>
-                            <th class="">Discount</th>
-                            <th class="">Total</th>
-                            <th class="">Cash Type</th>
-                            <th class="">Grandtotal</th>   
-                             <th class="">Date</th>                           
+                            <th>User name</th>
+                            <th>Discount</th>
+                            <th>Total</th>
+                            <th>Cash Type</th>
+                            <th>Grandtotal</th>   
+                             <th>Date</th>                           
                         </tr>
                     </thead>       
                     <tbody>
                         <?php
-                      $i = 1;
-                      $total = 0;
-                      $grandtotal = 0;
-                      $start_date = date('Y-m-01');
-                      $end_date = date('Y-m-d');
-                      
-                      $payments_query = $conn->query("SELECT sp.*,ch.*,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID inner join cashtype ch on sp.typeofcash = ch.id where strftime('%Y-%m-%d', sp.created_date) BETWEEN '$start_date' AND '$end_date' GROUP BY ch.id,strftime('%Y-%m-%d', sp.created_date) order by strftime('%s', sp.created_date) desc ");
-                      $payments = $payments_query->fetchAll(PDO::FETCH_ASSOC);
-                      if(count($payments) > 0):
-                        foreach($payments as $row):
-                        $grandtotal += $row['grad'];
-                        $customer_first = $row['FullName'];
-                        $username = $row['username'];
-                         $month1 = $row['created_date'];
-                         $total += $row['total'];
-                      ?>
-                      <tr>
-                        <td class="text-center"><?php echo $i++ ?></td>
-                        <td class="text-center">
-                            <p><a href="usersalercodemonthpage.php?start_date=<?php echo date("Ymd",strtotime($start_date));?>&username=<?php echo $username;?>&end_date=<?php echo date("Ymd",strtotime($end_date));?>"><?php echo $customer_first;?></a></b></p>
-                        </td>
-                        <td class="text-center">
-                            <p> <b><?php echo $row['discount'] ?></b></p>
-                        </td>
-                        <td class="text-center">
-                            <p> <b><?php echo $row['total'] ?></b></p>
-                        </td>
-                         <td class="text-center">
-                            <p> <b><?php echo $row['typeofcash'] ?></b></p>
-                        </td>
-                         <td class="text-center">
-                            <p> <b><?php echo $row['grad'] ?></b></p>
-                        </td>
-                        <td class="text-center">
-                            <p> <b><?php echo date("Y-m-d",strtotime($month1)) ?></b></p>
-                        </td>                  
-                    </tr>
-                    <?php 
-                        endforeach;
-                        else:
-                    ?>
-                    <tr>
-                            <th class="text-center" colspan="7">No Data for Selected Date.</th>
-                    </tr>
-                    <?php 
-                        endif;
-                    ?>
+                        $i = 1;
+                        $total = 0;
+                        $grandtotal = 0;
+                        if(isset($_POST['search'])) {
+                        
+                            $from_date = $_POST['from_date'];
+                            $to_date = $_POST['to_date'];
+
+                            if(!empty($from_date) && !empty($to_date)) {
+                                
+                                $query =("SELECT sp.*,ch.typeofcash as cashtype,ct.*,sum(sp.grandtotal) as grad FROM sales sp inner join newemployee ct on sp.username = ct.EmpID inner join cashtype ch on sp.typeofcash = ch.id where strftime('%Y-%m-%d', sp.created_date) BETWEEN :from_date AND :to_date GROUP BY ch.id,strftime('%Y-%m-%d', sp.created_date) order by strftime('%s', sp.created_date) desc");
+                        
+                                $stmt = $conn->prepare($query);
+                                $stmt->execute([':from_date' => $from_date, ':to_date' => $to_date]);
+                                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                if (count($rows) > 0) {
+                                    foreach($rows as $row) {
+                                    $grandtotal += $row['grad'];
+                                    $customer_first = $row['FullName'];
+                                    $username = $row['username'];
+                                    $month1 = $row['created_date'];
+                                    $total += $row['total'];
+                                ?>
+                                <tr>
+                                    <td class="text-center"><?php echo $i++ ?></td>
+                                    <td class="text-center">
+                                        <p><a href="saleuserecodemonth_1page.php?month=<?php echo date("Ymd",strtotime($month1));?>&username=<?php echo $username;?>"><?php echo $customer_first;?></a></b></p>
+                                    </td>
+                                    <td class="text-center">
+                                        <p> <b><?php echo $row['discount'] ?></b></p>
+                                    </td>
+                                    <td class="text-center">
+                                        <p> <b><?php echo $row['total'] ?></b></p>
+                                    </td>
+                                    <td class="text-center">
+                                        <p> <b><?php echo $row['cashtype'] ?></b></p>
+                                    </td>
+                                    <td class="text-center">
+                                        <p> <b><?php echo $row['grad'] ?></b></p>
+                                    </td>
+                                    <td class="text-center">
+                                        <p> <b><?php echo date("Y-m-d",strtotime($month1)) ?></b></p>
+                                    </td>                  
+                                </tr>
+                                <?php 
+                                    } // end foreach
+                                } else {
+                                ?>
+                                <tr>
+                                        <th class="text-center" colspan="7">No Data for Selected Date.</th>
+                                </tr>
+                                <?php 
+                                    }
+                                } // end if(!empty...)
+                            } // end if(isset($_POST['search']))
+                        ?>
                     </tbody>
+                    <?php if(isset($_POST['search']) && !empty($from_date) && !empty($to_date)): ?>
                     <tfoot>
                         <tr>
                             <th colspan="4" class="text-right ">Total</th>
@@ -429,6 +442,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                             <th></th>
                         </tr>
                     </tfoot>
+                    <?php endif; ?>
                 </table>
             </div>
                 <hr>
@@ -441,7 +455,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             </div>
         </div>
     </div>
-</div>
+</form>
 <noscript>
     <style>
         table#report-list{
@@ -471,41 +485,24 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
    <script>
 
     $(document).ready(function(){
-    $('.table').dataTable()
+    $('.table').dataTable();
   
 $('#report-list').ddTableFilter();
-  })
-
-// $('#range').click(function(){
-    
-//     var start_date = $('#start_date').val();
-//     var end_date = $('#end_date').val();
-//     if(start_date != '' && end_date != ''){
-
-//         $.ajax({
-//             url: "e_cash_infmonthly.php",
-//             method: "POST",
-//             data:{start_date:start_date, end_date:end_date},
-//             success:function(data){
-//                 $('#purchasse_order').html(data);
-//                 // Re-initialize the plugins on the new table
-//                 $('#report-list').dataTable();
-//                 $('#report-list').ddTableFilter();
-//             }
-//         });
-//     }
-//     else
-//     {
-//         swal("Please Select the Date");
-//     }
-// });
+  });
 
 $('#print').click(function(){
+        var from_date = '<?php echo isset($_POST['from_date']) ? date("F j, Y", strtotime($_POST['from_date'])) : '' ?>';
+        var to_date = '<?php echo isset($_POST['to_date']) ? date("F j, Y", strtotime($_POST['to_date'])) : '' ?>';
+        var reportTitle = '<b>Daily Cash Type Report</b>';
+        if(from_date != '' && to_date != ''){
+            reportTitle = '<b>Daily Cash Type Report from '+from_date+' to '+to_date+'</b>';
+        }
+
         var _c = $('#report-list').clone();
         var ns = $('noscript').clone();
             ns.append(_c)
         var nw = window.open('','_blank','width=900,height=600')
-        nw.document.write('<p class="text-center"><b>Daily Cash Type Report</b></p>')
+        nw.document.write('<p class="text-center">'+reportTitle+'</p>')
         nw.document.write(ns.html())
         nw.document.close()
         nw.print()
@@ -513,7 +510,7 @@ $('#print').click(function(){
             nw.close()
         }, 500);
     })
-
+    
         // Toggle Sidebar
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
