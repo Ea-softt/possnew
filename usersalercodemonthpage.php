@@ -421,8 +421,7 @@ foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
                   </td>
                  
                  
-               </
-               vtr>                           
+               </tr>                           
             
                     <?php
                     } // end foreach
