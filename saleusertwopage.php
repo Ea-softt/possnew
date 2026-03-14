@@ -9,25 +9,27 @@ $cmonth = date('Y-m-d', strtotime($end_date));
 $daily_sales = 0;
 $weekly_sales = 0;
 $monthly_sales = 0;
-$yearly_sales = 0;
+ $yearly_sales = 0;
 
-// $d_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE strftime('%Y-%m-%d', created_date) = '$cmonth'");
+ $d_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE strftime('%Y-%m-%d', created_date) = '$cmonth'");
+ $d_row = $d_qry->fetch(PDO::FETCH_ASSOC);
+ $daily_sales = $d_row['total'] ?: 0;
 
-// $w_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE strftime('%Y%W', created_date) = strftime('%Y%W', '$cmonth')");
-// $weekly_sales = $w_qry->fetchColumn() ?: 0;
-// $yearly_sales = $y_qry->fetchColumn() ?: 0; // $y_qry is not defined in this context
-
-// $d_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE  strftime(created_date,'%Y-%m-%d') = '$cmonth'");
-// $daily_sales = $d_qry->num_rows > 0 ? $d_qry->fetch_array()['total'] : 0;
-
-// $w_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE YEARWEEK(created_date, 1) = YEARWEEK('$cmonth', 1)");
-// $weekly_sales = $w_qry->num_rows > 0 ? $w_qry->fetch_array()['total'] : 0;
+ $w_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE strftime('%Y%W', created_date) = strftime('%Y%W', '$cmonth')");
+ $w_row = $w_qry->fetch(PDO::FETCH_ASSOC);
+ $weekly_sales = $w_row['total'] ?: 0;
 
 // $m_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE  strftime(created_date,'%Y-%m') =  strftime('$cmonth','%Y-%m')");
 // $monthly_sales = $m_qry->num_rows > 0 ? $m_qry->fetch_array()['total'] : 0;
+ $m_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE  strftime('%Y-%m', created_date) =  strftime('%Y-%m', '$cmonth')");
+ $m_row = $m_qry->fetch(PDO::FETCH_ASSOC);
+ $monthly_sales = $m_row['total'] ?: 0;
 
 // $y_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE  strftime(created_date,'%Y') =  strftime('$cmonth','%Y')");
 // $yearly_sales = $y_qry->num_rows > 0 ? $y_qry->fetch_array()['total'] : 0;
+ $y_qry = $conn->query("SELECT sum(grandtotal) as total FROM sales WHERE  strftime('%Y', created_date) =  strftime('%Y', '$cmonth')");
+ $y_row = $y_qry->fetch(PDO::FETCH_ASSOC);
+ $yearly_sales = $y_row['total'] ?: 0;
 
 
 
@@ -406,7 +408,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                     <div class="card text-white bg-primary mb-3">
                         <div class="card-header">Daily Sales</div>
                         <div class="card-body">
-                            <h5 class="card-title"><?php echo number_format($daily_sales ?? 0, 2) ?></h5>
+                            <h5 class="card-title"><?php echo number_format($daily_sales, 2) ?></h5>
                         </div>
                     </div>
                 </div>
@@ -414,7 +416,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                     <div class="card text-white bg-success mb-3">
                         <div class="card-header">Weekly Sales</div>
                         <div class="card-body">
-                            <h5 class="card-title"><?php echo number_format($weekly_sales ?? 0, 2) ?></h5>
+                            <h5 class="card-title"><?php echo number_format($weekly_sales, 2) ?></h5>
                         </div>
                     </div>
                 </div>
@@ -422,7 +424,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                     <div class="card text-white bg-warning mb-3">
                         <div class="card-header">Monthly Sales</div>
                         <div class="card-body">
-                            <h5 class="card-title"><?php echo number_format($monthly_sales ?? 0, 2) ?></h5>
+                            <h5 class="card-title"><?php echo number_format($monthly_sales, 2) ?></h5>
                         </div>
                     </div>
                 </div>
@@ -430,7 +432,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                     <div class="card text-white bg-danger mb-3">
                         <div class="card-header">Yearly Sales</div>
                         <div class="card-body">
-                            <h5 class="card-title"><?php echo number_format($yearly_sales ?? 0, 2) ?></h5>
+                            <h5 class="card-title"><?php echo number_format($yearly_sales, 2) ?></h5>
                         </div>
                     </div>
                 </div>
@@ -465,9 +467,8 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                       ?>
                       <tr>
                         <td class="text-center"><?php echo $i++ ?></td>
-                        <td class="text-center">
-                            <!-- month=<?php echo date("Y-m-d",strtotime($month1));?> -->
-                            <p><a href="usersalerecodepage.php?month=<?php echo date("Ymd",strtotime($month1));?>&username=<?php echo $username;?>"><?php echo $customer_first;?></a></b></p>
+                        <td class="text-center">            
+                            <p><b><?php echo $customer_first;?></b></p>
                         </td>
                         <td class="text-center">
                             <p> <b><?php echo $row['discount'] ?></b></p>
