@@ -339,6 +339,12 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             <div class="card_body">
             
                 <hr>
+                
+                  <div class="col-md-12 mb-4">
+                    <center>
+                        <label for="backup_location" class="form-label">Backup Location</label>
+                        <input type="text" class="form-control col-sm-3" id="backup_location" name="backup_location" value="D:/buckup.sql">
+                    </center>
                 <div class="col-md-12 mb-4 ">
                     <center>
                         <button class="btn btn-primary btn-sm col-sm-3" type="button" id="backu"><i class="fa fa-database"></i> Backup</button><!--  -->

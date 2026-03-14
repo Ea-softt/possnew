@@ -352,14 +352,14 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
 	<br>
 	<div class="col-lg-12">
 		<div class="card ">
-			<div class="card-header bg-success text-white"><b>User List</b>
-			
-			<span class="float:right"><a class="btn btn-primary btn-block btn-sm col-sm-2 float-right" href="javascript:void(0)" id="new_user">
-					<i class="fa fa-plus"></i> New Entry
-				</a></span>
+		
 
-			</div>
-
+             <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <b>User List</b>
+                    <a class="btn btn-primary btn-sm" href="javascript:void(0)" id="new_user">
+                        <i class="fa fa-plus"></i> New Entry
+                    </a>
+                </div>
  
 
 			<div class="card-body">
@@ -405,11 +405,11 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
 				 	<td>
 				 		<center>
 							<div class="btn-group">							  
-							  <button type="button" class="btn btn-primary btn-sm dropdown-toggle " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							  <button type="button" class="btn btn-primary btn-sm dropdown-toggle " data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							  
 							  Action</button>
 							  <div class="dropdown-menu" aria-haspopup="true">
-							    <a class="dropdown-item edit_login" href="javascript:void(0)" data-id = '<?php echo $row['id'] ?>'>Edit</a>
+							    <a class="dropdown-item edit_login"   href="javascript:void(0)" data-id = '<?php echo $row['id'] ?>'>Edit</a>
 							    <div class="dropdown-divider"></div>
 							    <a class="dropdown-item delete_login" href="javascript:void(0)" data-id = '<?php echo $row['id'] ?>'>Delete</a>
 							  </div>
@@ -441,9 +441,11 @@ $('table').dataTable();
 $('#new_user').click(function(){
 	uni_modal('New User','user_control.php')
 })
+
 $('.edit_login').click(function(){
 	uni_modal('Edit User','user_control.php?id='+$(this).attr('data-id'))
 })
+
 $('.delete_login').click(function(){
 _conf("Are you sure to delete this user?","delete_login",[$(this).attr('data-id')])
 	})
@@ -503,4 +505,5 @@ _conf("Are you sure to delete this user?","delete_login",[$(this).attr('data-id'
         });
     </script>
 </body>
+
 </html>
