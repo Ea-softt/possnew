@@ -3,360 +3,189 @@
  include('insert_sales.php');
 
  if(isset($_SESSION["uid"])){
-
-
-
-$fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}' ");
-foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
-  $$k= $v;
-  $meta[$k] = $v;
- }
-}else{
-  header('location:Login.php?error=wrong username,password and role');
+    $fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}' ");
+    foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
+      $$k= $v;
+      $meta[$k] = $v;
+    }
+} else {
+    header('location:Login.php?error=wrong username,password and role');
 }
 
-
-
-
-
+// Logic for Dates/Totals (Kept exactly as original)
+$y=(int)date("Y");
+for($i = 0; $i <= 31; ++$i){
+    $time = strtotime(sprintf('+%d days',$i));
+    $days=date('d',$time);
+}
+for($i = 0; $i <= 12; ++$i){
+    $time = strtotime(sprintf('+%d months',$i));
+    $monthname=date('F',$time);
+}
 ?>
 
+<style>
+    body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .pos-card { border: none; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: #fff; }
+    .table-wrapper-scroll-y { position: relative; height: 400px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 8px; }
+    .my-custom-scrollbar { height: 450px; }
+    .my-custom-scrollbar-a { height: 450px; }
+    .bg-pos-dark { background-color: #2c3e50 !important; color: white; }
+    .total-display { background: #e74c3c; color: white; border-radius: 10px; padding: 15px; }
+    .grand-total-text { font-size: 1.8rem; font-weight: 800; }
+    .product-row:hover { background-color: #f8f9fa; cursor: pointer; }
+    .sticky-summary { position: sticky; top: 20px; }
+    .btn-finish { padding: 12px 30px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+    thead th { position: sticky; top: 0; background: #2c3e50; color: white; z-index: 10; }
+</style>
 
-<!-- 
-   
-<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Company name</a>
-  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-  <ul class="navbar-nav px-3">
-    <li class="nav-item text-nowrap">
-      <a class="nav-link" href="#">Sign out</a>
-    </li>
-  </ul>
-</header> -->
-<!-- 
- <div class="navbar navbar-dark justify-content-between  bg-dark flex-md-nowrap p-1 shadow">
- 
-  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-</div>
- -->
-
-<!-- <div class="container-fluid"> -->
-  <!--<div class="row">
-     <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-      <div class="position-sticky pt-3">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">
-              <span data-feather="home"></span>
-              Dashboard
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file"></span>
-              Orders
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="shopping-cart"></span>
-              Products
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="users"></span>
-              Customers
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="bar-chart-2"></span>
-              Reports
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="layers"></span>
-              Integrations
-            </a>
-          </li>
-        </ul>
-
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>Saved reports</span>
-          <a class="link-secondary" href="#" aria-label="Add a new report">
-            <span data-feather="plus-circle"></span>
-          </a>
-        </h6>
-        <ul class="nav flex-column mb-2">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Current month
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Last quarter
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Social engagement
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Year-end sale
-            </a>
-          </li>
-        </ul>
-      </div>
-    </nav> -->
-
+<div class="container-fluid py-3">
     <form action="" id="supplierlin">
- 
-        <div class="bd-example ">
-        <div class=" row-cols-1 row-cols-md-29 g-1  ">          
-          <div class="col ">
-            <div class="card bg-dark">
-              <div class="card-header p-0  bg-success">
-          <div class="row ">
-            <div class="col-lg-4 border-right ">
-
-
-
-                  
-              
-               <?php
-               for($i = 0; $i <= 31; ++$i){
-
-                $time = strtotime(sprintf('+%d days',$i));
-                $day_valye=date('d',$time);
-                $days=date('d',$time);
-              // printf('<input class="text-center" value="%s">%s',$day_valye,$days);
-
-               }
-
-               ?>
-               <input type="hidden" name="days" id="days" value="<?php echo isset ($days)? $days :'' ?>">          
-                     
-        
-              
-               <?php
-               for($i = 0; $i <= 12; ++$i){
-
-                $time = strtotime(sprintf('+%d months',$i));
-                $monthValue=date('F',$time);
-                $monthname=date('F',$time);
-                //printf('<option selected value="%s">%s</option>',$monthValue,$monthname);
-               }
-               ?>
-                <input type="hidden" name="month" id="month" value="<?php echo isset ($monthname)? $monthname :'' ?>">   
-               <?php $y=(int)date("Y"); ?>
-
-               <input type="hidden" name="year" id="years" value="<?php echo $y; ?>" >
-                           
-               
-             
-              <input type="hidden" id="user" name="salername" value="<?php echo $EmpID;?>">
-                     
-
-             <?php
-               if(isset($EmpID)):
-               $fees = $conn->query("SELECT * FROM sales where  username= '$EmpID' and days= '$days' and month = '$monthname' and years = $y ");
-                        $classt = 0;
-                        $examt = 0;
-                    while($row=$fees->fetch(PDO::FETCH_ASSOC)): 
-                           $classt += $row['grandtotal'];                          
-            ?>
-
-             <?php
-              endwhile; 
-                 endif; 
-                    ?>
-           <p >&nbsp &nbsp <i class="fas fa-user-shield"></i> &nbsp <?php echo $FullName;?><!-- &nbsp your  &nbsp Total Sale: Ghc  <?php echo $classt;?> -->   </p>             
-            
-
-
-               <?php           
-            date_default_timezone_set("Africa/Accra");
-            $date = date("Y-m-d");              
-              ?>
-      <p >&nbsp &nbsp<i class="fas fa-calendar-alt"></i> &nbsp Date <?php echo $date;
-              ?> </p>
-
-
-             
-
-        <!--  <table class="table-responsive-sm text-white">
-          <tbody>
-            <tr>
-              <td valign="baseline"><small>User Logged on:</small></td>
-              <td valign="baseline"><small><p class=" ml-5"><i class="fas fa-user-shield"></i> </p></small></td>
-            </tr>
-            <tr>
-              <td valign="baseline"><small class="pb-1">Date:</small></td>
-              <td valign="baseline"><small><p class="p-0 ml-5"><i class="fas fa-calendar-alt">&nbsp</i><span id='time'></span></p></small></td>
-            </tr>
-            
-          </tbody>
-        </table> -->
-       <!--  <img class="img-fluid m-2 w-100" src="images/logo1.jpg"/> -->
-      </div>
-
-
-         <div class="col-lg-4 border-right ">
-          <div class="row">
-       <div class="text-white mt-0 ml-5">
-        <label>  Customer Name:</label>
-      <input type="text" class="form-control customer_search " autocomplete="off" data-provide="typeahead" id="customer_search" placeholder="Customer Search" name="customername" value="">
-      </div>
-      <div class="text-white mt-0 ml-5">
-        <label>New Name:</label>
-        <span class="float:right"><a class="btn-sm btn-info border ml-2" href="javascript:void(0)" id="new_customer"><i class="fas fa-user-plus"></i> New </a></span>
-         <input type="hidden" name="datee" id="datee" class="form-control-sm form-control"  value="<?php echo date('Y-m-d') ?>"  placeholder="Expire Date" required>
-     </div>
-      </div>
-
-
-
-
-</div>
-
-      <div class="col-lg-3 ml-30 mult">
-      <div class="border text-white text-center bg-danger">
-        <label class="d-flex ">Total(Ghc):&nbsp&nbsp   <p id="totalValue1" class="mb-20 ">0.00</p></label>
-         <input type="hidden" class="mult1" id="totalvaluer1in" name="totalsale" value="">
-        <div >
-       
-       
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="pos-card p-2 px-3 d-flex justify-content-between align-items-center bg-pos-dark" style="border-radius: 8px;">
+                    <div class="small">
+                        <span class="me-3"><i class="fas fa-user-shield me-2 text-info"></i>Cashier: <strong><?php echo $FullName;?></strong></span>
+                        <span><i class="fas fa-calendar-alt me-2 text-info"></i>Date: <strong><?php echo date("Y-m-d"); ?></strong></span>
+                    </div>
+                    <input type="hidden" name="days" id="days" value="<?php echo $days; ?>">
+                    <input type="hidden" name="month" id="month" value="<?php echo $monthname; ?>">
+                    <input type="hidden" name="year" id="years" value="<?php echo $y; ?>">
+                    <input type="hidden" id="user" name="salername" value="<?php echo $EmpID;?>">
+                    <input type="hidden" name="datee" id="datee" value="<?php echo date('Y-m-d') ?>">
+                </div>
+            </div>
         </div>
-       <span class="text-white d-flex ">Grand Total Ghc:        
-        <p class="" style="font-size: 20px;" id="totalValue">&nbsp&nbsp0.00</p></span> 
-         <input type="hidden" class="mult2" id="totalvaluein" name="grandtotal" >
-      </div>
-    </div>  
-</div>
-   </div>
 
-        <div class="card-body">              
-        <div class="row "> 
-      
-      <div class="col-lg-7 border-right "> 
-      <div id="content" class="mr-15">
-      <div id="price_column" class="m-2 table-responsive-sm table-wrapper-scroll-y my-custom-scrollbar-a">
-        
-        <table class="table-striped w-100 font-weight-bold" style="cursor: pointer;" id="table2">
-          <thead>
-            <tr class='text-center'>
-              <th>Barcode</th>
-              <th>Product</th>
-              <th>Price</th>
-              <th>Unit</th>
-              <th>Qty</th>
-              <th>Sub.Total</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="tableData">     
-                
-          
-          </tbody>        
+        <div class="row g-3">
+            <div class="col-lg-7">
+                <div class="pos-card p-3 shadow-sm h-100">
+                    <div class="row mb-2 align-items-end">
+                        <div class="col-md-7">
+                            <label class="form-label fw-bold small text-uppercase mb-1">Customer</label>
+                            <input type="text" class="form-control form-control-sm customer_search" id="customer_search" placeholder="Search customer..." name="customername" required autocomplete="off">
+                        </div>
+                        <div class="col-md-5 text-end">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="new_customer">
+                                <i class="fas fa-user-plus"></i> New
+                            </button>
+                        </div>
+                    </div>
 
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar-a mb-3" style="height: 500px;">
+                        <table class="table table-sm table-hover align-middle small"   id="table2">
+                            <thead>
+                                <tr class="text-center" style="font-size: 1.0rem;">
+                                    <th>Barcode</th>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Unit</th>
+                                    <th>Qty</th>
+                                    <th>Total</th>
+                                    <th><i class="fas fa-times"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableData" style="font-size: 1.50rem;"></tbody>
+                        </table>
+                    </div>
 
-        </table>
-       
-      </div>
-      
-      
-    </div>
-  </div>
+                    <div class="border-top pt-3">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-2 ">
+                                <label class="fw-bold d-block text-center">Disc. %</label>
+                                <input class="form-control form-control-sm text-center fw-bold py-4" type="number" name="discount" value="0" min="0" id="discount">
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="p-1 py-4 border rounded bg-light text-center">
+                                    <div class="form-check form-check-inline m-0 me-2">
+                                        <input class="form-check-input" type="radio" name="typeofcash" value="1" id="typeofcash" style="transform: scale(0.8);">
+                                        <label class="form-check-label small" for="typeofcash" style="font-size: 1.75rem;">Cash</label>
+                                    </div>
+                                    <div class="form-check form-check-inline m-0">
+                                        <input class="form-check-input" type="radio" name="typeofcash" value="2" id="typeofcash1" style="transform: scale(0.8);">
+                                        <label class="form-check-label small" for="typeofcash1" style="font-size: 1.75rem;">E-Cash</label>
+                                    </div>
+                                </div>
+                            </div>
 
+                             <div class="col-md-3">
+                                <button type="button" name='enter' class="Enter btn btn-success w-100 py-4 fw-bold small">
+                                    <i class="fas fa-check me-1"></i> FINISH
+                                </button>
+                            </div>
 
+                            <div class="col-md-4">
+                                <div class="bg-danger text-white rounded px-3 py-4 text-center">
+                                    <small class="text-uppercase d-block" style="font-size: 0.90rem; opacity:0.7">Grand Total</small>
+                                    <span id="totalValue" class="fw-bold" style="font-size: 2.2rem;">0.00</span>
+                                    <input type="hidden" class="mult2" id="totalvaluein" name="grandtotal">
+                                    <input type="hidden" id="totalValue1"> 
+                                    <input type="hidden" class="mult1" id="totalvaluer1in" name="totalsale">
+                                </div>
+                            </div>
 
-  <div class="col-lg-5 border-right "> 
-    <div id="sidebar">      
-      <div class="mb-60 ">
-      <div class="input-group"><div class="input-group-prepend"><span class="input-group-text" id="basic-addon1"><i class="fas fa-search"></i></span></div>
-          <input class="form-control" type="text" placeholder="Product Search" autofocus aria-label="Search" id="search" onfocus="this.value=''"  onkeyup="loadproducts();"/>
-        </div></div>
-      <div id="product_area" class="table-responsive-sm mt-2 table-wrapper-scroll-y my-custom-scrollbar" >
-        <table class="w-100 " style="cursor: pointer;" id="table1">
-          <thead>
-            <tr claclass='text-center text-black'><b>
-              <td>Barcode</td>
-              <td>Product</td>
-              <td>Price</td>
-              <td>Unit</td>
-              <td>Qty</td>
-              <td>Ex Date</td>
-           </b></tr>
-            </thead>
-            <tbody id="products">
-              
-            </tbody>          
-        </table>
-      </div>     
-    </div>
- </div>
-           
-</div>
-
-                  <div class="row "> 
-      
-                <div class="col-lg-5 border-right ">
-                 <div class="w-100 mt-2" id="enter_area">
-                <button id="buttons" type="button" name='enter' class="Enter btn btn-primary border ml-2"><i class="fas fa-handshake"></i> Finish</button>
+                           
+                        </div>
+                        
+                        <div class="text-center mt-2">
+                            <a href="javascript:void(0)" class="cancel text-danger  small text-decoration-none" style="font-size: 1.25rem;">
+                                <i class="fas fa-ban me-1"></i> Cancel Order
+                            </a>
+                        </div>
+                    </div>
                 </div>
-              </div>
+            </div>
 
-                <div class="col-lg-2 border bg-danger ">
-               <div id="table_buttons">        
-                          
-                <span class="">Discount(Ghc)<input class="text-center form-control-sm" type="number" name="discount" value="0" min="0"  placeholder="Enter Discount" id="discount" ></span>  
-                      
-        
-               </div>
-               <span class="">Cash<input class="text-center form-control-sm" type="radio" name="typeofcash" value="1"    id="typeofcash" ></span>
-                 <span class="">E-Cash<input class="text-center form-control-sm" type="radio" name="typeofcash" value="2"   id="typeofcash1" ></span>   
+            <div class="col-lg-5">
+                <div class="pos-card p-3 shadow-sm h-100">
+                    <label class="form-label fw-bold small text-uppercase mb-1">Product Search</label>
+                    <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-search"></i></span>
+                        <input class="form-control border-start-0" type="text" placeholder="Search items by barcode or name or ID........." autofocus id="search" onkeyup="loadproducts();"/>
+                    </div>
+
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 480px;">
+                        <table class="table table-sm table-hover small" id="table1">
+                            <thead class="table-light" style="font-size: 1.0rem;">
+                                <tr>
+                                    
+                                     <th>Barcode</th>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Unit</th>
+                                    <th>Qty</th>
+                                    <th>Ex Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody style="font-size: 1.50rem;" id="products"></tbody>
+                        </table>
+                    </div>
                 </div>
-
-
-
-
-              <div class="col-lg-5 border-right ">
-                <div class="w-100 mt-2" id="enter_area">
-             <button id="buttons" type="button" class="cancel btn btn-primary border"><i class="fas fa-ban"></i> Cancel</button>
-                </div>
-
-              </div>
-           
-          
-              </div>
-
-
+            </div>
+        </div>
+    </form>
 </div>
-</div>
-</div>
-</div>
-</div>
-</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <script type="text/javascript">
-
-
  $('#new_customer').click(function(){
     uni_modal("Customer Entry","customer.php",'small')
     
@@ -547,11 +376,19 @@ $(document).on('click','.Enter',function(){
 
   var TotalPriceArr = $('#tableData tr .totalPrice').get();
    var typeofcash = $("input[name='typeofcash']:checked").val();
-/*
+
   if($.trim($('#customer_search').val()).length == 0){
       swal("Warning","Please Enter Customer Name!","warning");
       return false;
-    }*/
+   }
+  //  if($.trim(customer).length == 0){
+  //     swal({
+  //       title: "Selection Required",
+  //       text: "Please select or enter a customer name before finishing!",
+  //       icon: "warning",
+  //     });
+  //     return false; // Stop the function here
+  //   }
    
     if(typeofcash == undefined){
       swal("Warning","Please Select The Type Of Cash !","warning");

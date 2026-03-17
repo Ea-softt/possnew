@@ -1,47 +1,63 @@
 <?php
-include('server/config.php');
+// Define the path to the APPDATA directory
+$appDataDir = getenv('APPDATA') . DIRECTORY_SEPARATOR . 'easoft' . DIRECTORY_SEPARATOR;
+$dbname = "pos.db";
+$db_path = $appDataDir . $dbname;
 
-// Get all table names
-$tables = array();
-$result = $conn->query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
-while ($row = $result->fetch(PDO::FETCH_NUM)) {
-    $tables[] = $row[0];
+// Ensure the directory exists
+if (!is_dir($appDataDir)) {
+    mkdir($appDataDir, 0777, true);
 }
 
-$return = '';
-
-// Loop through each table
-foreach ($tables as $table) {
-    // Get table structure
-    $return .= 'DROP TABLE IF EXISTS ' . $table . ';';
-    $row2 = $conn->query("SELECT sql FROM sqlite_master WHERE name='" . $table . "'")->fetch(PDO::FETCH_NUM);
-    $return .= "\n\n" . $row2[0] . ";\n\n";
-
-    // Get table data
-    $result = $conn->query("SELECT * FROM " . $table);
-    $num_fields = $result->columnCount();
-    $rows = $result->fetchAll(PDO::FETCH_NUM);
-
-    foreach ($rows as $row) {
-        $return .= "INSERT INTO " . $table . " VALUES(";
-        for ($j = 0; $j < $num_fields; $j++) {
-            $row[$j] = addslashes($row[$j]);
-            if (isset($row[$j])) {
-                $return .= '"' . $row[$j] . '"';
-            } else {
-                $return .= '""';
-            }
-            if ($j < ($num_fields - 1)) {
-                $return .= ',';
-            }
-        }
-        $return .= ");\n";
+// 1. DATABASE CONNECTION (Using your specific PDO setup)
+try {
+    $conn = new PDO("sqlite:" . $db_path);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    if (isset($_POST['action'])) {
+        die(json_encode(["status" => "error", "message" => "Connection failed: " . $e->getMessage()]));
     }
-    $return .= "\n\n\n";
+    die("Connection failed: " . $e->getMessage());
 }
 
-// Save the SQL file
-$handle = fopen("D:/buckup.sql", "w+");
-fwrite($handle, $return);
-fclose($handle);
-echo "1";
+$action = $_REQUEST['action'] ?? '';
+
+// --- BACKUP: Stream from APPDATA to Browser ---
+if ($action === 'backup') {
+    if (file_exists($db_path)) {
+        // Clear all buffers to ensure a clean 120KB download
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="EA_Soft_Backup_'.date('Y-m-d').'.db"');
+        header('Content-Length: ' . filesize($db_path));
+        header('Pragma: public');
+
+        session_write_close();
+        readfile($db_path);
+        exit;
+    } else {
+        die("Error: No database found at " . $db_path);
+    }
+}
+
+// --- RESTORE: Move Uploaded File to APPDATA ---
+if ($action === 'restore') {
+    if (isset($_FILES['backup_file'])) {
+        $file = $_FILES['backup_file'];
+        
+        // Close connection before replacing file
+        $conn = null; 
+
+        if (move_uploaded_file($file['tmp_name'], $db_path)) {
+            echo json_encode(["status" => "success", "message" => "Restore complete! Data saved to APPDATA."]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Failed to write to APPDATA. Check Windows permissions."]);
+        }
+    }
+    exit;
+}
+?>

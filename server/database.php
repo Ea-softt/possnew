@@ -1,14 +1,58 @@
 <?php  
 		//session_start();	
-			$dbname = "pos.db";
+		//	$dbname = "pos.db";
 
-			try {
-				$conn = new PDO("sqlite:" . __DIR__ . "/" . $dbname);
-				$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			} catch (PDOException $e) {
-				echo "Connection failed: " . $e->getMessage();
-				exit;
-			}	
+			// try {
+			// 	$conn = new PDO("sqlite:" . __DIR__ . "/" . $dbname);
+			// 	$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			// } catch (PDOException $e) {
+			// 	echo "Connection failed: " . $e->getMessage();
+			// 	exit;
+			// }	
+
+
+  // 1. Define the persistent AppData path
+$appDataDir = getenv('APPDATA') . DIRECTORY_SEPARATOR . 'easoft' . DIRECTORY_SEPARATOR;
+$dbname = "pos.db";
+$db_path = $appDataDir . $dbname;
+
+// 2. Automatically create the 'easoft' folder if it doesn't exist
+if (!is_dir($appDataDir)) {
+    mkdir($appDataDir, 0777, true);
+}
+
+// 3. Establish the PDO connection
+try {
+    $conn = new PDO("sqlite:" . $db_path);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    // Optional: Enable Foreign Keys for SQLite
+    $conn->exec("PRAGMA foreign_keys = ON;");
+    
+} catch (PDOException $e) {
+    // In a production POS, you might want to log this instead of echoing
+    die("Database Connection Error: " . $e->getMessage());
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	$sql ="CREATE TABLE IF NOT EXISTS `cashflow` (
   `transaction_id` INTEGER PRIMARY KEY AUTOINCREMENT,

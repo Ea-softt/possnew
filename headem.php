@@ -170,7 +170,7 @@ foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
            <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="backupandrestore2.php">Backup And Restore</a></li>
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="logout.php">Sign out</a></li>
+          <li><a class="dropdown-item" href="logoutpage.php">Sign out</a></li>
         </ul>
       </div>
       </div>

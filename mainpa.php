@@ -544,6 +544,15 @@ $(document).on('click','.Enter',function(){
       swal("Warning","Please Enter Customer Name!","warning");
       return false;
     }*/
+
+      if($.trim(customer).length == 0){
+      swal({
+        title: "Selection Required",
+        text: "Please select or enter a customer name before finishing!",
+        icon: "warning",
+      });
+      return false; // Stop the function here
+    }
    
     if(typeofcash == undefined){
       swal("Warning","Please Select The Type Of Cash !","warning");

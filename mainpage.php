@@ -659,6 +659,11 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                 return false;
             }
 
+            if($.trim($('#customer_search').val()).length == 0){
+                swal("Warning","Please Enter Customer Name!","warning");
+                return false;
+            }
+
             if(TotalPriceArr == 0) {
                 swal("Warning", "No products ordered!", "warning");
                 return false;
@@ -746,7 +751,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                                                 }
                                             });
                                         } else {
-                                            window.location.href = 'mainpa.php?' + data;
+                                            window.location.href = 'mainpage.php?' + data;
                                         }
                                     }
                                 });
