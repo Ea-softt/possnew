@@ -7,8 +7,8 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     $$k = $v;
     $meta[$k] = $v;
 }
-$start_date = date('Y-m-d');
-$end_date = date('Y-m-d');
+$start_date = date('Y-m-01');
+$end_date = date('Y-m-t');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -401,14 +401,17 @@ $end_date = date('Y-m-d');
                             //         FROM sales sp 
                             //         INNER JOIN customer ct ON sp.customer_id = ct.customer_id 
                             //         WHERE DATE(sp.created_date) BETWEEN :from_date AND :to_date"; 
-                             $query =("SELECT sp.*, p.*, sum(sp.qty) as qty1, (p.sell_price * sum(sp.qty)) as stotal, (p.cprice * sum(sp.qty)) as ctotal,((p.sell_price * sum(sp.qty))-(p.cprice * sum(sp.qty))) as diff FROM sales_product sp inner join products p on sp.product_id = p.product_no WHERE strftime('%Y-%m-%d', sp.created_date) BETWEEN :from_date AND :to_date GROUP BY sp.product_id,created_date order by strftime('%s', sp.created_date) desc");
+                             $query ="SELECT sp.*, p.*, sum(sp.qty) as qty1, (p.sell_price * sum(sp.qty)) as stotal, (p.cprice * sum(sp.qty)) as ctotal,((p.sell_price * sum(sp.qty))-(p.cprice * sum(sp.qty))) as diff 
+                                     FROM sales_product sp inner join products p on sp.product_id = p.product_no 
+                                     WHERE strftime('%Y-%m-%d', sp.created_date) BETWEEN :from_date AND :to_date
+                                      GROUP BY sp.product_id,created_date order by strftime('%s', sp.created_date) desc";
                        
                             $stmt = $conn->prepare($query);
                             $stmt->execute([':from_date' => $from_date, ':to_date' => $to_date]);
                             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                            
+                           // var_dump($rows);
                             if (count($rows) > 0) {
-                                 var_dump('dkslds;dls');
+                                
                                 foreach($rows as $row) {
                                       $stotal += $row['stotal'];
                                         $ctotal += $row['ctotal'];
@@ -513,35 +516,35 @@ $end_date = date('Y-m-d');
    <script>
 
     $(document).ready(function(){
-    $('.table').dataTable();
+//     $('.table').dataTable();
   
-$('#report-list').ddTableFilter();
+// $('#report-list').ddTableFilter();
   
 
-$('#range').click(function(){
+// $('#range').click(function(){
     
-    var start_date = $('#start_date').val();
-    var end_date = $('#end_date').val();
-    if(start_date != '' && end_date != ''){
+//     var start_date = $('#start_date').val();
+//     var end_date = $('#end_date').val();
+//     if(start_date != '' && end_date != ''){
 
-        $.ajax({
-            url: "insert_salestatis.php",
-            method: "POST",
-            data:{start_date:start_date, end_date:end_date},
-            success:function(data){
-                //alert(data);
-                $('#purchasse_order').html(data);
+//         $.ajax({
+//             url: "insert_salestatis.php",
+//             method: "POST",
+//             data:{start_date:start_date, end_date:end_date},
+//             success:function(data){
+//                 //alert(data);
+//                 $('#purchasse_order').html(data);
                
-            }
+//             }
 
 
-        });
-    }
-    else
-    {
-        swal("Please Select the Date");
-    }
-    });
+//         });
+//     }
+//     else
+//     {
+//         swal("Please Select the Date");
+//     }
+//     });
 
     $('#print').click(function(){
         var start_date = $('#start_date').val();

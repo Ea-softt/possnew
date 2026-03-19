@@ -28,7 +28,8 @@ if (isset($_POST['products'])) {
                     data-min='".$row['min_stocks']."' 
                     data-quantity='".$row['quantity']."'>";
             
-            echo "<td>".$row['barcode']."</td>"; // Displaying barcode in the first column
+            echo "<td style='display: none;'>".$row['barcode']."</td>"; // Displaying barcode in the first column
+             echo "<td style='display: none;'>".$row['product_no']."</td>";
             echo "<td>".$row['product_name']."</td>";
             echo "<td>Ghc".$row['sell_price']."</td>";
             echo "<td>".$row['unit']."</td>";
@@ -38,7 +39,6 @@ if (isset($_POST['products'])) {
             echo "</tr>";
         }
     } else {
-        echo "<tr><td colspan='6' class='text-center'>No Products found!</td></tr>";
+        echo "<tr><td colspan='7' class='text-center'>No Products found!</td></tr>";
     }
 }
-?>

@@ -454,8 +454,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                                             <div id="product_area" class="table-responsive-sm mt-2 table-wrapper-scroll-y my-custom-scrollbar">
                                                 <table class="w-100" style="cursor: pointer;" id="table1">
                                                     <thead>
-                                                        <tr class='text-black'><b>
-                                                            <td>Barcode</td>
+                                                        <tr class='text-black'><b>                                                            
                                                             <td>Product</td>
                                                             <td>Price</td>
                                                             <td>Unit</td>
@@ -593,7 +592,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             var target = $(this);
             var product = target.attr('data-product');
             var price = target.attr('data-price');
-            var barcode = target.attr('data-barcode');
+            var barcode = target.attr('data-product_no');
             var unit = target.attr('data-unt');
             var min = target.attr('data-min');
             var quantity = target.attr('data-quantity');
@@ -683,6 +682,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                 $('.barcode').each(function() {
                     product.push($(this).text());
                 });
+               // alert(product);
                 $('.qty').each(function() {
                     quantity.push($(this).text());
                 });
