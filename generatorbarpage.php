@@ -356,7 +356,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                     while($row= $fees->fetch(PDO::FETCH_ASSOC)):
                         
                 ?>
-                <option ><?php echo  $row['product_no']." ".$row['product_name'];?></option>
+                <option ><?php echo  $row['barcode']." ".$row['product_name'];?></option>
                 <?php endwhile; ?>              
             </select>
 

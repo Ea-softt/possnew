@@ -253,6 +253,7 @@ $conn->exec($sql);
 $sql = "CREATE TABLE IF NOT EXISTS `products` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
   `product_no` TEXT NOT NULL,
+  `barcode` TEXT DEFAULT NULL,
   `product_name` TEXT DEFAULT NULL,
   `sell_price` REAL DEFAULT NULL,
   `cprice` REAL NOT NULL,
@@ -265,6 +266,7 @@ $sql = "CREATE TABLE IF NOT EXISTS `products` (
   `images` TEXT NOT NULL
 )";
 $conn->exec($sql);
+
 
 $sql = "CREATE TABLE IF NOT EXISTS `salecustomeriterm` (
   `barcode` INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -379,7 +381,7 @@ $sql1 = "CREATE TABLE IF NOT EXISTS `newstock` (
   `expire_date` TEXT NOT NULL,
   `remarks` TEXT NOT NULL,
   `supplier_id` INTEGER NOT NULL,
-  `images` TEXT NOT NULL,
+  `images` TEXT,
   `date_created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
 $conn->exec($sql1);

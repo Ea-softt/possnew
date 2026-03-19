@@ -402,11 +402,13 @@ $end_date = date('Y-m-d');
                             //         INNER JOIN customer ct ON sp.customer_id = ct.customer_id 
                             //         WHERE DATE(sp.created_date) BETWEEN :from_date AND :to_date"; 
                              $query =("SELECT sp.*, p.*, sum(sp.qty) as qty1, (p.sell_price * sum(sp.qty)) as stotal, (p.cprice * sum(sp.qty)) as ctotal,((p.sell_price * sum(sp.qty))-(p.cprice * sum(sp.qty))) as diff FROM sales_product sp inner join products p on sp.product_id = p.product_no WHERE strftime('%Y-%m-%d', sp.created_date) BETWEEN :from_date AND :to_date GROUP BY sp.product_id,created_date order by strftime('%s', sp.created_date) desc");
-                        
+                       
                             $stmt = $conn->prepare($query);
                             $stmt->execute([':from_date' => $from_date, ':to_date' => $to_date]);
                             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            
                             if (count($rows) > 0) {
+                                 var_dump('dkslds;dls');
                                 foreach($rows as $row) {
                                       $stotal += $row['stotal'];
                                         $ctotal += $row['ctotal'];

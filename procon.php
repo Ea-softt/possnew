@@ -29,6 +29,7 @@ $result = $conn->query($sql);
  		<table id="mytable" class="table table-condensed table-bordered table-hover">
      <thead class="bg-dark text-white">
  			<tr>
+      <th >ID</th>
  			<th >barcode</th>
  			<th >Prod Name</th>
  			<th >Sell_Price</th>
@@ -47,8 +48,10 @@ if (count($rows) > 0) {
     foreach ($rows as $row) {
   $output .= '<tr>
 
-  <td class="product_no text-center" data-product_no="'.$row["product_no"].'" contenteditable>'.$row["product_no"].'</td>
+  <td class="product_no text-center" data-product_no="'.$row["product_no"].'" >'.$row["product_no"].'</td>
  
+  <td class="product_barcode text-center" data-product_barcode="'.$row["product_no"].'" >'.$row["barcode"].'</td>
+
  <td class="product_name text-center" data-product_name="'.$row["product_no"].'" contenteditable>'.$row["product_name"].'</td>
 
 <td class="sell_price text-center" data-sell_price="'.$row["product_no"].'" contenteditable>'.$row["sell_price"].'</td>
@@ -68,19 +71,20 @@ if (count($rows) > 0) {
 <td class="text-center"><button name="btn delete" id="btn_delete" class="btn btn-xs btn-danger btn_delete" data-delete_btn="'.$row["product_no"].'" >x</button></td> </tr>';
 
  	}
- $output .= '<tr>
-<td id="product_no"  contenteditable></td>
- <td id="product_name"  contenteditable></td>
-<td id="sell_price"  contenteditable></td>
-<td id="quantity"  contenteditable></td>
-<td id="unit"  contenteditable></td>
+//  $output .= '<tr>
+//  <td id="product_no"  contenteditable></td>
+// <td id="product_barcode"  contenteditable></td>
+//  <td id="product_name"  contenteditable></td>
+// <td id="sell_price"  contenteditable></td>
+// <td id="quantity"  contenteditable></td>
+// <td id="unit"  contenteditable></td>
 
-<td id="min_stocks"  contenteditable></td>
-<td id="remarks"  contenteditable></td>
+// <td id="min_stocks"  contenteditable></td>
+// <td id="remarks"  contenteditable></td>
 
-<td id="images"  contenteditable></td>
-<td class="text-center"><button name="btn_add" id="btn_add" class="btn btn-xs btn-success" >+</button></td>
-</tr>';
+// <td id="images"  contenteditable></td>
+// <td class="text-center"><button name="btn_add" id="btn_add" class="btn btn-xs btn-success" >+</button></td>
+// </tr>';
 
 
 

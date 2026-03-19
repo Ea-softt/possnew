@@ -59,62 +59,69 @@ if(isset($_POST['product'])){
 		$result = $conn->exec($sql);
 		
 
-		if($result == true){
-			$id = $conn->lastInsertId();
-			for($i = 0;  $i < count($product); $i++){
-				$reciept[] = $id;
-			}
-			//echo "$id[0]";
+	if ($result == true) {
+    $id = $conn->lastInsertId();
+    
+    // We can handle both the Warehouse update and the Product Upsert in one loop
+    for ($nump = 0; $nump < count($sid); $nump++) {
+        $product_id = $sid[$nump];
+        $qtyold     = $quantity1[$nump];
 
-			for($num=0; $num<count($sid); $num++){
-				$product_id = $sid[$num];
-				$qtyold = $quantity1[$num];
+        // 1. UPDATE WAREHOUSE (Subtracting stock)
+        $sql1 = "SELECT quantity FROM warehouse WHERE sid ='$product_id'";
+        $result1 = $conn->query($sql1);
+        $wh_qty = $result1->fetch(PDO::FETCH_ASSOC);
 
-				//echo $product_id;
 
-				$sql1 = "SELECT quantity FROM warehouse WHERE sid ='$product_id'";
-				$result1 = $conn->query($sql1);
-				$qty = $result1->fetch(PDO::FETCH_ASSOC);
 
-				$newqty = (int)$qty['quantity'] - (int)$qtyold;
- 					
- 					
+        if ($wh_qty) {
+            $new_wh_qty = (int)$wh_qty['quantity'] - (int)$qtyold;
+            $sql2 = "UPDATE warehouse SET quantity=$new_wh_qty WHERE sid='$product_id'";
+            $conn->exec($sql2);
+        }
 
-				$sql2 = "UPDATE warehouse SET quantity=$newqty WHERE sid='$product_id'";
-				$conn->exec($sql2);
+        // 2. PREPARE DATA FOR PRODUCTS TABLE
+        $barcode_clean     = $barcode[$nump];
+        $product_clean     = $product[$nump];
+        $sprice_clean      = $sprice[$nump];
+        $cprice_clean      = $cprice[$nump];
+        $unit_clean        = $unit1[$nump];
+        $minstock_clean    = $min_stock[$nump];
+        $expiredate_clean  = $expiredate[$nump];
+        $description_clean = $description[$nump];
 
-			}
+        // 3. CHECK IF PRODUCT EXISTS IN PRODUCTS TABLE
+        $sql_check = "SELECT quantity FROM products WHERE product_no ='$product_id'";
+        $res_check = $conn->query($sql_check);
+        $qty = $res_check->fetch(PDO::FETCH_ASSOC);
 
-			for($nump = 0; $nump < count($sid); $nump++){
-				$product_id = $sid[$nump];
-				$qtyold = $quantity1[$nump];
-				$barcode_clean = $barcode[$nump];
-				$product_clean = $product[$nump];
-				$sprice_clean = $sprice[$nump];
-				$cprice_clean = $cprice[$nump];			
-				$quantity_clean = $quantity1[$nump];
-				$unit_clean = $unit1[$nump];
-				$minstock_clean = $min_stock[$nump];
-				$expiredate_clean = $expiredate[$nump];
-				$description_clean = $description[$nump];
-
-				$sql1 = "SELECT quantity FROM products WHERE product_no ='$product_id'";
-				$result1 = $conn->query($sql1);
-				$qty = $result1->fetch(PDO::FETCH_ASSOC);
-
-				if ($qty) {
-					$newqty = $qty['quantity'] + $qtyold;
-					$sql3 = "UPDATE products SET quantity=$newqty, product_no='$barcode_clean', min_stocks='$minstock_clean', product_name='$product_clean',sell_price='$sprice_clean',cprice='$cprice_clean',unit='$unit_clean',expire_date='$expiredate_clean',remarks='$description_clean'  WHERE product_no='$product_id'";
-					$conn->exec($sql3);
-				} else {
-					if ((int)$qtyold <= 0) {
-						echo "failure1";
-						exit;
-					}
-					$sql3 = "INSERT INTO products (product_no, product_name, sell_price, cprice, quantity, unit, min_stocks, expire_date, remarks, location, images) VALUES ('$barcode_clean', '$product_clean', '$sprice_clean', '$cprice_clean', '$qtyold', '$unit_clean', '$minstock_clean', '$expiredate_clean', '$description_clean', '$location', '$images')";
-					$conn->exec($sql3);
-				}
-			}
+        if ($qty) {
+            // UPDATE EXISTING PRODUCT
+            $newqty = (int)$qty['quantity'] + (int)$qtyold;
+            $sql3 = "UPDATE products SET 
+                        quantity=$newqty, 
+                        barcode='$barcode_clean', 
+                        min_stocks='$minstock_clean', 
+                        product_name='$product_clean',
+                        sell_price='$sprice_clean',
+                        cprice='$cprice_clean',
+                        unit='$unit_clean',
+                        expire_date='$expiredate_clean',
+                        remarks='$description_clean' 
+                     WHERE product_no='$product_id'";
+            $conn->exec($sql3);
+        } else {
+            // INSERT NEW PRODUCT
+            if ((int)$qtyold <= 0) {
+                echo "failure1";
+                exit;
+            }
+            $sql3 = "INSERT INTO products (barcode,product_no, product_name, sell_price, cprice, quantity, unit, min_stocks, expire_date, remarks, location, images) 
+                     VALUES ('$barcode_clean', '$product_id', '$product_clean', '$sprice_clean', '$cprice_clean', '$qtyold', '$unit_clean', '$minstock_clean', '$expiredate_clean', '$description_clean', '$location', '$images')";
+            $conn->exec($sql3);
+        }
+    } // End of for loop
+    // End of if($result == true)
 
  			 for($count = 0; $count < count($sid); $count++){
  			 	$productID_clean = $sid[$count];
@@ -128,17 +135,19 @@ if(isset($_POST['product'])){
 				$expiredate_clean = $expiredate[$count];
 				$description_clean = $description[$count];
 				$supplierid_clean = $supplierid[$count];
-				$images_clean = $reciept[$count];
+				//$images_clean = $reciept[$count];
 				
 				/*if($product_clean != '' && $barcode_clean != '' && $sprice_clean != '' && $cprice_clean != '' && $quantity_clean != '' && $minstock_clean != '' &&  $expiredate_clean != '' && $description_clean != '' ){*/
-					$query = "INSERT INTO newstock(productID,product_no,product_name,sell_price,cprice,quantity,unit,min_stocks,expire_date,remarks,supplier_id,images) 
-							VALUES($productID_clean,'$barcode_clean','$product_clean',$sprice_clean,'$cprice_clean','$quantity_clean','$unit_clean','$minstock_clean','$expiredate_clean','$description_clean','$supplierid_clean','$images_clean')";
+					$query = "INSERT INTO newstock(productID,product_no,product_name,sell_price,cprice,quantity,unit,min_stocks,expire_date,remarks,supplier_id) 
+							VALUES($productID_clean,'$barcode_clean','$product_clean',$sprice_clean,'$cprice_clean','$quantity_clean','$unit_clean','$minstock_clean','$expiredate_clean','$description_clean','$supplierid_clean')";
 					$conn->exec($query);						
 				/*}*/
 				
 			} 
 		
-		echo 'Successfully';
+	
+	
+			echo 'Successfully';
 
 
 			}else{

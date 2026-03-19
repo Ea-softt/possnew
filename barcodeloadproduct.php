@@ -4,7 +4,7 @@
 	if (isset($_POST['products'])){
 
 		$name = $_POST['products'];
-		$show 	= "SELECT * FROM products WHERE (product_name LIKE '$name%' AND quantity > 0) OR (product_no LIKE '$name%' AND quantity > 0)";
+		$show 	= "SELECT * FROM products WHERE (product_name LIKE '$name%' AND quantity > 0) OR (barcode LIKE '$name%' AND quantity > 0)";
 		$query 	= $conn->query($show);
 		if($query && count($result = $query->fetchAll(PDO::FETCH_ASSOC)) > 0){
 			foreach($result as $row){
@@ -19,9 +19,9 @@
 
 
    				echo '<div class="form-group">
-      					<label class="control-label col-sm-2" for="product_id">Product ID:</label>
+      					<label class="control-label col-sm-2" for="product_id">BarCode:</label>
       					<div class="col-sm-10">
-       					<input autocomplete="OFF" type="text" class="form-control" id="product_id" name="product_id" value='.$row['product_no'].'>
+       					<input autocomplete="OFF" type="text" class="form-control" id="product_id" name="product_id" value='.$row['barcode'].'>
      					 </div>
     					 </div>';
 
