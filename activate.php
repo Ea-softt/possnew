@@ -2,6 +2,12 @@
 include 'server/config.php';
 include 'server/License.php';
 
+$license = new License($conn);
+if ($license->checkLicense()) {
+    header('location:index.php');
+    exit();
+}
+
 $msg = "";
 if(isset($_POST['activate'])) {
     $key = trim($_POST['license_key']);

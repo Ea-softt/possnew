@@ -1,6 +1,14 @@
 <?php
 session_start();
 include('server/config.php');
+include_once('server/License.php');
+
+$license = new License($conn);
+if (!$license->checkLicense()) {
+    header('location:activate.php');
+    exit();
+}
+
 if(isset($_SESSION["uid"])){
 
 
