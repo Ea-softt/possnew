@@ -1,13 +1,8 @@
 <?php
 include('headside.php');
 include('insert_sales.php');
-include 'server/License.php';
 
-$license = new License($conn);
-if (!$license->checkLicense()) {
-    header('location:activate.php');
-    exit();
-}
+
 
 $fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}'");
 foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
