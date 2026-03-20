@@ -2,6 +2,7 @@
 session_start();
 @ob_start();
 include('server/config.php');
+include('server/License.php');
 
 $username = "";
 $password = "";
@@ -11,6 +12,12 @@ $meg = "";
 
 if(isset($_POST["submit"]))
 {
+ // Check License before login
+ $license = new License($conn);
+ if (!$license->checkLicense()) {
+     header('location:activate.php');
+     exit();
+ }
 
  $username = $_POST['username'];
  $password = $_POST['password'];
