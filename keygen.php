@@ -10,14 +10,17 @@ $msg = "";
 if(isset($_POST['generate'])) {
     $count = (int)$_POST['count'];
     $type = $_POST['type'];
-    $days = (int)$_POST['days'];
+    $startDate = $_POST['start_date'];
+    $dateObj = new DateTime($startDate);
     
     if($count > 0) {
         for($i = 0; $i < $count; $i++) {
-            $key = $license->generateKey($type, $days);
+            $currentExpiry = $dateObj->format('Y-m-d');
+            $key = $license->generateKey($type, $currentExpiry);
             if($license->storeKey($key, $type)) {
-                $generatedKeys[] = $key;
+                $generatedKeys[] = $key . " (Expires: $currentExpiry)";
             }
+            $dateObj->modify('+3 months');
         }
         $msg = count($generatedKeys) . " keys generated and stored encrypted in database.";
     }
@@ -52,8 +55,8 @@ if(isset($_POST['generate'])) {
                     </select>
                 </div>
                 <div class="col-auto">
-                    <label>Days Valid</label>
-                    <input type="number" name="days" class="form-control" value="90" min="1" required>
+                    <label>Start Expiry Date</label>
+                    <input type="date" name="start_date" class="form-control" value="<?php echo date('Y-m-d'); ?>" required>
                 </div>
                 <div class="col-auto">
                     <button type="submit" name="generate" class="btn btn-primary">Generate & Store</button>

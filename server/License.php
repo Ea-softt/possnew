@@ -95,15 +95,15 @@ class License {
     }
     
     // Generate a valid key (for admin use)
-    public function generateKey($type = 'TRIAL', $days = 90) {
+    public function generateKey($type = 'TRIAL', $expiryDate = null) {
         $random = strtoupper(substr(md5(uniqid(rand(), true)), 0, 8));
         
-        // Calculate expiry date based on days provided
-        $date = new DateTime();
-        if ($type === 'PREM') {
-            $date->modify('+100 years');
+        if ($expiryDate) {
+            $date = new DateTime($expiryDate);
         } else {
-            $date->modify("+$days days");
+            $date = new DateTime();
+            // Default fallback if no date provided
+            $date->modify($type === 'PREM' ? '+100 years' : '+3 months');
         }
         $expiryStr = $date->format('Ymd');
 
