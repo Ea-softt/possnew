@@ -24,9 +24,15 @@ class License {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             enc_key TEXT NOT NULL,
             type TEXT NOT NULL,
+            expiry_date DATE,
             created_date DATETIME DEFAULT CURRENT_TIMESTAMP
         )";
         $this->conn->exec($sql2);
+        
+        // Attempt to add the column if the table already exists (for updates)
+        try {
+            $this->conn->exec("ALTER TABLE generated_keys ADD COLUMN expiry_date DATE");
+        } catch(Exception $e) { /* Column likely exists, ignore error */ }
     }
 
     // Check if the system has a valid active license
@@ -68,6 +74,15 @@ class License {
 
         if ($hashProvided !== $calculatedHash) {
             return false; // Invalid key
+        }
+
+        // Check if TRIAL key has already been used (One-time use only for 3 months key)
+        if ($type === 'TRIAL') {
+            $checkUsed = $this->conn->prepare("SELECT id FROM app_license WHERE license_key = ?");
+            $checkUsed->execute([$key]);
+            if ($checkUsed->fetch()) {
+                return false; // Key already used
+            }
         }
 
         // Verify Expiration Date from Key
@@ -121,10 +136,10 @@ class License {
     }
 
     // Store generated keys in the database encrypted
-    public function storeKey($key, $type) {
+    public function storeKey($key, $type, $expiryDate = null) {
         $encryptedKey = $this->encrypt($key);
-        $stmt = $this->conn->prepare("INSERT INTO generated_keys (enc_key, type) VALUES (?, ?)");
-        return $stmt->execute([$encryptedKey, $type]);
+        $stmt = $this->conn->prepare("INSERT INTO generated_keys (enc_key, type, expiry_date) VALUES (?, ?, ?)");
+        return $stmt->execute([$encryptedKey, $type, $expiryDate]);
     }
 }
 ?>

@@ -10,14 +10,14 @@ $msg = "";
 if(isset($_POST['generate'])) {
     $count = (int)$_POST['count'];
     $type = $_POST['type'];
-    $startDate = $_POST['start_date'];
+    $startDate = isset($_POST['start_date']) ? $_POST['start_date'] : date('Y-m-d');
     $dateObj = new DateTime($startDate);
     
     if($count > 0) {
         for($i = 0; $i < $count; $i++) {
             $currentExpiry = $dateObj->format('Y-m-d');
             $key = $license->generateKey($type, $currentExpiry);
-            if($license->storeKey($key, $type)) {
+            if($license->storeKey($key, $type, $currentExpiry)) {
                 $generatedKeys[] = $key . " (Expires: $currentExpiry)";
             }
             $dateObj->modify('+3 months');
@@ -45,7 +45,7 @@ if(isset($_POST['generate'])) {
             <div class="form-row align-items-end">
                 <div class="col-auto">
                     <label>Number of Keys</label>
-                    <input type="number" name="count" class="form-control" value="1" min="1" max="100" required>
+                    <input type="number" name="count" class="form-control" value="1" min="1" max="300" required>
                 </div>
                 <div class="col-auto">
                     <label>License Type</label>
