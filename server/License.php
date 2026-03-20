@@ -19,6 +19,14 @@ class License {
             type TEXT NOT NULL
         )";
         $this->conn->exec($sql);
+
+        $sql2 = "CREATE TABLE IF NOT EXISTS generated_keys (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            enc_key TEXT NOT NULL,
+            type TEXT NOT NULL,
+            created_date DATETIME DEFAULT CURRENT_TIMESTAMP
+        )";
+        $this->conn->exec($sql2);
     }
 
     // Check if the system has a valid active license
@@ -43,14 +51,15 @@ class License {
 
     // Activate the system with a key
     public function activate($key) {
-        // Key format: EA-SOFT-{TYPE}-{RANDOM}-{CHECKSUM}
+        // Key format: EA-SOFT-{TYPE}-{EXPIRY_YMD}-{RANDOM}-{CHECKSUM}
         $parts = explode('-', $key);
-        if (count($parts) < 5) return false;
+        if (count($parts) < 6) return false;
         
         // Verify Prefix
         if ($parts[0] !== 'EA' || $parts[1] !== 'SOFT') return false;
         
         $type = $parts[2]; // TRIAL or PREM
+        $expiryStr = $parts[3]; // Expiration Date Ymd
         
         // Verify Checksum
         $hashProvided = array_pop($parts);
@@ -61,16 +70,23 @@ class License {
             return false; // Invalid key
         }
 
+        // Verify Expiration Date from Key
+        $expiryDateObj = DateTime::createFromFormat('Ymd', $expiryStr);
+        if (!$expiryDateObj) return false;
+        
+        // Set expiry time to end of day
+        $expiryDateObj->setTime(23, 59, 59);
+
         // Calculate Expiry
         $now = new DateTime();
-        $startDate = $now->format('Y-m-d H:i:s');
         
-        if ($type === 'PREM') {
-            $now->modify('+100 years'); // Effectively lifetime
-        } else {
-            $now->modify('+3 months'); // Trial period
+        // If the key itself has already passed its validity date (e.g. key expired before use)
+        if ($now > $expiryDateObj) {
+            return false;
         }
-        $expiryDate = $now->format('Y-m-d H:i:s');
+
+        $startDate = $now->format('Y-m-d H:i:s');
+        $expiryDate = $expiryDateObj->format('Y-m-d H:i:s');
 
         // Store License
         $sql = "INSERT INTO app_license (license_key, activation_date, expiry_date, type) VALUES (?, ?, ?, ?)";
@@ -79,11 +95,36 @@ class License {
     }
     
     // Generate a valid key (for admin use)
-    public function generateKey($type = 'TRIAL') {
+    public function generateKey($type = 'TRIAL', $days = 90) {
         $random = strtoupper(substr(md5(uniqid(rand(), true)), 0, 8));
-        $base = "EA-SOFT-$type-$random";
+        
+        // Calculate expiry date based on days provided
+        $date = new DateTime();
+        if ($type === 'PREM') {
+            $date->modify('+100 years');
+        } else {
+            $date->modify("+$days days");
+        }
+        $expiryStr = $date->format('Ymd');
+
+        $base = "EA-SOFT-$type-$expiryStr-$random";
         $hash = strtoupper(substr(md5($base . $this->secret), 0, 8));
         return "$base-$hash";
+    }
+
+    // Encrypt data for storage
+    private function encrypt($data) {
+        $method = "AES-256-CBC";
+        $key = hash('sha256', $this->secret);
+        $iv = substr(hash('sha256', 'iv_secret_salt'), 0, 16);
+        return base64_encode(openssl_encrypt($data, $method, $key, 0, $iv));
+    }
+
+    // Store generated keys in the database encrypted
+    public function storeKey($key, $type) {
+        $encryptedKey = $this->encrypt($key);
+        $stmt = $this->conn->prepare("INSERT INTO generated_keys (enc_key, type) VALUES (?, ?)");
+        return $stmt->execute([$encryptedKey, $type]);
     }
 }
 ?>
