@@ -417,3 +417,12 @@ $query1 ="CREATE TABLE IF NOT EXISTS`cashtypee` (
   `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
 $conn->exec($query1);
+
+$sql = "CREATE TABLE IF NOT EXISTS `app_license` (
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `license_key` TEXT NOT NULL,
+  `activation_date` DATETIME NOT NULL,
+  `expiry_date` DATETIME NOT NULL,
+  `type` TEXT NOT NULL
+)";
+$conn->exec($sql);

@@ -1,16 +1,9 @@
 <?php
-$database	= 'pos.db';
+include_once 'config.php';
 $msg 		= '';
 
 ini_set('display_errors',1);
 error_reporting(E_ALL);
-
-try {
-	$db = new PDO("sqlite:" . __DIR__ . "/" . $database);
-	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-	die("Connection Failed: " . $e->getMessage());
-}
 /*
 if(!isset($_SESSION)){
 	session_start();	

@@ -21,4 +21,5 @@ try {
     // In a production POS, you might want to log this instead of echoing
     die("Database Connection Error: " . $e->getMessage());
 }
+$db = $conn;
 ?>
