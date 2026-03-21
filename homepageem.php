@@ -466,7 +466,8 @@ $(document).on('click','.Enter',function(){
                   })
                   .then((okay)=>{
                     if(okay){
-                    setTimeout(function(){      
+                    setTimeout(function(){   
+                      console.log(data);  
                     var nw = window.open("receiptsale.php?reciept_no="+data+"","_blank","width=900px,height=600px");
                       setTimeout(function(){
                        nw.print()
@@ -481,7 +482,7 @@ $(document).on('click','.Enter',function(){
                     }
                   })
                 }else{
-                  window.location.href='mainpa.php?'+data;
+                  window.location.href='homepageem.php?'+data;
                 }
                 
               }

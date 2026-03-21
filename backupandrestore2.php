@@ -1,114 +1,131 @@
 <?php
 include 'headem.php';
+include('insert_sales.php');
    
 ?>
 
-<div class="container-fluid">
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card_body">
-            
-                <hr>
-                <div class="col-md-12 mb-4 ">
-                    <center>
-                        <button class="btn btn-primary btn-sm col-sm-3" type="button" id="backu"><i class="fa fa-database"></i> Backup</button><!--  -->
-                    </center>
-                </div>
-                 <hr>
-                 <br>
-                 <hr>
-                <div class="col-md-12 mb-4">
-                    <center>
-                      
-                        <button class="btn btn-success btn-sm col-sm-3" type="button" id="restore"><i class="fa fa-trash-restore"></i> Restore </button><!-- fa-trash-restore -->
-                    </center>
-                </div>
-            </div>
-            </div>
+    <!-- Main Content -->
+     <div class="main-content" id="mainContent">
+
+     <div class="card shadow-sm">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="fas fa-database"></i> Database Management</h5>
+    </div>
+    <div class="card-body">
+        <div class="mb-4">
+            <label class="form-label fw-bold">System Backup</label><br>
+            <button id="btn-backup" class="btn btn-success">
+                <i class="fas fa-cloud-download-alt"></i> Download Backup
+            </button>
         </div>
+
+        <hr>
+
+        <!-- <div class="mb-3">
+            <label class="form-label fw-bold">Restore System Data</label>
+            <div class="input-group">
+                <input type="file" class="form-control" id="restoreFile" accept=".db">
+                <button id="btn-restore" class="btn btn-danger">
+                    <i class="fas fa-undo"></i> Restore
+                </button>
+            </div>
+        </div> -->
+
+        <div class="progress mb-3" style="display:none; height: 25px;">
+            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-info" 
+                 role="progressbar" style="width: 0%;">0%</div>
+        </div>
+
+        <div id="status" class="small fw-bold"></div>
     </div>
 </div>
-<
+
+
+
+      
+     </div>
+
+
 <script>
+   $(document).ready(function() {
+    
+    // --- BACKUP LOGIC ---
+    $('#btn-backup').click(function() {
+        if(swal("Do you want to download a copy of the current database?")) {
+            $('#status').text('Preparing download...').css('color', 'green');
+            window.location.href = 'backupage.php?action=backup';
+            
+            // Reset status after a few seconds
+            setTimeout(() => { $('#status').text('Backup initiated.'); }, 3000);
+        }
+    });
 
+    // --- RESTORE LOGIC ---
+    $('#btn-restore').click(function() {
+        const fileInput = $('#restoreFile')[0];
+        
+        if (fileInput.files.length === 0) {
+            swal("Please select a .db file first!");
+            return;
+        }
 
-$('#backu').click(function(){   
-   
-    swal({
-      title: "Are You Sure of making backup, Cancel and Reload?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    })
+        // DOUBLE CONFIRMATION
+        const confirm1 = confirm("WARNING: This will delete ALL current sales and data. Are you absolutely sure?");
+        if (!confirm1) return;
+        
+        const confirm2 = confirm("FINAL CHECK: Have you made a backup of your current data before doing this?");
+        if (!confirm2) return;
 
-    .then((willedite) => {
-      if (willedite) {
+        const formData = new FormData();
+        formData.append('action', 'restore');
+        formData.append('backup_file', fileInput.files[0]);
+
+        // Show Progress Bar
+        $('.progress').show();
+        $('#progressBar').css('width', '0%').text('0%');
+        $('#status').text('Uploading and restoring...').css('color', 'blue');
 
         $.ajax({
-            url: "backupage.php",                
-            method: 'POST',
-            type: 'POST',           
-            success:function(data){
-             if(data==1){
-                swal({
-                     title: "BACKUP",
-                     text: "Database successfull backup",
-                     icon: "success",
-                     buttons: "Ok",
-
-
-                }); 
-                    alert_toast("Data successfully backup.",'success')
-                        setTimeout(function(){
-                            location.reload()
-                        },5000)
+            url: 'backupage.php',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            // TRACK PROGRESS
+            xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function(evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                        $('#progressBar').css('width', percentComplete + '%').text(percentComplete + '%');
+                    }
+                }, false);
+                return xhr;
+            },
+            success: function(response) {
+                try {
+                    const res = JSON.parse(response);
+                    if (res.status === 'success') {
+                        $('#progressBar').addClass('bg-success').removeClass('bg-info');
+                        $('#status').text(res.message).css('color', 'green');
+                        swal("Success: System data has been replaced.");
+                        location.reload(); 
+                    } else {
+                        $('#status').text(res.message).css('color', 'red');
+                        $('.progress').hide();
+                    }
+                } catch (e) {
+                    $('#status').text("Server error. Check PHP logs.").css('color', 'red');
                 }
-               
+            },
+            error: function() {
+                swal("Error: Restore failed. Connection error.");
+                $('.progress').hide();
             }
-
-
         });
-    
-    }
     });
-    });
-
-$('#restore').click(function(){  
-    swal({
-      title: "Are You Sure Of Making Restore, If Yes Wait for 2 Minute?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    })
-    .then((willedite) => {
-      if (willedite) {
-
- /* if(resto){*/
-    $.ajax({
-      url: 'restoredb.php',
-      type: 'post',
-      method: 'POST',     
-      success: function (Response){
-       if(Response){
-                swal({
-                     title: "RESTORE",
-                     text: (Response),
-                     icon: "success",
-                     buttons: "Ok",
-
-
-                }); 
-                    alert_toast("Data successfully Restore.",'success')
-                        setTimeout(function(){
-                            location.reload()
-                        },10000)
-                }
-      }
-    });
- /* }*/
-}
 });
-});
+
 
 
 

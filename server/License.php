@@ -45,7 +45,12 @@ class License {
             return false; // No license found
         }
 
-        $expiry = new DateTime($license['expiry_date']);
+        $expiryStr = $this->decrypt($license['expiry_date']);
+        if (!$expiryStr) {
+            $expiryStr = $license['expiry_date']; // Fallback for old/unencrypted dates
+        }
+        
+        $expiry = new DateTime($expiryStr);
         $now = new DateTime();
 
         if ($now > $expiry) {
@@ -102,11 +107,12 @@ class License {
 
         $startDate = $now->format('Y-m-d H:i:s');
         $expiryDate = $expiryDateObj->format('Y-m-d H:i:s');
+        $encExpiryDate = $this->encrypt($expiryDate);
 
         // Store License
         $sql = "INSERT INTO app_license (license_key, activation_date, expiry_date, type) VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([$key, $startDate, $expiryDate, $type]);
+        return $stmt->execute([$key, $startDate, $encExpiryDate, $type]);
     }
     
     // Generate a valid key (for admin use)
@@ -133,6 +139,14 @@ class License {
         $key = hash('sha256', $this->secret);
         $iv = substr(hash('sha256', 'iv_secret_salt'), 0, 16);
         return base64_encode(openssl_encrypt($data, $method, $key, 0, $iv));
+    }
+    
+    // Decrypt data
+    private function decrypt($data) {
+        $method = "AES-256-CBC";
+        $key = hash('sha256', $this->secret);
+        $iv = substr(hash('sha256', 'iv_secret_salt'), 0, 16);
+        return openssl_decrypt(base64_decode($data), $method, $key, 0, $iv);
     }
 
     // Store generated keys in the database encrypted
