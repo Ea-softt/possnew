@@ -122,73 +122,128 @@ foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
     max-width: calc(100%);
   }
 
+    :root {
+        --nav-bg: #1a1d20;
+        --accent-green: #28a745;
+    }
 
-    </style>
+    /* Modern Navbar Styling */
+    .navbar-custom {
+        background-color: var(--nav-bg) !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        padding: 0.6rem 1.5rem;
+    }
 
+    .navbar-brand {
+        font-weight: 700;
+        letter-spacing: 1px;
+        transition: 0.3s;
+    }
 
+    .navbar-brand:hover {
+        color: #fff !important;
+        text-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+    }
 
+    /* User Profile Section */
+    .user-profile-link {
+        display: flex;
+        align-items: center;
+        padding: 5px 12px;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        background: rgba(255,255,255,0.05);
+        color: #e9ecef !important;
+        text-decoration: none !important;
+    }
 
+    .user-profile-link:hover {
+        background: rgba(40, 167, 69, 0.2);
+    }
 
+    .profile-img {
+        border: 2px solid var(--accent-green);
+        padding: 2px;
+        object-fit: cover;
+    }
 
+    /* Dropdown Refinement */
+    .dropdown-menu {
+        border: none;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        border-radius: 8px;
+        margin-top: 15px !important;
+    }
+
+    .dropdown-item {
+        padding: 10px 20px;
+        font-size: 14px;
+        transition: 0.2s;
+    }
+
+    .dropdown-item:hover {
+        background-color: var(--accent-green);
+        color: white;
+    }
+
+    /* Preloader Overlay */
+    #preloader2 {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
     
 </head>
  <body>
- 
- <!--div class="container"-->
- <nav class=" align-items-stretch  border-dark  bd-header d-flex  navbar navbar-expand-md navbar-dark bg-dark" aria-label="Fifth navbar example" style="font-size: 15px; padding: 10px;">
 
-
-
+<nav class="navbar navbar-expand-md navbar-dark navbar-custom sticky-top">
     <div class="container-fluid">
-      <a class="navbar-brand text-success " style="font-size: 25px;" href="#">EA-Soft</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse " id="navbarsExample05">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-           <li class="nav-item " style="width: 500px;">
-            <a class="nav-link active" aria-current="page" href="homepageem.php">Home</a>
-          </li>      
-         
-         
-
-          
-           
-           
-
-
-         
-
-          
-
-             
-
-
-          
-       
-        </ul>
-        
-        
-          <div class="d-flex flex-row-reverse flex-shrink-5 dropdown " style="margin-left:200px;">
-        <a href="#" class="d-block link-secondary text-decoration-none text-success dropdown-toggle" id="dropdownUser2" data-toggle="dropdown" aria-expanded="false" style="margin-left: 80px; "><?php echo $FullName;?>
-          <img src="<?php echo isset($meta['picture']) ? '../img/'.$meta['picture'] :'' ?>" alt="mdo" width="32" height="32" class="rounded-circle">
+        <a class="navbar-brand text-success" href="homepageem.php">
+            <i class="fas fa-graduation-cap me-2"></i> EA-Soft
         </a>
-        <ul class="dropdown-menu text-small shadow " aria-labelledby="dropdownUser2">
-              
-           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="backupandrestore2.php">Backup And Restore</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="logoutpage.php">Sign out</a></li>
-        </ul>
-      </div>
-      </div>
+
+        <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+<!-- 
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link px-3" href="homepageem.php"><i class="fas fa-home me-1"></i> Dashboard</a>
+                </li>
+            </ul> -->
+
+            <div class="navbar-nav ml-auto align-items-center">
+                <div class="dropdown">
+                    <a href="#" class="user-profile-link dropdown-toggle" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="mr-2 d-none d-lg-inline"><?php echo $FullName ?? 'User'; ?></span>
+                        <img src="<?php echo !empty($meta['picture']) ? '../img/'.$meta['picture'] : 'img/default-avatar.png'; ?>" 
+                             alt="Profile" width="35" height="35" class="rounded-circle profile-img">
+                    </a>
+                    
+                    <div class="dropdown-menu dropdown-menu-right animate slideIn" aria-labelledby="userMenu">
+                        <h6 class="dropdown-header">Account Management</h6>
+                        <!-- <a class="dropdown-item" href="profile.php">
+                            <i class="fas fa-user-cog mr-2"></i> My Profile
+                        </a> -->
+                        <a class="dropdown-item" href="backupandrestore2.php">
+                            <i class="fas fa-database mr-2"></i> Database Backup
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-danger" href="logoutpage.php">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Sign Out
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-     </nav> 
-   
-
-
-
+</nav>
 
 
 
@@ -263,6 +318,8 @@ foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
       </div>
     </div>
   </div>
+
+
 </body>
 
 <script>

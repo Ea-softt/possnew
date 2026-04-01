@@ -21,9 +21,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     <link href="bootstrap5/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link href="bootstrap5/font_awesome_all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
+    
     <!-- Custom CSS -->
     <style>
         :root {
@@ -389,7 +387,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                 <tr>
                   <td class="text-center"><?php echo $i++ ?></td>
                   <td class="text-center">
-                    <p> <b><?php echo $row['supplier_id'] ?></b></p>
+                  <?php echo $row['supplier_id'] ?>
                   </td>
                  
                    

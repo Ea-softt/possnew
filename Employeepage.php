@@ -342,7 +342,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
 
     <!-- Main Content -->
   <div class="main-content" id="mainContent">
-    <div class=" " style="font-size: 11px;">
+    <div class=" " >
 
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-2 border-bottom">
         <h1 class="h2" style="margin-left: 15%">List of Employee</h1>
@@ -395,7 +395,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                                 <tr>
                                     <td class="text-center"><?php echo $i++ ?></td>
                                     <td class="text-center">
-                                        <p><small><i><b><?php echo $row['EmpID']. " - " . $row['FullName'] ?></small></p>
+                                        <p><i><b><?php echo $row['EmpID']. " - " . $row['FullName'] ?></p>
                                     </td>
                                     <td class="text-center">
                                          <p><?php echo $row['Phonenum'] ?></p>

@@ -1,6 +1,6 @@
 <?php 
  include('headem.php');
- include('insert_sales.php');
+ //include('insert_sales.php');
 
  if(isset($_SESSION["uid"])){
     $fees = $conn->query("SELECT * FROM newemployee WHERE EmpID = '{$_SESSION['uid']}' ");
@@ -23,7 +23,7 @@ for($i = 0; $i <= 12; ++$i){
     $monthname=date('F',$time);
 }
 ?>
-
+<!-- 
 <style>
     body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     .pos-card { border: none; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background: #fff; }
@@ -37,129 +37,160 @@ for($i = 0; $i <= 12; ++$i){
     .sticky-summary { position: sticky; top: 20px; }
     .btn-finish { padding: 12px 30px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
     thead th { position: sticky; top: 0; background: #2c3e50; color: white; z-index: 10; }
+</style> -->
+
+<style>
+    body { 
+        background-color: #f4f7f6; 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        overflow: hidden; /* Prevents the whole page from scrolling */
+    }
+    .pos-card { border: none; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: #fff; }
+    
+    /* Dynamic Height - This makes it fit 100% of the screen */
+    .table-wrapper-scroll-y { 
+        position: relative; 
+        height: calc(100vh - 360px) !important; /* Adjusts based on screen height */
+        overflow-y: auto; 
+        border: 1px solid #dee2e6; 
+        border-radius: 6px; 
+    }
+
+    .bg-pos-dark { background-color: #2c3e50 !important; color: white; padding: 8px !important; }
+    
+    /* Shrink the font sizes slightly to fit more items */
+    #table2 thead th, #table1 thead th { 
+        font-size: 0.85rem; 
+        padding: 8px; 
+        background: #2c3e50; 
+        color: white; 
+        position: sticky; 
+        top: 0; 
+        z-index: 10;
+    }
+
+    #tableData, #products { font-size: 0.95rem !important; } /* Reduced from 1.50rem */
+
+    /* Compact inputs */
+    .form-control-sm { height: calc(1.5em + 0.5rem + 2px); font-size: 0.875rem; }
+    
+    /* Action Buttons Area */
+    .action-section { padding-top: 10px; border-top: 1px solid #eee; }
+    .grand-total-box { padding: 10px !important; }
+    .btn-finish-big { height: 100%; font-size: 1.2rem; }
 </style>
 
-<div class="container-fluid py-3">
-    <form action="" id="supplierlin">
-        <div class="row mb-3">
+<div class="container-fluid py-2"> <form action="" id="supplierlin">
+        <div class="row mb-2">
             <div class="col-md-12">
-                <div class="pos-card p-2 px-3 d-flex justify-content-between align-items-center bg-pos-dark" style="border-radius: 8px;">
+                <div class="pos-card p-2 px-3 d-flex justify-content-between align-items-center bg-pos-dark">
                     <div class="small">
-                        <span class="me-3"><i class="fas fa-user-shield me-2 text-info"></i>Cashier: <strong><?php echo $FullName;?></strong></span>
-                        <span><i class="fas fa-calendar-alt me-2 text-info"></i>Date: <strong><?php echo date("Y-m-d"); ?></strong></span>
-                    </div>
-                    <input type="hidden" name="days" id="days" value="<?php echo $days; ?>">
+                        <span class="me-3"><i class="fas fa-user-shield me-1 text-info"></i> Cashier: <strong><?php echo $FullName;?></strong></span>
+                        <span><i class="fas fa-calendar-alt me-1 text-info"></i> <?php echo date("Y-m-d"); ?></span>
+                    
+                         <input type="hidden" name="days" id="days" value="<?php echo $days; ?>">
                     <input type="hidden" name="month" id="month" value="<?php echo $monthname; ?>">
                     <input type="hidden" name="year" id="years" value="<?php echo $y; ?>">
                     <input type="hidden" id="user" name="salername" value="<?php echo $EmpID;?>">
                     <input type="hidden" name="datee" id="datee" value="<?php echo date('Y-m-d') ?>">
+                    
+                    
+                      </div>
                 </div>
             </div>
         </div>
 
-        <div class="row g-3">
-            <div class="col-lg-7">
-                <div class="pos-card p-3 shadow-sm h-100">
-                    <div class="row mb-2 align-items-end">
-                        <div class="col-md-7">
-                            <label class="form-label fw-bold small text-uppercase mb-1">Customer</label>
-                            <input type="text" class="form-control form-control-sm customer_search" id="customer_search" placeholder="Search customer..." name="customername" required autocomplete="off">
+        <div class="row g-2"> <div class="col-lg-7">
+                <div class="pos-card p-2 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div style="width: 70%;">
+                            <input type="text" class="form-control form-control-sm" id="customer_search" placeholder="Select Customer..." name="customername" required>
                         </div>
-                        <div class="col-md-5 text-end">
-                            <button type="button" class="btn btn-outline-primary btn-sm" id="new_customer">
-                                <i class="fas fa-user-plus"></i> New
-                            </button>
-                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-sm" id="new_customer"><i class="fas fa-plus"></i></button>
                     </div>
 
-                    <div class="table-wrapper-scroll-y my-custom-scrollbar-a mb-3" style="height: 500px;">
-                        <table class="table table-sm table-hover align-middle small"   id="table2">
+                    <div class="table-wrapper-scroll-y">
+                        <table class="table table-sm table-hover align-middle mb-0" id="table2">
                             <thead>
-                                <tr class="text-center" style="font-size: 1.0rem;">
-                                    <th>Barcode</th>
-                                    <th>Product</th>
-                                    <th>Price</th>
-                                    <th>Unit</th>
-                                    <th>Qty</th>
-                                    <th>Total</th>
-                                    <th><i class="fas fa-times"></i></th>
+                                <tr class="text-center">
+                                    <th  class="text-center">Barcode</th>
+                                    <th  class="text-center">Product</th>
+                                    <th class="text-center">Price</th>
+                                    <th class="text-center">Unit</th>
+                                    <th class="text-center" width="80">Qty</th>
+                                    <th class="text-center">Total</th>
+                                    <th class="text-center"><i class="fas fa-times"></i></th>
                                 </tr>
                             </thead>
-                            <tbody id="tableData" style="font-size: 1.50rem;"></tbody>
+                            <tbody id="tableData"></tbody>
                         </table>
                     </div>
 
-                    <div class="border-top pt-3">
-                        <div class="row g-2 align-items-center">
-                            <div class="col-md-2 ">
-                                <label class="fw-bold d-block text-center">Disc. %</label>
-                                <input class="form-control form-control-sm text-center fw-bold py-4" type="number" name="discount" value="0" min="0" id="discount">
+                    <div class="action-section mt-2">
+                        <div class="row g-2 align-items-stretch">
+                            <div class="col-md-2 text-center">
+                                <label class="small fw-bold mb-0">Disc %</label>
+                                <input class="form-control form-control-sm text-center fw-bold" type="number" name="discount" value="0" id="discount">
                             </div>
                             
                             <div class="col-md-3">
-                                <div class="p-1 py-4 border rounded bg-light text-center">
-                                    <div class="form-check form-check-inline m-0 me-2">
-                                        <input class="form-check-input" type="radio" name="typeofcash" value="1" id="typeofcash" style="transform: scale(0.8);">
-                                        <label class="form-check-label small" for="typeofcash" style="font-size: 1.75rem;">Cash</label>
+                                <div class="p-1 border rounded bg-light h-100 d-flex align-items-center justify-content-around">
+                                    <div class="form-check m-0">
+                                        <input class="form-check-input" type="radio" name="typeofcash" value="1" id="cash" checked>
+                                        <label class="form-check-label small" for="cash">Cash</label>
                                     </div>
-                                    <div class="form-check form-check-inline m-0">
-                                        <input class="form-check-input" type="radio" name="typeofcash" value="2" id="typeofcash1" style="transform: scale(0.8);">
-                                        <label class="form-check-label small" for="typeofcash1" style="font-size: 1.75rem;">E-Cash</label>
+                                    <div class="form-check m-0">
+                                        <input class="form-check-input" type="radio" name="typeofcash" value="2" id="ecash">
+                                        <label class="form-check-label small" for="ecash">E-Cash</label>
                                     </div>
                                 </div>
                             </div>
 
-                             <div class="col-md-3">
-                                <button type="button" name='enter' class="Enter btn btn-success w-100 py-4 fw-bold small">
-                                    <i class="fas fa-check me-1"></i> FINISH
+                            <div class="col-md-3">
+                                <button type="button" class="Enter btn btn-success w-100 h-100 fw-bold">
+                                    <i class="fas fa-check-circle me-1"></i> FINISH
                                 </button>
                             </div>
 
                             <div class="col-md-4">
-                                <div class="bg-danger text-white rounded px-3 py-4 text-center">
-                                    <small class="text-uppercase d-block" style="font-size: 0.90rem; opacity:0.7">Grand Total</small>
-                                    <span id="totalValue" class="fw-bold" style="font-size: 2.2rem;">0.00</span>
+                                <div class="bg-danger text-white rounded grand-total-box text-center h-100 d-flex flex-column justify-content-center">
+                                    <small class="text-uppercase" style="font-size: 0.7rem;">Grand Total</small>
+                                    <span id="totalValue" class="fw-bold" style="font-size: 1.5rem;">0.00</span>
+                                   
                                     <input type="hidden" class="mult2" id="totalvaluein" name="grandtotal">
                                     <input type="hidden" id="totalValue1"> 
                                     <input type="hidden" class="mult1" id="totalvaluer1in" name="totalsale">
                                 </div>
                             </div>
 
-                           
                         </div>
-                        
-                        <div class="text-center mt-2">
-                            <a href="javascript:void(0)" class="cancel text-danger  small text-decoration-none" style="font-size: 1.25rem;">
-                                <i class="fas fa-ban me-1"></i> Cancel Order
-                            </a>
+                        <div class="text-center mt-1">
+                            <a href="javascript:void(0)" class="cancel text-danger small text-decoration-none"><i class="fas fa-ban"></i> Cancel Order</a>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="col-lg-5">
-                <div class="pos-card p-3 shadow-sm h-100">
-                    <label class="form-label fw-bold small text-uppercase mb-1">Product Search</label>
-                    <div class="input-group input-group-sm mb-3">
-                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-search"></i></span>
-                        <input class="form-control border-start-0" type="text" placeholder="Search items by barcode or name or ID........." autofocus id="search" onkeyup="loadproducts();"/>
+                <div class="pos-card p-2 shadow-sm">
+                    <div class="input-group input-group-sm mb-2">
+                        <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
+                        <input class="form-control" type="text" placeholder="Search product..." id="search" onkeyup="loadproducts();" autofocus/>
                     </div>
 
-                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 480px;">
-                        <table class="table table-sm table-hover small" id="table1">
-                            <thead class="table-light" style="font-size: 1.0rem;">
+                    <div class="table-wrapper-scroll-y">
+                        <table class="table table-sm table-hover mb-0" id="table1">
+                            <thead>
                                 <tr>
-                                    
-                                     <th>Barcode</th>
                                     <th>Product</th>
                                     <th>Price</th>
                                     <th>Unit</th>
                                     <th>Qty</th>
-                                    <th>Ex Date</th>
+                                    <th>Ex. Date</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody style="font-size: 1.50rem;" id="products"></tbody>
+                            <tbody id="products"></tbody>
                         </table>
                     </div>
                 </div>
@@ -167,7 +198,6 @@ for($i = 0; $i <= 12; ++$i){
         </div>
     </form>
 </div>
-
 
 
 
@@ -306,14 +336,12 @@ $('body').on('click','.js-add',function(){
       var target = $(this);
       var product = target.attr('data-product');
       var price = target.attr('data-price');
-      var barcode = target.attr('data-barcode');
+       var barcodes = target.attr('data-barcode');
+      var barcode = target.attr('data-product_no');
       var unit = target.attr('data-unt');
       var min = target.attr('data-min');  
       var quantity = target.attr('data-quantity');
-      swal({         
-
-
-        
+      swal({               
         title: "Enter number of items:",
         content: "input",
       })
@@ -338,12 +366,11 @@ $('body').on('click','.js-add',function(){
 
            
             var total = parseInt(value,10) * parseFloat(price);
-            $('#tableData').append("<tr class='prd'><td input class='barcode text-center'>"+barcode+"</td><td class='text-center'>"+product+"</td><td class='price text-center'>"+accounting.formatMoney(price,{symbol:"Ghc",format: "%s %v"})+"</td><td class='text-center'>"+unit+"</td><td class='qty text-center'>"+value+"</td><td class='totalPrice text-center'>"+accounting.formatMoney(total,{symbol:"Ghc",format: "%s %v"})+"</td><td class='text-center p-1'><button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times-circle'></i></button><tr>");
+            $('#tableData').append("<tr class='prd'><td input class='barcode text-center d-none'>"+barcode+"</td><td input class='barcodes text-center'>"+barcodes+"</td><td class='text-center'>"+product+"</td><td class='price text-center'>"+accounting.formatMoney(price,{symbol:"Ghc",format: "%s %v"})+"</td><td class='text-center'>"+unit+"</td><td class='qty text-center'>"+value+"</td><td class='totalPrice text-center'>"+accounting.formatMoney(total,{symbol:"Ghc",format: "%s %v"})+"</td><td class='text-center p-1'><button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times-circle'></i></button><tr>");
             GrandTotal();
 
              $('#search').focus();
       
-         
        }
       }
   });
@@ -457,7 +484,7 @@ $(document).on('click','.Enter',function(){
               method:"POST",
         data:{totalvalue:TotalValue, product:product, price:price, grandtotal:grandtotal, days:days, month:month, user:user, years:years, customer:customer, quantity:quantity, discount:discount, typeofcash:typeofcash, datee:datee},
               success: function(data){
-              // alert(data)
+               //  console.log(data);  
                 if(data){
                   swal({
                     title: "Change is " + accounting.formatMoney(change,{symbol:"Ghc",format: "%s %v"}),
@@ -467,14 +494,24 @@ $(document).on('click','.Enter',function(){
                   .then((okay)=>{
                     if(okay){
                     setTimeout(function(){   
-                      console.log(data);  
+                   
                     var nw = window.open("receiptsale.php?reciept_no="+data+"","_blank","width=900px,height=600px");
                       setTimeout(function(){
                        nw.print()
                      setTimeout(function(){
                   nw.close()
-                  location.reload()
-               },500)
+                //  location.reload()
+
+              nw.close()
+            $('#tableData').html('');
+            $('#totalValue').text('0');
+            $('#totalvaluein').val('0');
+            $('#customer_search').val('');
+            $('#discount').val('0');
+            $("input[name='typeofcash'][value='1']").prop('checked', true);
+              $('#search').val('');
+            $('#search').focus();
+                },500)
               },500)
             },500)
                  
@@ -494,6 +531,89 @@ $(document).on('click','.Enter',function(){
   }
 });
 
+
+let barcodeBuffer = '';
+let lastKeyTime = Date.now();
+
+$('#search').on('keypress', function(e){
+ 
+    let currentTime = Date.now();
+
+    if(currentTime - lastKeyTime > 100){
+        barcodeBuffer = '';
+    }
+
+    lastKeyTime = currentTime;
+
+    // ✅ FIXED HERE (Enter key)
+    if(e.which === 13){
+
+      if(e.key === "Enter"){
+
+          setTimeout(function(){
+
+           let scannedCode = $('#search').val().trim().replace(/\s+/g, '');
+
+           let target = $(".js-add").filter(function(){
+           let code = $(this).attr("data-barcode");
+            return code && code.trim() === scannedCode;
+               });
+               if(target.length){
+                   target.click();
+                  
+                    //alert('kkskdkskd');
+                    }else{
+                         console.log("NOT FOUND:", scannedCode);
+                       //  swal("Error","Product not found!","error");
+                      }
+
+                      $('#search').val('');
+
+                  }, 10); // 🔥 small delay (30–100ms works best)
+
+                  e.preventDefault();
+              }
+       
+      //  let scannedCode = $('#search').val().trim();
+        
+      //   if(scannedCode !== ''){
+      //       let target = $(".js-add[data-barcode='" + scannedCode + "']");
+      //     console.log(target);
+      //       if(target.length){
+               
+      //           target.click();
+      //       }else{
+            
+      //           swal("Error","Product not found!","error");
+      //       }
+      //   }
+
+        
+      // let scannedCode = $('#search').val().trim().replace(/\s+/g, '');
+
+      //   let target = $(".js-add").filter(function(){
+      //       let code = $(this).attr("data-barcode");
+      //       // alert(target);
+      //       return code && code.trim() === scannedCode;
+      //   });
+
+      //   if(target.length){
+      //       target.click();
+      //      // alert('kkskdkskd');
+      //   }else{
+      //       console.log("NOT FOUND:", scannedCode);
+      //       swal("Error","Product not found!","error");
+      //   }
+
+
+      //   barcodeBuffer = '';
+      //   $('#search').val('');
+      //   e.preventDefault();
+
+    }else{
+        barcodeBuffer += e.key;
+    }
+});
 
 
 $(document).on('click','.cancel',function(e){

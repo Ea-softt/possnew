@@ -132,7 +132,7 @@ include('validation.php');
 
     <div class="form-side">
         <div class="login-box text-center">
-            <img class="mb-4" src="img/login.png" alt="Logo" width="100">
+            <img class="mb-4" src="img/login-icon.png" alt="Logo" width="100">
             
             <div id="alert-container">
                 <?php if (isset($_SESSION['meg'])): ?>

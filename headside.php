@@ -42,11 +42,13 @@ foreach($fees->fetch(PDO::FETCH_ASSOC) as $k => $v){
 <script type="text/javascript" src="bootstrap4/js/ddtf.js"></script>
 
 <!-- DataTables CSS -->
+ <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
  <script src="bootstrap4/jquery/datepicker.js"></script>
 <!-- DataTables JS -->
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 
+ <link href="bootstrap5/font_awesome_all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
  <!-- 
      <script src="bootstrap4/jquery/jquery.min.js"></script>
    <script src="bootstrap4/js/bootstrap.bundle.min.js"></script>

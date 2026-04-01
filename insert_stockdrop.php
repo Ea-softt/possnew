@@ -66,17 +66,18 @@ if(isset($_POST['product'])){
     for ($nump = 0; $nump < count($sid); $nump++) {
         $product_id = $sid[$nump];
         $qtyold     = $quantity1[$nump];
-
+        $barcode1     = $barcode[$nump];
         // 1. UPDATE WAREHOUSE (Subtracting stock)
-        $sql1 = "SELECT quantity FROM warehouse WHERE sid ='$product_id'";
+        $sql1 = "SELECT quantity, barcode FROM warehouse WHERE sid ='$product_id'";
         $result1 = $conn->query($sql1);
         $wh_qty = $result1->fetch(PDO::FETCH_ASSOC);
 
 
 
         if ($wh_qty) {
+           // $barcode1 =$wh_qty['barcode'];
             $new_wh_qty = (int)$wh_qty['quantity'] - (int)$qtyold;
-            $sql2 = "UPDATE warehouse SET quantity=$new_wh_qty WHERE sid='$product_id'";
+            $sql2 = "UPDATE warehouse SET quantity=$new_wh_qty, barcode='$barcode1' WHERE sid='$product_id'";
             $conn->exec($sql2);
         }
 

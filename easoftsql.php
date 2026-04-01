@@ -333,7 +333,7 @@ function new_customer(){
 		$picture = '';
 		if(isset($_FILES['img']['tmp_name']) && $_FILES['img']['tmp_name'] != ''){
 						$picture = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['name'];
-						$move = move_uploaded_file($_FILES['img']['tmp_name'],'../posnew/img/'. $picture);
+						$move = move_uploaded_file($_FILES['img']['tmp_name'],'../www/img/'. $picture);
 		}
 		
 		$data .= ", image = '$picture' ";
@@ -386,7 +386,7 @@ function new_supplier(){
 		$picture = '';
 		if(isset($_FILES['img']['tmp_name']) && $_FILES['img']['tmp_name'] != ''){
 						$picture = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['name'];
-						$move = move_uploaded_file($_FILES['img']['tmp_name'],'../posnew/img/'. $picture);
+						$move = move_uploaded_file($_FILES['img']['tmp_name'],'../www/img/'. $picture);
 		}
 		
 		$data .= ", image = '$picture' ";
@@ -452,7 +452,7 @@ function new_employee(){
 		$emname = '';
 		if(isset($_FILES['img']['tmp_name']) && $_FILES['img']['tmp_name'] != ''){
 						$emname = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['name'];
-						$move = move_uploaded_file($_FILES['img']['tmp_name'],'../posnew/img/'. $emname);
+						$move = move_uploaded_file($_FILES['img']['tmp_name'],'../www/img/'. $emname);
 		}
 		
 		$data .= ", picture = '$emname' ";
@@ -715,7 +715,7 @@ function save_supplierdeliverin() {
 
     // Handle new image uploads
     if (isset($_FILES['images'])) {
-        $uploadDir = '../img/';
+        $uploadDir = '../www/img/';
         foreach ($_FILES['images']['tmp_name'] as $key => $tmpName) {
             if ($_FILES['images']['error'][$key] === UPLOAD_ERR_OK) {
                 $fileName = uniqid() . '_' . basename($_FILES['images']['name'][$key]);
@@ -1167,7 +1167,7 @@ function new_warehouse(){
 
 		if(isset($_FILES['img']['tmp_name']) && $_FILES['img']['tmp_name'] != ''){
 			$picture = strtotime(date('y-m-d H:i')).'_'.$_FILES['img']['name'];
-			$move = move_uploaded_file($_FILES['img']['tmp_name'],'../posnew/img/'. $picture);
+			$move = move_uploaded_file($_FILES['img']['tmp_name'],'../www/img/'. $picture);
 			$data .= ", picture = '$picture' ";
 			if (empty($sid)) {
 				$cols .= ", picture";

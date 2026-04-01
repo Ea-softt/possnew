@@ -219,7 +219,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             <!-- User Profile -->
             <div class="user-profile">
                 <span><?php echo $FullName; ?></span>
-                <img src="<?php echo isset($meta['picture']) ? '../img/' . $meta['picture'] : '' ?>" alt="Profile">
+                <img src="<?php echo isset($meta['picture']) ? '../www/img/' . $meta['picture'] : '' ?>" alt="Profile">
                 <div class="dropdown">
                     <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown"></button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">

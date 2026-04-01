@@ -383,42 +383,17 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
     <!-- Custom JS -->
    <script>
 
-    $(document).ready(function() {
-    
-    // --- BACKUP LOGIC ---
-    $('#btn-backup').click(function() {
-        if(swal("Do you want to download a copy of the current database?")) {
-            $('#status').text('Preparing download...').css('color', 'green');
-            window.location.href = 'backupage.php?action=backup';
-            
-            // Reset status after a few seconds
-            setTimeout(() => { $('#status').text('Backup initiated.'); }, 3000);
-        }
-    });
+     $(document).ready(function() {
 
-    // --- RESTORE LOGIC ---
-    $('#btn-restore').click(function() {
-        const fileInput = $('#restoreFile')[0];
-        
-        if (fileInput.files.length === 0) {
-            swal("Please select a .db file first!");
-            return;
-        }
-
-        // DOUBLE CONFIRMATION
-        const confirm1 = confirm("WARNING: This will delete ALL current sales and data. Are you absolutely sure?");
-        if (!confirm1) return;
-        
-        const confirm2 = confirm("FINAL CHECK: Have you made a backup of your current data before doing this?");
-        if (!confirm2) return;
-
+    // --- HELPER FUNCTION: THE ACTUAL RESTORE AJAX ---
+    function executeRestore(fileInput) {
         const formData = new FormData();
         formData.append('action', 'restore');
         formData.append('backup_file', fileInput.files[0]);
 
         // Show Progress Bar
         $('.progress').show();
-        $('#progressBar').css('width', '0%').text('0%');
+        $('#progressBar').css('width', '0%').text('0%').removeClass('bg-success').addClass('bg-info');
         $('#status').text('Uploading and restoring...').css('color', 'blue');
 
         $.ajax({
@@ -444,19 +419,79 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                     if (res.status === 'success') {
                         $('#progressBar').addClass('bg-success').removeClass('bg-info');
                         $('#status').text(res.message).css('color', 'green');
-                        swal("Success: System data has been replaced.");
-                        location.reload(); 
+                        
+                        // Use swal for success so the user has time to read it before reload
+                        swal({
+                            title: "Success!",
+                            text: "System data has been replaced. The page will now reload.",
+                            icon: "success",
+                        }).then(() => {
+                            location.reload(); 
+                        });
                     } else {
                         $('#status').text(res.message).css('color', 'red');
                         $('.progress').hide();
+                        swal("Error", res.message, "error");
                     }
                 } catch (e) {
                     $('#status').text("Server error. Check PHP logs.").css('color', 'red');
+                    console.error("JSON Parsing Error:", e, response);
                 }
             },
             error: function() {
-                swal("Error: Restore failed. Connection error.");
+                swal("Error", "Restore failed. Connection error or file too large.", "error");
                 $('.progress').hide();
+            }
+        });
+    }
+
+    // --- BACKUP LOGIC ---
+    $('#btn-backup').click(function() {
+        swal({
+            title: "Backup Database?",
+            text: "Do you want to download a copy of the current database?",
+            icon: "info",
+            buttons: ["No", "Yes, Download"],
+        }).then((willBackup) => {
+            if (willBackup) {
+                $('#status').text('Preparing download...').css('color', 'green');
+                window.location.href = 'backupage.php?action=backup';
+                setTimeout(() => { $('#status').text('Backup initiated.'); }, 3000);
+            }
+        });
+    });
+
+    // --- RESTORE LOGIC ---
+    $('#btn-restore').click(function() {
+        const fileInput = $('#restoreFile')[0];
+        
+        if (!fileInput || fileInput.files.length === 0) {
+            swal("Wait!", "Please select a .db file first!", "warning");
+            return;
+        }
+
+        // STEP 1: First Warning
+        swal({
+            title: "CRITICAL WARNING",
+            text: "This will delete ALL current sales and data. This cannot be undone!",
+            icon: "warning",
+            buttons: ["Cancel", "I Understand"],
+            dangerMode: true,
+        })
+        .then((confirm1) => {
+            if (confirm1) {
+                // STEP 2: Second Warning
+                swal({
+                    title: "One Last Thing...",
+                    text: "Have you made a backup of your current data before doing this?",
+                    icon: "info",
+                    buttons: ["No, Let me backup first", "Yes, Proceed with Restore"],
+                })
+                .then((confirm2) => {
+                    if (confirm2) {
+                        executeRestore(fileInput);
+                    }
+                });
             }
         });
     });

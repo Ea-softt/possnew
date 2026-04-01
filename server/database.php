@@ -357,13 +357,14 @@ $sql = "CREATE TABLE IF NOT EXISTS `warehouse` (
   `sid` INTEGER PRIMARY KEY AUTOINCREMENT,
   `supplierid` INTEGER NOT NULL,
   `name` TEXT NOT NULL,
+   `barcode` TEXT,
   `quantity` INTEGER NOT NULL,
   `price` REAL NOT NULL,
   `multtota` INTEGER NOT NULL,
   `unit` TEXT NOT NULL,
   `description` TEXT NOT NULL,
   `expire_date` TEXT NOT NULL,
-  `picture` TEXT NOT NULL,
+  `picture` TEXT NOT NULL,  
   `create_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 )";
 $conn->exec($sql);

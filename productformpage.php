@@ -411,7 +411,8 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                                     <th style="display:none;">Description</th>
                                     <th style="display:none;">Expirdate</th>
                                     <th style="display:none;">Sub.Total</th> 
-                                    <th style="display:none;">barc</th>            
+                                    <th style="display:none;">barc</th>        
+                                    <th style="display:none;">barc2</th>         
                                     <th>Action</th> 
                                 </tr>
                             </thead>
@@ -433,6 +434,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                                     <td class="text-center" name="check" style="display:none;"><?php echo $row['description'] ?></td>
                                     <td class="text-center" name="check" style="display:none;"><?php echo $row['expire_date'] ?></td>
                                     <td class="text-center" name="check" style="display:none;"><?php echo $row['supplierid'] ?></td>
+                                    <td class="text-center" name="check"  style="display:none;"><?php echo $row['barcode'] ?></td>
                                     <td class="text-center" name="check" style="display:none;"><?php echo $row['multtota'] ?></td>
                                     <td class="text-center" name="check" style="display:none;"><?php echo $i++ ?></td>
                                     <td class='text-center p-1'><button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times'></i></button></td>          
@@ -547,32 +549,167 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             validateTable();
         });
 
-        $('.tablet').click(function() {
-            var sendToNum = $('#tableData1');
-            sendToNum.text('');
-            $("input[name=check]:checked").each(function() {
-                var sid = $(this).parent().nextAll('td').eq(0).html();    
-                var product = $(this).parent().nextAll('td').eq(1).html(); 
-                var price = $(this).parent().nextAll('td').eq(2).html();    
-                var quantity = $(this).parent().nextAll('td').eq(3).html(); 
-                var unit = $(this).parent().nextAll('td').eq(4).html();
-                var description = $(this).parent().nextAll('td').eq(5).html();    
-                var expiredate = $(this).parent().nextAll('td').eq(6).html(); 
-                var multtota = $(this).parent().nextAll('td').eq(7).html(); 
-                var barc = $(this).parent().nextAll('td').eq(8).html(); 
-                var supplierid = $(this).parent().nextAll('td').eq(7).html(); 
-                var add = parseFloat(1.5);
-                var add1 = parseFloat(price);
-                var sprice = (add1 + add);
-                var dateee = $("#location").val();
-                var expire = $("#location1").val();
-                var datee = dateee++;
-                var min_stock = parseFloat(1);
+        // $('.tablet').click(function() {
+        //     var sendToNum = $('#tableData1');
+        //     sendToNum.text('');
+        //     $("input[name=check]:checked").each(function() {
+        //         var sid = $(this).parent().nextAll('td').eq(0).html();    
+        //         var product = $(this).parent().nextAll('td').eq(1).html(); 
+        //         var price = $(this).parent().nextAll('td').eq(2).html();    
+        //         var quantity = $(this).parent().nextAll('td').eq(3).html(); 
+        //         var unit = $(this).parent().nextAll('td').eq(4).html();
+        //         var description = $(this).parent().nextAll('td').eq(5).html();    
+        //         var expiredate = $(this).parent().nextAll('td').eq(6).html(); 
+        //         var multtota = $(this).parent().nextAll('td').eq(7).html(); 
+        //         var barc = $(this).parent().nextAll('td').eq(8).html(); 
+        //         var supplierid = $(this).parent().nextAll('td').eq(7).html(); 
+        //         var add = parseFloat(1.5);
+        //         var add1 = parseFloat(price);
+        //         var sprice = (add1 + add);
+        //         var dateee = $("#location").val();
+        //         var expire = $("#location1").val();
+        //         var datee = dateee++;
+        //         var min_stock = parseFloat(1);
 
-                sendToNum.append("<tr class='prd'><td class='sid text-center'>"+sid+"</td><td class='barcode text-center'>"+sid+""+dateee+""+barc+"</td><td class='sprice text-center' contenteditable>"+sprice+"</td><td class='min_stock text-center' contenteditable>"+min_stock+"</td><td class='product text-center'>"+product+"</td><td class='cprice text-center' contenteditable>"+accounting.formatMoney(price,{symbol:"Ghc",format: "%s %v"})+" </td><td class='quantity1 text-center' data-max='"+quantity+"' contenteditable>"+quantity+"</td><td class='unit1 text-center' contenteditable>"+unit+"</td><td class='expiredate text-center' contenteditable>"+expire+"</td><td style='display:none;' class='multtota text-center' contenteditable>"+accounting.formatMoney(multtota,{symbol:"Ghc",format: "%s %v"})+"</td><td class='description text-center' style='display:none;' contenteditable>"+description+"</td><td style='display:none;' class='supplierid text-center' contenteditable>"+supplierid+"</td><td class='text-center p-1'><button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times'></i></button></td></tr>");
-            });
-            validateTable();
-        });
+        //         sendToNum.append("<tr class='prd'><td class='sid text-center'>"+sid+"</td><td class='barcode text-center'>"+sid+""+dateee+""+barc+"</td><td class='sprice text-center' contenteditable>"+sprice+"</td><td class='min_stock text-center' contenteditable>"+min_stock+"</td><td class='product text-center'>"+product+"</td><td class='cprice text-center' contenteditable>"+accounting.formatMoney(price,{symbol:"Ghc",format: "%s %v"})+" </td><td class='quantity1 text-center' data-max='"+quantity+"' contenteditable>"+quantity+"</td><td class='unit1 text-center' contenteditable>"+unit+"</td><td class='expiredate text-center' contenteditable>"+expire+"</td><td style='display:none;' class='multtota text-center' contenteditable>"+accounting.formatMoney(multtota,{symbol:"Ghc",format: "%s %v"})+"</td><td class='description text-center' style='display:none;' contenteditable>"+description+"</td><td style='display:none;' class='supplierid text-center' contenteditable>"+supplierid+"</td><td class='text-center p-1'><button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times'></i></button></td></tr>");
+        //     });
+        //     validateTable();
+        // });
+
+// $('.tablet').click(function() {
+//     var sendToNum = $('#tableData1');
+//     sendToNum.text('');
+
+//     // Helper function to generate 13 random digits
+//     function generateBarcode() {
+//         var res = "";
+//         for (var i = 0; i < 13; i++) {
+//             res += Math.floor(Math.random() * 10);
+//         }
+//         return res;
+//     }
+
+//     $("input[name=check]:checked").each(function() {
+//         var sid = $(this).parent().nextAll('td').eq(0).html();    
+//         var product = $(this).parent().nextAll('td').eq(1).html(); 
+//         var price = $(this).parent().nextAll('td').eq(2).html();    
+//         var quantity = $(this).parent().nextAll('td').eq(3).html(); 
+//         var unit = $(this).parent().nextAll('td').eq(4).html();
+//         var description = $(this).parent().nextAll('td').eq(5).html();    
+//         var expiredate = $(this).parent().nextAll('td').eq(6).html(); 
+//         var multtota = $(this).parent().nextAll('td').eq(7).html(); 
+        
+//         // 1. Get existing barcode and trim whitespace
+//         var rawBarcode = $(this).parent().nextAll('td').eq(8).html() || "";
+//         var barcode = rawBarcode.toString().trim();
+
+//         // 2. Logic: If barcode is not exactly 13 digits, generate a new one
+//         if (barcode.length !== 13) {
+//             barcode = generateBarcode();
+//         }
+
+//         var supplierid = $(this).parent().nextAll('td').eq(7).html(); 
+//         var add = parseFloat(1.5);
+//         var add1 = parseFloat(price);
+//         var sprice = (add1 + add);
+//         var dateee = $("#location").val();
+//         var expire = $("#location1").val();
+//         var min_stock = parseFloat(1);
+
+//         // Note: I cleaned up the barcode <td> to use the 'barcode' variable calculated above
+//         sendToNum.append("<tr class='prd'>" +
+//             "<td class='sid text-center'>"+sid+"</td>" +
+//             "<td class='barcode text-center'>"+barcode+"</td>" + // Updated here
+//             "<td class='sprice text-center' contenteditable>"+sprice+"</td>" +
+//             "<td class='min_stock text-center' contenteditable>"+min_stock+"</td>" +
+//             "<td class='product text-center'>"+product+"</td>" +
+//             "<td class='cprice text-center' contenteditable>"+accounting.formatMoney(price,{symbol:"Ghc",format: "%s %v"})+" </td>" +
+//             "<td class='quantity1 text-center' data-max='"+quantity+"' contenteditable>"+quantity+"</td>" +
+//             "<td class='unit1 text-center' contenteditable>"+unit+"</td>" +
+//             "<td class='expiredate text-center' contenteditable>"+expire+"</td>" +
+//             "<td style='display:none;' class='multtota text-center' contenteditable>"+accounting.formatMoney(multtota,{symbol:"Ghc",format: "%s %v"})+"</td>" +
+//             "<td class='description text-center' style='display:none;' contenteditable>"+description+"</td>" +
+//             "<td style='display:none;' class='supplierid text-center' contenteditable>"+supplierid+"</td>" +
+//             "<td class='text-center p-1'><button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times'></i></button></td>" +
+//             "</tr>");
+//     });
+//     validateTable();
+// });
+
+
+$('.tablet').click(function() {
+    var sendToNum = $('#tableData1');
+    sendToNum.text('');
+
+    // Helper function to generate 13 random digits
+    function generateBarcode() {
+        var res = "";
+        for (var i = 0; i < 13; i++) {
+            res += Math.floor(Math.random() * 10);
+        }
+        return res;
+    }
+
+    $("input[name=check]:checked").each(function() {
+        var sid = $(this).parent().nextAll('td').eq(0).html();    
+        var product = $(this).parent().nextAll('td').eq(1).html(); 
+        var price = $(this).parent().nextAll('td').eq(2).html();    
+        var quantity = $(this).parent().nextAll('td').eq(3).html(); 
+        var unit = $(this).parent().nextAll('td').eq(4).html();
+        var description = $(this).parent().nextAll('td').eq(5).html();    
+        var expiredate = $(this).parent().nextAll('td').eq(6).html(); 
+        var multtota = $(this).parent().nextAll('td').eq(7).html(); 
+       
+        // 1. Grab the barcode from the 9th column (index 8)
+        var existingBarcode = $(this).parent().nextAll('td').eq(8).html();
+     //    alert(existingBarcode);
+        // Clean the string (remove spaces or HTML tags if any)
+        var barcode = (existingBarcode) ? existingBarcode.toString().trim() : "";
+
+        /**
+         * 2. BARCODE LOGIC:
+         * We use a regex /^\d{13}$/ which checks:
+         * ^     : Start of string
+         * \d{13}: Exactly 13 digits
+         * $     : End of string
+         */
+        if (!/^\d{13}$/.test(barcode)) {
+            // If it is NOT 13 digits, generate a new one
+            barcode = generateBarcode();
+        } 
+        // Else: If it is already 13 digits, we do nothing (it keeps its value)
+
+        var supplierid = $(this).parent().nextAll('td').eq(7).html(); 
+        var add = parseFloat(1.5);
+        var add1 = parseFloat(price);
+        var sprice = (add1 + add);
+        var dateee = $("#location").val();
+        var expire = $("#location1").val();
+        var min_stock = parseFloat(1);
+
+        sendToNum.append("<tr class='prd'>" +
+            "<td class='sid text-center'>"+sid+"</td>" +
+            "<td class='barcode text-center'>"+barcode+"</td>" + 
+            "<td class='sprice text-center' contenteditable>"+sprice+"</td>" +
+            "<td class='min_stock text-center' contenteditable>"+min_stock+"</td>" +
+            "<td class='product text-center'>"+product+"</td>" +
+            "<td class='cprice text-center' contenteditable>"+accounting.formatMoney(price,{symbol:"Ghc",format: "%s %v"})+" </td>" +
+            "<td class='quantity1 text-center' data-max='"+quantity+"' contenteditable>"+quantity+"</td>" +
+            "<td class='unit1 text-center' contenteditable>"+unit+"</td>" +
+            "<td class='expiredate text-center' contenteditable>"+expire+"</td>" +
+            "<td style='display:none;' class='multtota text-center' contenteditable>"+accounting.formatMoney(multtota,{symbol:"Ghc",format: "%s %v"})+"</td>" +
+            "<td class='description text-center' style='display:none;' contenteditable>"+description+"</td>" +
+            "<td style='display:none;' class='supplierid text-center' contenteditable>"+supplierid+"</td>" +
+            "<td class='text-center p-1'><button class='btn btn-danger btn-sm' type='button' id='delete-row'><i class='fas fa-times'></i></button></td>" +
+            "</tr>");
+    });
+    validateTable();
+});
+
+
+
+
+
 
         var $selectAll = $('#selectall');
         var $table = $('.table1');
@@ -657,7 +794,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
             $('.expiredate').each(function(){ expiredate.push($(this).text()); });
             $('.min_stock').each(function(){ min_stock.push($(this).text()); });
             $('.description').each(function(){ description.push($(this).text()); });
-
+                                      //  alert(barcode);
             swal({
                 title: "Are you sure to save Selected Product?",
                 icon: "warning",

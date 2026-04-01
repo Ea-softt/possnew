@@ -1,85 +1,144 @@
-<?php include 'server/config.php';
+<?php 
+include 'server/config.php';
+
 if(isset($_POST['product'])){
-	$user =  $_POST['user'];
-	$discount = $_POST['discount'];
-	$total = $_POST['totalvalue'];
-	$price = $_POST['price'];
-	$product = $_POST['product'];
-	$customer = $_POST['customer'];
-	$quantity = $_POST['quantity'];
-	$grandtotal = $_POST['grandtotal'];
-	$days = $_POST['days'];
-	$month = $_POST['month'];
-	$years = $_POST['years'];
-	$typeofcash = $_POST['typeofcash'];
-	$datee = $_POST['datee'];
 
-		//echo $datee;
+    // =======================
+    // RECEIVE POST DATA
+    // =======================
+    $user        = $_POST['user'];
+    $discount    = $_POST['discount'];
+    $total       = $_POST['totalvalue'];
+    $price       = $_POST['price'];        // array
+    $product     = $_POST['product'];      // array
+    $customer    = $_POST['customer'];
+    $quantity    = $_POST['quantity'];     // array
+    $grandtotal  = $_POST['grandtotal'];
+    $days        = $_POST['days'];
+    $month       = $_POST['month'];
+    $years       = $_POST['years'];
+    $typeofcash  = $_POST['typeofcash'];
+    $datee       = $_POST['datee'];
+   
+    // =======================
+    // GET CUSTOMER ID
+    // =======================
+    $stmt = $conn->prepare("
+        SELECT customer_id 
+        FROM customer 
+        WHERE firstnamec || ' ' || lastnamec = :customer
+    ");
+    $stmt->execute([':customer' => $customer]);
+    $cust_id = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    if(!$cust_id){
+        echo "failure";
+        exit();
+    }
 
+    $cust_id_new = $cust_id['customer_id'];
 
+    // =======================
+    // INSERT INTO SALES TABLE
+    // =======================
+    $stmt = $conn->prepare("
+        INSERT INTO sales
+        (customer_id, username, discount, total, grandtotal, days, month, years, typeofcash, created_date)
+        VALUES
+        (:customer_id, :user, :discount, :total, :grandtotal, :days, :month, :years, :typeofcash, :datee)
+    ");
 
-$veemos = '1';
+    $result = $stmt->execute([
+        ':customer_id' => $cust_id_new,
+        ':user'        => $user,
+        ':discount'    => $discount,
+        ':total'       => $total,
+        ':grandtotal'  => $grandtotal,
+        ':days'        => $days,
+        ':month'       => $month,
+        ':years'       => $years,
+        ':typeofcash'  => $typeofcash,
+        ':datee'       => $datee
+    ]);
 
-	
-	$reciept = array();
-	
-	$query = '';
+    if(!$result){
+        echo "failure";
+        exit();
+    }
 
-	
-	
+    // =======================
+    // GET LAST INSERTED ID
+    // =======================
+    $sales_id = $conn->lastInsertId();
 
-	// SQLite uses || for concatenation, not CONCAT()
-	$stmt = $conn->prepare("SELECT customer_id FROM customer WHERE firstnamec || ' ' || lastnamec = :customer");
-	$stmt->execute([':customer' => $customer]);
-	$cust_id = $stmt->fetch(PDO::FETCH_ASSOC);
+    // =======================
+    // PROCESS EACH PRODUCT
+    // =======================
+    for($i = 0; $i < count($product); $i++){
 
-	if(!$cust_id){
-		echo "failure";
-	}else{
-		$cust_id_new = $cust_id['customer_id'];
+        $product_id = $product[$i];
+        $qty_sold   = $quantity[$i];
+        $price_item = $price[$i];
 
-		$sql = "INSERT INTO sales(customer_id,username,discount,total,grandtotal,days,month,years,typeofcash,created_date) VALUES($cust_id_new,'$user',$discount, $total, $grandtotal, $days, '$month', $years, $typeofcash, '$datee')";
-		$result = $conn->exec($sql);
-		
+        // =======================
+        // GET CURRENT STOCK
+        // =======================
+        $stmt = $conn->prepare("
+            SELECT quantity 
+            FROM products 
+            WHERE product_no = :product_id
+        ");
+        $stmt->execute([':product_id' => $product_id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-		if($result == true){
-			$id = $conn->lastInsertId();
-			
-			for($i = 0;  $i < count($product); $i++){
-				$reciept[] = $id;
-			}
-			//echo "$id[0]";
-			for($num=0; $num<count($product); $num++){
-				$product_id = $product[$num];
-				$qtyold = $quantity[$num];
+        if($row){
+            $newqty = $row['quantity'] - $qty_sold;
+			//var_dump($newqty);
+            // =======================
+            // UPDATE STOCK
+            // =======================
+            $stmt = $conn->prepare("
+                UPDATE products 
+                SET quantity = :newqty 
+                WHERE product_no = :product_id
+            ");
+            $stmt->execute([
+                ':newqty'     => $newqty,
+                ':product_id' => $product_id
+            ]);
+        }
 
-				$stmt1 = $conn->query("SELECT quantity FROM products WHERE product_no='$product_id'");
-				$qty = $stmt1->fetch(PDO::FETCH_ASSOC);
+        // =======================
+        // INSERT INTO SALES_PRODUCT
+        // =======================
+        if($product_id != '' && $qty_sold != '' && $price_item != ''){
+            $stmt = $conn->prepare("
+                INSERT INTO sales_product
+                (reciept_no, product_id, price, qty)
+                VALUES
+                (:reciept, :product, :price, :qty)
+            ");
+            $stmt->execute([
+                ':reciept' => $sales_id,
+                ':product' => $product_id,
+                ':price'   => $price_item,
+                ':qty'     => $qty_sold
+            ]);
+        }
+    }
 
-				$newqty = $qty['quantity'] - $qtyold;
+    // =======================
+    // INSERT LOG
+    // =======================
+    $stmt = $conn->prepare("
+        INSERT INTO logs (username, purpose)
+        VALUES (:user, 'Product sold')
+    ");
+    $stmt->execute([':user' => $user]);
 
-				$sql2 = "UPDATE products SET quantity=$newqty WHERE product_no='$product_id'";
-				$conn->exec($sql2);
-
-			}
-
-			$query1 	= "INSERT INTO logs (username,purpose) VALUES('$user','Product sold')";
-	 		$conn->exec($query1);
-
-			for($count = 0; $count < count($product); $count++){
-				$price_clean = $price[$count];
-				$reciept_clean = $reciept[$count];
-				$product_clean = $product[$count];
-				$quantity_clean = $quantity[$count];
-				if($product_clean != '' && $quantity_clean != '' && $price_clean != '' && $reciept_clean != ''){
-					$conn->exec("INSERT INTO sales_product(reciept_no,product_id,price,qty) VALUES('$reciept_clean','$product_clean','$price_clean','$quantity_clean')");
-				}
-			} 
-		}else{
-			echo "failure";
-		}
-	
-		echo "$id";
-	}
+    // =======================
+    // RETURN SUCCESS ID
+    // =======================
+    echo $sales_id;
 }
+?>
