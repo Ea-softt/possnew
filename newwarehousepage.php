@@ -777,8 +777,8 @@ $("body").on('click','#delete-row', function(){
               method:"POST",        
               data:{companyname:companyname,product:product,quantity1:quantity1,price1:price1,unit:unit,expiredate:expiredate,description:description,sid:sid},
               success: function(data){
-               // alert(data);
-                
+                // alert(data);
+                // console.log(data);
                 if(data = "success"){  
 
                   alert_toast("Data successfully saved.",'success')

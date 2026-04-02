@@ -405,19 +405,19 @@ $end_date = date('Y-m-d');
                                         <p><a href="saleuserecodemonth_1page.php?month=<?php echo date("Ymd",strtotime($month1));?>&username=<?php echo $username;?>"><?php echo $customer_first;?></a></b></p>
                                     </td>
                                     <td class="text-center">
-                                        <p> <b><?php echo $row['discount'] ?></b></p>
+                                        <p><?php echo $row['discount'] ?></p>
                                     </td>
                                     <td class="text-center">
-                                        <p> <b><?php echo $row['total'] ?></b></p>
+                                        <p><?php echo $row['total'] ?></p>
                                     </td>
                                     <td class="text-center">
-                                        <p> <b><?php echo $row['cashtype'] ?></b></p>
+                                        <p><?php echo $row['cashtype'] ?></p>
                                     </td>
                                     <td class="text-center">
-                                        <p> <b><?php echo $row['grad'] ?></b></p>
+                                        <p><?php echo $row['grad'] ?></p>
                                     </td>
                                     <td class="text-center">
-                                        <p> <b><?php echo date("Y-m-d",strtotime($month1)) ?></b></p>
+                                        <p><?php echo date("Y-m-d",strtotime($month1)) ?></p>
                                     </td>                  
                                 </tr>
                                 <?php 

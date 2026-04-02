@@ -105,11 +105,11 @@ if(isset($_POST['product'])){
 				$expiredate_clean = $expiredate[$count];
 				$description_clean = $description[$count];
 				$images_clean = $reciept[$count];
-				echo $product_did;
 				
-					$query = "INSERT INTO updatewarehouse(product_id,productname,quantity,price,companyname,unity,expiredate,description,tprice) 
-							VALUES($product_did,'$product_clean','$quantity_clean','$price1_clean','$companyname_clean','$unit_clean','$expiredate_clean','$description_clean','$tcost1_clean')";
-					$conn->exec($query);						
+					$querym = "INSERT INTO updatewarehouse(product_id,productname,quantity,price,tprice,companyname,unity,expiredate,description,images) 
+							VALUES($product_did,'$product_clean','$quantity_clean','$price1_clean','$tcost1_clean','$companyname_clean','$unit_clean','$expiredate_clean','$description_clean','$images_clean')";
+					$conn->exec($querym);	
+					var_dump($querym);
 						//	,'','$companyname_clean','$unit_clean','$expiredate_clean','$description_clean','$images_clean'
 			//,companyname,,description
 			}

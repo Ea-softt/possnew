@@ -379,7 +379,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                    <th class="text-center">CTotal</th>
                     <th class="text-center">STotal</th>
                     <th class="text-center">Difference</th>
-                     <th class="text-center">Action</th>
+                     <!-- <th class="text-center">Action</th> -->
                 </tr>
               </thead>
               <tbody>
@@ -399,36 +399,36 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                 <tr>
                   <td class="text-center"><?php echo $i++ ?></td>
                   <td class="text-center">
-                    <p> <b><?php echo $row['product_name']?></b></p>
+                    <p><?php echo $row['product_name']?></p>
                   </td>
                   <td class="text-center">
-                     <p><small><i><b><?php echo $row['cprice'] ?></i></small></p>
+                     <p><?php echo $row['cprice'] ?></p>
                   </td>
                   <td class="text-center">
-                     <p><small><i><b><?php echo $row['sell_price'] ?></i></small></p>
+                     <p><?php echo $row['sell_price'] ?></p>
                   </td>
                   <td class="text-center">
-                     <p><small><i><b><?php echo $row['quantity'] ?></i></small></p>
+                     <p><?php echo $row['quantity'] ?></p>
                   </td>
                  
                    <td class="text-center text-danger">
-                     <p class="text-danger"><small><i><b><?php echo $row['ctotal'] ?></i></small></p>
+                     <p class="text-danger"><?php echo $row['ctotal'] ?></p>
                   </td>
 
                   <td class="text-center text-success">
-                     <p><small><i><b><?php echo $row['stotal'] ?></i></small></p>
+                     <p><?php echo $row['stotal'] ?></p>
                   </td>
                  <!--  <td class="text-center text-success">
                      <p class="text-success"><small><i><b><?php echo $row['stotal'] ?></i></small></p>
                   </td> -->
                   <td class="text-center text-success">
-                     <p class="text-success"><small><i><b><?php echo $row['diff'] ?></i></small></p>
+                     <p class="text-success"><?php echo $row['diff'] ?></p>
                   </td>
                  
-                  <td class="text-center">                    
+                  <!-- <td class="text-center">                    
                   
                     <button class="btn btn-sm btn-outline-danger delete_moneyin" type="button" data-id="<?php echo $row['id'] ?>" >Delete</button>
-                  </td>
+                  </td> -->
                 </tr>
                 <?php 
                         endforeach;
@@ -447,7 +447,7 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                             <th class="text-right text-danger"><?php echo number_format($ctotal,2) ?></th> 
                             <th class="text-right text-success"><?php echo number_format($stotal,2) ?></th> 
                               <th class="text-right text-success"><?php echo number_format($diff,2) ?></th>
-                            <th></th>
+                            
                         </tr>
                     </tfoot>
             </table>

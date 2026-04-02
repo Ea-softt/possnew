@@ -386,25 +386,25 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                                     <tr>
                                     <td class="text-center"><?php echo $i++ ?></td>
                                     <td class="text-center">
-                                        <p> <b><?php echo date("M d,Y ",strtotime($row['created_date'])) ?></b></p>
+                                        <p><?php echo date("M d,Y ",strtotime($row['created_date'])) ?></p>
                                     </td>
                                     <td class="text-center">
-                                        <p> <b><?php echo $row['batchno'] ?></b></p>
+                                        <p><?php echo $row['batchno'] ?></p>
                                     </td>
                                     <td class="text-center">
-                                        <p> <b><?php echo $row['companyname'] ?></b></p>
+                                        <p><?php echo $row['companyname'] ?></p>
                                     </td>
                                     <td class="text-center">
-                                        <p> <b><?php echo $row['currentpayment'] ?></b></p>
+                                        <p><?php echo $row['currentpayment'] ?></p>
                                     </td>
                                     <td class="text-center">
-                                        <p> <b><?php echo $row['suppliercurrentbilling'] ?></b></p>
+                                        <p><?php echo $row['suppliercurrentbilling'] ?></p>
                                     </td>
                                     <td class="text-center">
-                                        <p> <b><?php echo $row['amountpayable'] ?></b></p>
+                                        <p><?php echo $row['amountpayable'] ?></p>
                                     </td>
                                     <td class="text-center">
-                                        <p> <b><?php echo $row['amountpaid'] ?></b></p>
+                                        <p><?php echo $row['amountpaid'] ?></p>
                                     </td>
                                     
                                     <td class="text-center">

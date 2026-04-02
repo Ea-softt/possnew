@@ -395,18 +395,18 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
 
                   
                   <td class="text-center">
-                    <p> <b><?php echo $row['companyname'] ?></b></p>
+                    <p><?php echo $row['companyname'] ?></p>
                   </td>
                   <td class="text-center">
-                    <p> <b><?php echo $row['firstname'].' '.$row['lastname'] ?></b></p>
+                    <p><?php echo $row['firstname'].' '.$row['lastname'] ?></p>
 
                 
                     <td class="text-center">
-                    <p> <b><?php echo $row['address'] ?></b></p>
+                    <p><?php echo $row['address'] ?></p>
                     </td>
 
                     <td class="text-center">
-                    <p> <b><?php echo $row['contact_number'] ?></b></p>
+                    <p><?php echo $row['contact_number'] ?></p>
                     </td>
 
 

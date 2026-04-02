@@ -342,6 +342,7 @@ $month = isset($_GET['month']) ? $_GET['month'] : date('Y-m-d');
                 <label for="" class="mt-2">Select Month</label>
                 <div class="col-sm-3">
                     <input type="date" name="month" id="month" value="<?php echo $month ?>" class="form-control">
+                     
                 </div>
             </div>
             <hr>
@@ -377,35 +378,35 @@ $month = isset($_GET['month']) ? $_GET['month'] : date('Y-m-d');
                         <td class="text-center"><?php echo $i++ ?></td>
                       <!--  -->
                         <td class="text-center">
-                            <p> <b><?php echo $row['product_no'] ?></b></p>
+                            <p><?php echo $row['product_no'] ?></p>
                         </td>
                          <td class="text-center">
-                            <p> <b><?php echo $row['companyname'] ?></b></p>
+                            <p><?php echo $row['companyname'] ?></p>
                         </td>
                         <td class="text-center">
-                            <p> <b><?php echo $row['product_name'] ?></b></p>
+                            <p><?php echo $row['product_name'] ?></p>
                         </td>                       
                         <td class="text-center">
-                            <p> <b><?php echo $row['quantity'] ?></b></p>
+                            <p><?php echo $row['quantity'] ?></p>
                         </td>
                         <td class="text-center">
-                            <p> <b><?php echo $row['unit'] ?></b></p>
+                            <p><?php echo $row['unit'] ?></p>
                         </td>
                          <td class="text-center">
-                            <p> <b><?php echo $row['cprice'] ?></b></p>
+                            <p><?php echo $row['cprice'] ?></p>
                         </td>
                          <td class="text-center">
-                            <p> <b><?php echo $row['tcost'] ?></b></p>
+                            <p><?php echo $row['tcost'] ?></p>
                         </td>
                         <td class="text-center">
-                            <p> <b><?php echo $row['expire_date'] ?></b></p>
+                            <p><?php echo $row['expire_date'] ?></p>
                         </td>
                          <td class="text-center">
-                            <p> <b><?php echo $row['remarks'] ?></b></p>
+                            <p><?php echo $row['remarks'] ?></p>
                         </td>
 
                         <td class="text-center">
-                            <p> <b><?php echo date("Y-m-d",strtotime($month1)) ?></b></p>
+                            <p><?php echo date("Y-m-d",strtotime($month1)) ?></p>
                         </td>                  
                     </tr>
                     <?php 

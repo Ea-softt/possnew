@@ -395,13 +395,13 @@ foreach ($fees->fetch(PDO::FETCH_ASSOC) as $k => $v) {
                                 <tr>
                                     <td class="text-center"><?php echo $i++ ?></td>
                                     <td class="text-center">
-                                        <p><i><b><?php echo $row['EmpID']. " - " . $row['FullName'] ?></p>
+                                        <p><?php echo $row['EmpID']. " - " . $row['FullName'] ?></p>
                                     </td>
                                     <td class="text-center">
                                          <p><?php echo $row['Phonenum'] ?></p>
                                     </td>
                                     <td class="text-center">
-                                         <p><i><b><?php echo $row['Gender'] ?></p>
+                                         <p><?php echo $row['Gender'] ?></p>
                                     </td>
                                     <td class="text-center">
                                          <p><?php echo $row['Qualification'] ?></p>
